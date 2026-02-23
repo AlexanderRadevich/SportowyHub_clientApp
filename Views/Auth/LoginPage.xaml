@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             x:Class="SportowyHub.Views.Auth.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Title="Sign In"
+             Shell.TabBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="8">
+
+            <Label Text="Sign In"
+                   Style="{StaticResource Headline}"
+                   HorizontalOptions="Start"
+                   Margin="0,16,0,24" />
+
+            <!-- Email Field -->
+            <Label Text="Email" Style="{StaticResource FieldLabel}" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding Email}"
+                       Placeholder="Enter your email"
+                       Keyboard="Email"
+                       BackgroundColor="Transparent" />
+            </Border>
+
+            <!-- Password Field -->
+            <Label Text="Password" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0"
+                           Text="{Binding Password}"
+                           Placeholder="Enter your password"
+                           IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertBoolConverter}}"
+                           BackgroundColor="Transparent" />
+                    <ImageButton Grid.Column="1"
+                                 Source="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"
+                                 Command="{Binding TogglePasswordVisibilityCommand}"
+                                 HeightRequest="24"
+                                 WidthRequest="24"
+                                 BackgroundColor="Transparent"
+                                 VerticalOptions="Center"
+                                 Margin="8,0" />
+                </Grid>
+            </Border>
+
+            <!-- Forgot Password -->
+            <Label Text="Forgot password?"
+                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                   FontSize="13"
+                   HorizontalOptions="End"
+                   Margin="0,8,0,0" />
+
+            <!-- Login Button -->
+            <Button Text="Login"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding LoginCommand}"
+                    HorizontalOptions="Fill"
+                    Margin="0,24,0,0" />
+
+            <!-- Create Account Link -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4" Margin="0,16,0,0">
+                <Label Text="Don't have an account?"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       FontSize="13"
+                       VerticalOptions="Center" />
+                <Label Text="Create Account"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                       FontSize="13"
+                       FontFamily="OpenSansSemibold"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavigateToRegisterCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

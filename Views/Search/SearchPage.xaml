@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             x:Class="SportowyHub.Views.Search.SearchPage"
+             x:DataType="vm:SearchViewModel"
+             Title="Search"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*" Padding="16">
+
+        <!-- Search Input Bar -->
+        <Border Grid.Row="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
+                StrokeThickness="{AppThemeBinding Light=0, Dark=1}"
+                Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource BorderDark}}"
+                Padding="8,4"
+                Margin="0,8,0,16">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="14" />
+            </Border.StrokeShape>
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <ImageButton Grid.Column="0"
+                             Source="icon_back.svg"
+                             HeightRequest="24"
+                             WidthRequest="24"
+                             Padding="8"
+                             BackgroundColor="Transparent"
+                             Command="{Binding GoBackCommand}"
+                             VerticalOptions="Center" />
+                <Entry Grid.Column="1"
+                       x:Name="SearchEntry"
+                       Text="{Binding SearchText}"
+                       Placeholder="Search for products..."
+                       BackgroundColor="Transparent"
+                       FontSize="14"
+                       VerticalOptions="Center" />
+                <ImageButton Grid.Column="2"
+                             Source="icon_clear.svg"
+                             HeightRequest="20"
+                             WidthRequest="20"
+                             Padding="8"
+                             BackgroundColor="Transparent"
+                             Command="{Binding ClearSearchCommand}"
+                             IsVisible="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}"
+                             VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Search Suggestions -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="24">
+
+                <!-- Recent Searches -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Recent Searches" Style="{StaticResource SectionHeader}" />
+                    <CollectionView ItemsSource="{Binding RecentSearches}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid Padding="0,10">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=SelectSuggestionCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                    <Label Text="{Binding}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Popular Searches -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Popular Searches" Style="{StaticResource SectionHeader}" />
+                    <CollectionView ItemsSource="{Binding PopularSearches}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid Padding="0,10">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=SelectSuggestionCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                    <Label Text="{Binding}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SportowyHub.Views.Profile.ProfilePage"
+             Title="Profile">
+
+    <VerticalStackLayout VerticalOptions="Center"
+                         HorizontalOptions="Center"
+                         Spacing="16"
+                         Padding="32">
+
+        <!-- App Logo -->
+        <Image Source="logo_full.png"
+               HeightRequest="80"
+               Aspect="AspectFit"
+               HorizontalOptions="Center"
+               Margin="0,0,0,16" />
+
+        <!-- Welcome Title -->
+        <Label Text="Welcome"
+               Style="{StaticResource Headline}"
+               Margin="0,0,0,24" />
+
+        <!-- Create Account Button -->
+        <Button Text="Create Account"
+                Style="{StaticResource PrimaryButton}"
+                Clicked="OnCreateAccountClicked"
+                HorizontalOptions="Fill"
+                Margin="0,0,0,8" />
+
+        <!-- Sign In Button -->
+        <Button Text="Sign In"
+                Style="{StaticResource SecondaryButton}"
+                Clicked="OnSignInClicked"
+                HorizontalOptions="Fill" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

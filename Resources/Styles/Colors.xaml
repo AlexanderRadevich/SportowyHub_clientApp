@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Brand Colors (non-theme-dependent) -->
+    <Color x:Key="Primary">#DE0F21</Color>
+    <Color x:Key="PrimaryDark">#FF3B4D</Color>
+    <Color x:Key="Secondary">#39485F</Color>
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+
+    <!-- Theme-dependent semantic colors -->
+    <Color x:Key="Background">#FFFFFF</Color>
+    <Color x:Key="BackgroundDark">#121212</Color>
+    <Color x:Key="Surface">#F7F9FC</Color>
+    <Color x:Key="SurfaceDark">#1E1E1E</Color>
+    <Color x:Key="TextPrimary">#1A1A1A</Color>
+    <Color x:Key="TextPrimaryDark">#FFFFFF</Color>
+    <Color x:Key="TextSecondary">#6B7280</Color>
+    <Color x:Key="TextSecondaryDark">#B0B3B8</Color>
+    <Color x:Key="Border">#E5E7EB</Color>
+    <Color x:Key="BorderDark">#2A2A2A</Color>
+    <Color x:Key="SearchBarBackground">#F1F3F6</Color>
+    <Color x:Key="SearchBarBackgroundDark">#1E1E1E</Color>
+    <Color x:Key="Error">#DC2626</Color>
+    <Color x:Key="ErrorDark">#EF4444</Color>
+    <Color x:Key="Success">#16A34A</Color>
+    <Color x:Key="Warning">#F59E0B</Color>
+
+    <!-- Gray scale (for disabled states, etc.) -->
+    <Color x:Key="Gray100">#E1E1E1</Color>
+    <Color x:Key="Gray200">#C8C8C8</Color>
+    <Color x:Key="Gray300">#ACACAC</Color>
+    <Color x:Key="Gray400">#919191</Color>
+    <Color x:Key="Gray500">#6E6E6E</Color>
+    <Color x:Key="Gray600">#404040</Color>
+    <Color x:Key="Gray900">#212121</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+
+</ResourceDictionary>

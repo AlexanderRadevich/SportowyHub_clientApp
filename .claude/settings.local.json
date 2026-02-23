@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(tail:*)",
+      "Bash(python3:*)",
+      "Bash(magick identify -verbose \"C:/dev/SportowyHub_clientApp/Resources/AppIcon/appicon.png\" 2>&1 | head -30 || file \"C:/dev/SportowyHub_clientApp/Resources/AppIcon/appicon.png\" 2>&1)",
+      "Bash(magick identify -verbose \"C:/dev/SportowyHub_clientApp/Resources/AppIcon/appiconfg.png\" 2>&1 | head -30 || file \"C:/dev/SportowyHub_clientApp/Resources/AppIcon/appiconfg.png\" 2>&1)",
+      "Bash(head:*)",
+      "Bash(cd \"C:/dev/SportowyHub_clientApp\" && dotnet clean 2>&1)"
+    ]
+  }
+}

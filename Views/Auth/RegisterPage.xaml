@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             x:Class="SportowyHub.Views.Auth.RegisterPage"
+             x:DataType="vm:RegisterViewModel"
+             Title="Create Account"
+             Shell.TabBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="8">
+
+            <Label Text="Create Account"
+                   Style="{StaticResource Headline}"
+                   HorizontalOptions="Start"
+                   Margin="0,16,0,24" />
+
+            <!-- Email Field -->
+            <Label Text="Email" Style="{StaticResource FieldLabel}" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding Email}"
+                       Placeholder="Enter your email"
+                       Keyboard="Email"
+                       BackgroundColor="Transparent" />
+            </Border>
+            <Label Text="{Binding EmailError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding EmailError.Length, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- Password Field -->
+            <Label Text="Password" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0"
+                           Text="{Binding Password}"
+                           Placeholder="Enter your password"
+                           IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertBoolConverter}}"
+                           BackgroundColor="Transparent" />
+                    <ImageButton Grid.Column="1"
+                                 Source="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"
+                                 Command="{Binding TogglePasswordVisibilityCommand}"
+                                 HeightRequest="24"
+                                 WidthRequest="24"
+                                 BackgroundColor="Transparent"
+                                 VerticalOptions="Center"
+                                 Margin="8,0" />
+                </Grid>
+            </Border>
+            <Label Text="{Binding PasswordStrength}"
+                   TextColor="{Binding PasswordStrengthColor}"
+                   FontSize="12"
+                   Margin="0,4,0,0"
+                   IsVisible="{Binding PasswordStrength.Length, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- Confirm Password Field -->
+            <Label Text="Confirm Password" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0"
+                           Text="{Binding ConfirmPassword}"
+                           Placeholder="Confirm your password"
+                           IsPassword="{Binding IsConfirmPasswordVisible, Converter={StaticResource InvertBoolConverter}}"
+                           BackgroundColor="Transparent" />
+                    <ImageButton Grid.Column="1"
+                                 Source="{Binding IsConfirmPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"
+                                 Command="{Binding ToggleConfirmPasswordVisibilityCommand}"
+                                 HeightRequest="24"
+                                 WidthRequest="24"
+                                 BackgroundColor="Transparent"
+                                 VerticalOptions="Center"
+                                 Margin="8,0" />
+                </Grid>
+            </Border>
+            <Label Text="{Binding ConfirmPasswordError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding ConfirmPasswordError.Length, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- Create Account Button -->
+            <Button Text="Create Account"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding CreateAccountCommand}"
+                    HorizontalOptions="Fill"
+                    Margin="0,24,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
