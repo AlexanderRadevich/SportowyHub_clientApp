@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Home.HomePage"
              Title="{x:Static res:AppResources.HomeTitle}">
 
@@ -24,7 +25,11 @@
                 <Image Source="icon_search_bar.svg"
                        HeightRequest="20"
                        WidthRequest="20"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
+                    </Image.Behaviors>
+                </Image>
                 <Label Text="{x:Static res:AppResources.SearchPlaceholder}"
                        TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}"
                        VerticalOptions="Center"

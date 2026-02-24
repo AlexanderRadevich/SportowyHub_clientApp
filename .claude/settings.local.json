@@ -8,7 +8,8 @@
       "Bash(magick identify -verbose \"C:/dev/SportowyHub_clientApp/Resources/AppIcon/appiconfg.png\" 2>&1 | head -30 || file \"C:/dev/SportowyHub_clientApp/Resources/AppIcon/appiconfg.png\" 2>&1)",
       "Bash(head:*)",
       "Bash(cd \"C:/dev/SportowyHub_clientApp\" && dotnet clean 2>&1)",
-      "Bash(cd /c/dev/SportowyHub_clientApp && dotnet build --nologo -v q 2>&1)"
+      "Bash(cd /c/dev/SportowyHub_clientApp && dotnet build --nologo -v q 2>&1)",
+      "Bash(grep:*)"
     ]
   }
 }

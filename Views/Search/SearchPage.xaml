@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Search.SearchPage"
              x:DataType="vm:SearchViewModel"
              Title="{x:Static res:AppResources.TabSearch}"
@@ -28,7 +29,11 @@
                              Padding="8"
                              BackgroundColor="Transparent"
                              Command="{Binding GoBackCommand}"
-                             VerticalOptions="Center" />
+                             VerticalOptions="Center">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
+                    </ImageButton.Behaviors>
+                </ImageButton>
                 <Entry Grid.Column="1"
                        x:Name="SearchEntry"
                        Text="{Binding SearchText}"
@@ -44,7 +49,11 @@
                              BackgroundColor="Transparent"
                              Command="{Binding ClearSearchCommand}"
                              IsVisible="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}"
-                             VerticalOptions="Center" />
+                             VerticalOptions="Center">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
+                    </ImageButton.Behaviors>
+                </ImageButton>
             </Grid>
         </Border>
 

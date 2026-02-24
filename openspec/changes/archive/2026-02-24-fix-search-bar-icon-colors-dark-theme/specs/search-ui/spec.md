@@ -1,4 +1,4 @@
-# Search UI
+## MODIFIED Requirements
 
 ### Requirement: Search bar on Home screen
 The Home screen SHALL display a search bar at the top of the page. The search bar SHALL be a styled container (`Border` with `RoundRectangle`) containing a magnifying glass icon on the left and localized placeholder text (`SearchPlaceholder`). It SHALL NOT be an editable input on the Home screen — tapping it navigates to the Search page. The magnifying glass icon SHALL use a theme-aware tint color: `Secondary` (#39485F) in light theme and `White` (#FFFFFF) in dark theme.
@@ -49,18 +49,3 @@ The Search page SHALL display a full editable search input field at the top that
 #### Scenario: Search page icons adapt to light theme
 - **WHEN** the Search page is in light theme
 - **THEN** the back and clear icons SHALL be tinted `#39485F` (Secondary)
-
-### Requirement: Recent and popular searches display
-Below the search input, the Search page SHALL display two sections with localized headers: "Recent Searches" (`SearchRecentSearches`) and "Popular Searches" (`SearchPopularSearches`). For MVP, these SHALL contain hardcoded placeholder data displayed as tappable items in vertical lists.
-
-#### Scenario: Recent searches section is displayed
-- **WHEN** the Search page is displayed and no text is entered
-- **THEN** a section with a localized "Recent Searches" header SHALL be visible with placeholder items
-
-#### Scenario: Popular searches section is displayed
-- **WHEN** the Search page is displayed and no text is entered
-- **THEN** a section with a localized "Popular Searches" header SHALL be visible below recent searches with placeholder items
-
-#### Scenario: Tapping a search suggestion fills the input
-- **WHEN** the user taps a recent or popular search item
-- **THEN** that item's text SHALL be placed into the search input field

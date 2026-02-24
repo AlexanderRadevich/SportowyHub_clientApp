@@ -62,6 +62,12 @@ public partial class ProfileViewModel : ObservableObject
                 "dark" => AppTheme.Dark,
                 _ => AppTheme.Unspecified
             };
+
+            // Recreate Shell so IconTintColorBehavior re-applies with the new theme
+            if (Application.Current.Windows.Count > 0)
+            {
+                Application.Current.Windows[0].Page = new AppShell();
+            }
         }
     }
 
