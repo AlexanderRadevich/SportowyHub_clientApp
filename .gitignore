@@ -7,6 +7,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/Dotnet.gitignore
 
+# IDE and tooling
+.vs/
+.agent/
+*.csproj.user
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
