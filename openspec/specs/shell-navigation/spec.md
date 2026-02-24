@@ -1,7 +1,7 @@
 # Shell Navigation
 
 ### Requirement: Bottom tab bar with four tabs
-The app SHALL display a fixed bottom tab bar with exactly four tabs: Home, Search, Favorites, and Profile. The tab bar SHALL be implemented using MAUI Shell `<TabBar>` in `AppShell.xaml`. Each tab SHALL display an icon and a localized text label. Tab titles SHALL be sourced from `AppResources` localized resources (`TabHome`, `TabSearch`, `TabFavorites`, `TabProfile`).
+The app SHALL display a fixed bottom tab bar with exactly four tabs: Home, Search, Favorites, and Profile. The tab bar SHALL be implemented using MAUI Shell `<TabBar>` in `AppShell.xaml`. Each tab SHALL display an icon and a localized text label. Tab titles SHALL be sourced from `AppResources` localized resources (`TabHome`, `TabSearch`, `TabFavorites`, `TabProfile`). Each `ShellContent` item SHALL have an `AutomationId` attribute: `TabHome`, `TabSearch`, `TabFavorites`, and `TabProfile` respectively.
 
 #### Scenario: App launches with Home tab active
 - **WHEN** the app launches
@@ -14,6 +14,10 @@ The app SHALL display a fixed bottom tab bar with exactly four tabs: Home, Searc
 #### Scenario: Tab labels display in system language
 - **WHEN** the app launches with the device language set to a supported language
 - **THEN** the tab labels SHALL display in that language (e.g., "Strona główna", "Szukaj", "Ulubione", "Profil" for Polish)
+
+#### Scenario: Tabs are identifiable by AutomationId
+- **WHEN** the tab bar is inspected via Appium or accessibility tools
+- **THEN** each tab SHALL be locatable by its `AutomationId`: `TabHome`, `TabSearch`, `TabFavorites`, `TabProfile`
 
 ### Requirement: Active tab visual indicator
 The active tab SHALL be visually distinguished from inactive tabs using the Primary color (`#DE0F21` in light theme, `#FF3B4D` in dark theme). Inactive tabs SHALL use a muted color (`Gray900` in light, `Gray200` in dark).

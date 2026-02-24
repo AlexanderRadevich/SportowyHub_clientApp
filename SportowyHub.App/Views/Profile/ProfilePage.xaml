@@ -62,7 +62,8 @@
                      Margin="16,0" />
 
             <!-- Settings Section Header -->
-            <Label Text="{x:Static res:AppResources.ProfileSettingsSection}"
+            <Label AutomationId="SettingsLabel"
+                   Text="{x:Static res:AppResources.ProfileSettingsSection}"
                    Style="{StaticResource SectionHeader}"
                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                    Padding="16,8"
@@ -72,9 +73,11 @@
             <Grid Padding="16,0"
                   HeightRequest="48"
                   ColumnDefinitions="*,Auto">
-                <Label Text="{x:Static res:AppResources.SettingsLanguage}"
+                <Label AutomationId="LanguageLabel"
+                       Text="{x:Static res:AppResources.SettingsLanguage}"
                        VerticalOptions="Center" />
-                <Picker Grid.Column="1"
+                <Picker AutomationId="LanguagePicker"
+                        Grid.Column="1"
                         ItemsSource="{Binding Languages}"
                         SelectedIndex="{Binding SelectedLanguageIndex}"
                         TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
@@ -89,9 +92,11 @@
             <Grid Padding="16,0"
                   HeightRequest="48"
                   ColumnDefinitions="*,Auto">
-                <Label Text="{x:Static res:AppResources.SettingsTheme}"
+                <Label AutomationId="ThemeLabel"
+                       Text="{x:Static res:AppResources.SettingsTheme}"
                        VerticalOptions="Center" />
-                <Picker Grid.Column="1"
+                <Picker AutomationId="ThemePicker"
+                        Grid.Column="1"
                         ItemsSource="{Binding Themes}"
                         SelectedIndex="{Binding SelectedThemeIndex}"
                         TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"

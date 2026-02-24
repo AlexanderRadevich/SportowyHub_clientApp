@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="SportowyHub.csproj" />
+  <Project Path="SportowyHub.App/SportowyHub.csproj" />
+  <Project Path="SportowyHub.UITests/SportowyHub.UITests.csproj" />
 </Solution>

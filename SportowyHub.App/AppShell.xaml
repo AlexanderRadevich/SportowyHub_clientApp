@@ -12,16 +12,16 @@
 
     <TabBar>
         <Tab Title="{x:Static res:AppResources.TabHome}" Icon="icon_home.svg">
-            <ShellContent ContentTemplate="{DataTemplate home:HomePage}" />
+            <ShellContent AutomationId="TabHome" ContentTemplate="{DataTemplate home:HomePage}" />
         </Tab>
         <Tab Title="{x:Static res:AppResources.TabSearch}" Icon="icon_search.svg">
-            <ShellContent ContentTemplate="{DataTemplate search:SearchPage}" />
+            <ShellContent AutomationId="TabSearch" ContentTemplate="{DataTemplate search:SearchPage}" />
         </Tab>
         <Tab Title="{x:Static res:AppResources.TabFavorites}" Icon="icon_favorites.svg">
-            <ShellContent ContentTemplate="{DataTemplate favorites:FavoritesPage}" />
+            <ShellContent AutomationId="TabFavorites" ContentTemplate="{DataTemplate favorites:FavoritesPage}" />
         </Tab>
         <Tab Title="{x:Static res:AppResources.TabProfile}" Icon="icon_profile.svg">
-            <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" />
+            <ShellContent AutomationId="TabProfile" ContentTemplate="{DataTemplate profile:ProfilePage}" />
         </Tab>
     </TabBar>
 
