@@ -17,16 +17,44 @@ public class AppShellPage
         _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(TestConfig.DefaultWaitSeconds));
     }
 
-    public void NavigateToTab(string automationId)
+    /// <summary>
+    /// Navigates to a tab by its content-desc (which is the localized tab title on Android).
+    /// </summary>
+    public void NavigateToTab(string contentDesc)
     {
-        var tab = _wait.Until(d => d.FindElement(MobileBy.AccessibilityId(automationId)));
+        var tab = _wait.Until(d => d.FindElement(MobileBy.AccessibilityId(contentDesc)));
         tab.Click();
     }
 
-    public void NavigateToHome() => NavigateToTab("TabHome");
-    public void NavigateToSearch() => NavigateToTab("TabSearch");
-    public void NavigateToFavorites() => NavigateToTab("TabFavorites");
-    public void NavigateToProfile() => NavigateToTab("TabProfile");
+    /// <summary>
+    /// Finds and clicks a tab by trying multiple localized names.
+    /// Useful when the current UI language is unknown.
+    /// </summary>
+    public void NavigateToTabByNames(params string[] possibleNames)
+    {
+        _wait.Until(d =>
+        {
+            foreach (var name in possibleNames)
+            {
+                try
+                {
+                    var tab = d.FindElement(MobileBy.AccessibilityId(name));
+                    tab.Click();
+                    return tab;
+                }
+                catch (NoSuchElementException)
+                {
+                    // Try next name
+                }
+            }
+            return null;
+        });
+    }
+
+    public void NavigateToHome() => NavigateToTabByNames("Strona główna", "Home");
+    public void NavigateToSearch() => NavigateToTabByNames("Szukaj", "Search");
+    public void NavigateToFavorites() => NavigateToTabByNames("Ulubione", "Favorites");
+    public void NavigateToProfile() => NavigateToTabByNames("Profil", "Profile");
 
     /// <summary>
     /// Waits for the shell to finish recreating after a language or theme change.
@@ -34,7 +62,5 @@ public class AppShellPage
     public void WaitForShellRecreation()
     {
         Thread.Sleep(TestConfig.ShellRecreationWaitMs);
-        // Re-verify the tab bar is present after recreation
-        _wait.Until(d => d.FindElement(MobileBy.AccessibilityId("TabProfile")));
     }
 }

@@ -7,7 +7,7 @@ public static class TestConfig
     public const string PlatformName = "Android";
     public const string AutomationName = "UiAutomator2";
     public const string AppPackage = "com.companyname.sportowyhub";
-    public const string AppActivity = "crc64e1fb321c08285b90.MainActivity";
+    public const string AppActivity = "crc649608e60ac3eeeee4.MainActivity";
 
     /// <summary>
     /// Timeout in seconds for waiting on elements.
