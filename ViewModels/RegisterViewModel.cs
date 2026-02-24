@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SportowyHub.Resources.Strings;
 
 namespace SportowyHub.ViewModels;
 
@@ -63,7 +64,7 @@ public partial class RegisterViewModel : ObservableObject
         var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         EmailError = Regex.IsMatch(Email, emailPattern)
             ? string.Empty
-            : "Please enter a valid email address";
+            : AppResources.AuthInvalidEmail;
     }
 
     private void EvaluatePasswordStrength()
@@ -81,17 +82,17 @@ public partial class RegisterViewModel : ObservableObject
 
         if (Password.Length >= 8 && hasLetters && hasDigits && hasSpecial)
         {
-            PasswordStrength = "Strong";
+            PasswordStrength = AppResources.PasswordStrengthStrong;
             PasswordStrengthColor = Color.FromArgb("#16A34A");
         }
         else if (Password.Length >= 6 && hasLetters && hasDigits)
         {
-            PasswordStrength = "Medium";
+            PasswordStrength = AppResources.PasswordStrengthMedium;
             PasswordStrengthColor = Color.FromArgb("#F59E0B");
         }
         else
         {
-            PasswordStrength = "Weak";
+            PasswordStrength = AppResources.PasswordStrengthWeak;
             PasswordStrengthColor = Color.FromArgb("#DC2626");
         }
     }
@@ -106,7 +107,7 @@ public partial class RegisterViewModel : ObservableObject
 
         ConfirmPasswordError = ConfirmPassword == Password
             ? string.Empty
-            : "Passwords do not match";
+            : AppResources.AuthPasswordsDoNotMatch;
     }
 
     private bool CanCreateAccount()

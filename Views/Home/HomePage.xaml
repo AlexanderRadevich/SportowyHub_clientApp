@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              x:Class="SportowyHub.Views.Home.HomePage"
-             Title="Home">
+             Title="{x:Static res:AppResources.HomeTitle}">
 
     <Grid RowDefinitions="Auto,*" Padding="16">
 
@@ -24,7 +25,7 @@
                        HeightRequest="20"
                        WidthRequest="20"
                        VerticalOptions="Center" />
-                <Label Text="Search for products..."
+                <Label Text="{x:Static res:AppResources.SearchPlaceholder}"
                        TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}"
                        VerticalOptions="Center"
                        FontSize="14" />
@@ -33,10 +34,10 @@
 
         <!-- Placeholder content -->
         <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center">
-            <Label Text="Home"
+            <Label Text="{x:Static res:AppResources.HomeTitle}"
                    Style="{StaticResource Headline}"
                    Margin="0,0,0,8" />
-            <Label Text="Content coming soon"
+            <Label Text="{x:Static res:AppResources.HomeContentComingSoon}"
                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                    HorizontalTextAlignment="Center" />
         </VerticalStackLayout>

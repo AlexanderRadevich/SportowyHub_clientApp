@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- Tab labels -->
+  <data name="TabHome" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="TabSearch" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="TabFavorites" xml:space="preserve">
+    <value>Избранное</value>
+  </data>
+  <data name="TabProfile" xml:space="preserve">
+    <value>Профиль</value>
+  </data>
+  <!-- Auth -->
+  <data name="AuthSignIn" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="AuthEmail" xml:space="preserve">
+    <value>Электронная почта</value>
+  </data>
+  <data name="AuthPassword" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="AuthEnterEmail" xml:space="preserve">
+    <value>Введите вашу электронную почту</value>
+  </data>
+  <data name="AuthEnterPassword" xml:space="preserve">
+    <value>Введите ваш пароль</value>
+  </data>
+  <data name="AuthForgotPassword" xml:space="preserve">
+    <value>Забыли пароль?</value>
+  </data>
+  <data name="AuthLogin" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="AuthNoAccount" xml:space="preserve">
+    <value>Нет аккаунта?</value>
+  </data>
+  <data name="AuthCreateAccount" xml:space="preserve">
+    <value>Создать аккаунт</value>
+  </data>
+  <data name="AuthConfirmPassword" xml:space="preserve">
+    <value>Подтвердите пароль</value>
+  </data>
+  <data name="AuthConfirmYourPassword" xml:space="preserve">
+    <value>Подтвердите ваш пароль</value>
+  </data>
+  <data name="AuthInvalidEmail" xml:space="preserve">
+    <value>Введите действительный адрес электронной почты</value>
+  </data>
+  <data name="AuthPasswordsDoNotMatch" xml:space="preserve">
+    <value>Пароли не совпадают</value>
+  </data>
+  <!-- Password strength -->
+  <data name="PasswordStrengthStrong" xml:space="preserve">
+    <value>Надёжный</value>
+  </data>
+  <data name="PasswordStrengthMedium" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="PasswordStrengthWeak" xml:space="preserve">
+    <value>Слабый</value>
+  </data>
+  <!-- Home -->
+  <data name="HomeTitle" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="HomeContentComingSoon" xml:space="preserve">
+    <value>Контент скоро появится</value>
+  </data>
+  <!-- Search -->
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Искать товары...</value>
+  </data>
+  <data name="SearchRecentSearches" xml:space="preserve">
+    <value>Недавние поиски</value>
+  </data>
+  <data name="SearchPopularSearches" xml:space="preserve">
+    <value>Популярные поиски</value>
+  </data>
+  <!-- Favorites -->
+  <data name="FavoritesTitle" xml:space="preserve">
+    <value>Избранное</value>
+  </data>
+  <!-- Profile -->
+  <data name="ProfileWelcome" xml:space="preserve">
+    <value>Добро пожаловать</value>
+  </data>
+  <data name="ProfileCreateAccount" xml:space="preserve">
+    <value>Создать аккаунт</value>
+  </data>
+  <data name="ProfileSignIn" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="ProfileAccountSection" xml:space="preserve">
+    <value>Аккаунт</value>
+  </data>
+  <data name="ProfileSettingsSection" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <!-- Settings -->
+  <data name="SettingsLanguage" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="SettingsTheme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="SettingsThemeLight" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="SettingsThemeDark" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
+  <data name="SettingsThemeSystem" xml:space="preserve">
+    <value>Системная</value>
+  </data>
+  <data name="SettingsLanguageSystem" xml:space="preserve">
+    <value>Системный</value>
+  </data>
+  <data name="SettingsLanguagePl" xml:space="preserve">
+    <value>Polski</value>
+  </data>
+  <data name="SettingsLanguageEn" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="SettingsLanguageUk" xml:space="preserve">
+    <value>Українська</value>
+  </data>
+  <data name="SettingsLanguageRu" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+</root>

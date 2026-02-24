@@ -1,4 +1,4 @@
-# Search UI
+## MODIFIED Requirements
 
 ### Requirement: Search bar on Home screen
 The Home screen SHALL display a search bar at the top of the page. The search bar SHALL be a styled container (`Border` with `RoundRectangle`) containing a magnifying glass icon on the left and localized placeholder text (`SearchPlaceholder`). It SHALL NOT be an editable input on the Home screen — tapping it navigates to the Search page.

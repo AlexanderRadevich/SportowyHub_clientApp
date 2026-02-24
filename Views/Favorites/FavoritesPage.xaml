@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              x:Class="SportowyHub.Views.Favorites.FavoritesPage"
-             Title="Favorites">
+             Title="{x:Static res:AppResources.FavoritesTitle}">
     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-        <Label Text="Favorites" Style="{StaticResource Headline}" />
+        <Label Text="{x:Static res:AppResources.FavoritesTitle}" Style="{StaticResource Headline}" />
     </VerticalStackLayout>
 </ContentPage>

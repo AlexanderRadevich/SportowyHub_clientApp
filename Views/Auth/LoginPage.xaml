@@ -2,21 +2,22 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              x:Class="SportowyHub.Views.Auth.LoginPage"
              x:DataType="vm:LoginViewModel"
-             Title="Sign In"
+             Title="{x:Static res:AppResources.AuthSignIn}"
              Shell.TabBarIsVisible="False">
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="8">
 
-            <Label Text="Sign In"
+            <Label Text="{x:Static res:AppResources.AuthSignIn}"
                    Style="{StaticResource Headline}"
                    HorizontalOptions="Start"
                    Margin="0,16,0,24" />
 
             <!-- Email Field -->
-            <Label Text="Email" Style="{StaticResource FieldLabel}" />
+            <Label Text="{x:Static res:AppResources.AuthEmail}" Style="{StaticResource FieldLabel}" />
             <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                     StrokeThickness="1"
                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
@@ -25,13 +26,13 @@
                     <RoundRectangle CornerRadius="12" />
                 </Border.StrokeShape>
                 <Entry Text="{Binding Email}"
-                       Placeholder="Enter your email"
+                       Placeholder="{x:Static res:AppResources.AuthEnterEmail}"
                        Keyboard="Email"
                        BackgroundColor="Transparent" />
             </Border>
 
             <!-- Password Field -->
-            <Label Text="Password" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
+            <Label Text="{x:Static res:AppResources.AuthPassword}" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
             <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                     StrokeThickness="1"
                     Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
@@ -42,7 +43,7 @@
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry Grid.Column="0"
                            Text="{Binding Password}"
-                           Placeholder="Enter your password"
+                           Placeholder="{x:Static res:AppResources.AuthEnterPassword}"
                            IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertBoolConverter}}"
                            BackgroundColor="Transparent" />
                     <ImageButton Grid.Column="1"
@@ -57,14 +58,14 @@
             </Border>
 
             <!-- Forgot Password -->
-            <Label Text="Forgot password?"
+            <Label Text="{x:Static res:AppResources.AuthForgotPassword}"
                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                    FontSize="13"
                    HorizontalOptions="End"
                    Margin="0,8,0,0" />
 
             <!-- Login Button -->
-            <Button Text="Login"
+            <Button Text="{x:Static res:AppResources.AuthLogin}"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding LoginCommand}"
                     HorizontalOptions="Fill"
@@ -72,11 +73,11 @@
 
             <!-- Create Account Link -->
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="4" Margin="0,16,0,0">
-                <Label Text="Don't have an account?"
+                <Label Text="{x:Static res:AppResources.AuthNoAccount}"
                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                        FontSize="13"
                        VerticalOptions="Center" />
-                <Label Text="Create Account"
+                <Label Text="{x:Static res:AppResources.AuthCreateAccount}"
                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                        FontSize="13"
                        FontFamily="OpenSansSemibold"

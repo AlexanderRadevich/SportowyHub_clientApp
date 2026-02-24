@@ -33,6 +33,7 @@ public static class MauiProgram
         builder.Services.AddTransient<SearchViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<ProfileViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

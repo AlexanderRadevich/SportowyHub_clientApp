@@ -1,4 +1,16 @@
 {
+"permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(git:*)",
+      "Bash(pwd:*)"
+    ],
+    "deny": []
+  },
   "enabledPlugins": {
     "csharp-lsp@claude-plugins-official": true,
     "github@claude-plugins-official": true

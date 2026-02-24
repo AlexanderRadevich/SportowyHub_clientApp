@@ -1,18 +1,18 @@
-# Auth Screens
+## MODIFIED Requirements
 
 ### Requirement: Profile logged-out state
-When the user is not logged in, the Profile tab SHALL display a grouped-list hub layout. The Account section SHALL contain a "Sign In" row (`ProfileSignIn`) and a "Create Account" row (`ProfileCreateAccount`) as tappable list items with chevron indicators. Tapping "Sign In" SHALL navigate to the Login page. Tapping "Create Account" SHALL navigate to the Registration page. All text labels SHALL be sourced from `AppResources` localized resources.
+When the user is not logged in, the Profile tab SHALL display a centered welcome layout containing: the SportowyHub logo (`logo_full.png`), a localized "Welcome" title (`ProfileWelcome`), a primary "Create Account" button (`ProfileCreateAccount`), and a secondary "Sign In" button (`ProfileSignIn`). All text labels SHALL be sourced from `AppResources` localized resources.
 
-#### Scenario: Profile shows account rows when logged out
+#### Scenario: Profile shows welcome view when logged out
 - **WHEN** the user navigates to the Profile tab and is not logged in
-- **THEN** the screen SHALL display an Account section containing "Sign In" and "Create Account" tappable rows with chevron indicators
+- **THEN** the screen SHALL display the SportowyHub logo, localized "Welcome" title, localized "Create Account" primary button, and localized "Sign In" secondary button, all centered vertically
 
-#### Scenario: Create Account row navigates to Register page
-- **WHEN** the user taps the "Create Account" row
+#### Scenario: Create Account button navigates to Register page
+- **WHEN** the user taps the "Create Account" button
 - **THEN** the app SHALL navigate to the Registration page
 
-#### Scenario: Sign In row navigates to Login page
-- **WHEN** the user taps the "Sign In" row
+#### Scenario: Sign In button navigates to Login page
+- **WHEN** the user taps the "Sign In" button
 - **THEN** the app SHALL navigate to the Login page
 
 ### Requirement: Registration screen with three fields
@@ -67,21 +67,6 @@ The Confirm Password field SHALL validate that its value matches the Password fi
 - **WHEN** the Confirm Password field value differs from the Password field value
 - **THEN** a localized error message SHALL appear indicating the passwords do not match
 
-### Requirement: Show/hide password toggle
-Both the Password and Confirm Password fields on the Registration page, and the Password field on the Login page, SHALL include an eye icon toggle to show or hide the password text.
-
-#### Scenario: Password is hidden by default
-- **WHEN** a password field is displayed
-- **THEN** the text SHALL be masked (dots/bullets) and the eye icon SHALL indicate "show"
-
-#### Scenario: Toggling password visibility
-- **WHEN** the user taps the eye icon on a password field
-- **THEN** the password text SHALL become visible and the icon SHALL change to indicate "hide"
-
-#### Scenario: Toggling back to hidden
-- **WHEN** the user taps the eye icon again
-- **THEN** the password text SHALL be masked again
-
 ### Requirement: Login screen with two fields
 The Login page SHALL display a vertical form with localized Email and Password fields, a primary "Login" button (`AuthLogin`), a "Forgot password?" link (`AuthForgotPassword`), and a "Create Account" link (`AuthCreateAccount`) with a "Don't have an account?" prefix (`AuthNoAccount`). All text SHALL be sourced from `AppResources` localized resources.
 
@@ -99,15 +84,4 @@ The Login page SHALL display a vertical form with localized Email and Password f
 
 #### Scenario: Forgot password link is present
 - **WHEN** the Login page is displayed
-- **THEN** a localized "Forgot password?" link SHALL be visible (non-functional in MVP — tapping it SHALL show no action)
-
-### Requirement: Error messages below fields
-All form validation error messages across Registration and Login pages SHALL appear directly below the respective input field in red/error-colored text. Error messages SHALL appear and disappear in real-time as the user modifies input.
-
-#### Scenario: Error message positioning
-- **WHEN** a field has a validation error
-- **THEN** the error message SHALL appear directly below that field's input, above the next field
-
-#### Scenario: Error message clears on valid input
-- **WHEN** the user corrects an invalid field value to a valid one
-- **THEN** the error message SHALL disappear immediately
+- **THEN** a localized "Forgot password?" link SHALL be visible (non-functional in MVP)

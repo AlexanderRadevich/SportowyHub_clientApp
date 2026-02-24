@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              x:Class="SportowyHub.Views.Search.SearchPage"
              x:DataType="vm:SearchViewModel"
-             Title="Search"
+             Title="{x:Static res:AppResources.TabSearch}"
              Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="Auto,*" Padding="16">
@@ -31,7 +32,7 @@
                 <Entry Grid.Column="1"
                        x:Name="SearchEntry"
                        Text="{Binding SearchText}"
-                       Placeholder="Search for products..."
+                       Placeholder="{x:Static res:AppResources.SearchPlaceholder}"
                        BackgroundColor="Transparent"
                        FontSize="14"
                        VerticalOptions="Center" />
@@ -53,7 +54,7 @@
 
                 <!-- Recent Searches -->
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Recent Searches" Style="{StaticResource SectionHeader}" />
+                    <Label Text="{x:Static res:AppResources.SearchRecentSearches}" Style="{StaticResource SectionHeader}" />
                     <CollectionView ItemsSource="{Binding RecentSearches}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="x:String">
@@ -74,7 +75,7 @@
 
                 <!-- Popular Searches -->
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Popular Searches" Style="{StaticResource SectionHeader}" />
+                    <Label Text="{x:Static res:AppResources.SearchPopularSearches}" Style="{StaticResource SectionHeader}" />
                     <CollectionView ItemsSource="{Binding PopularSearches}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="x:String">

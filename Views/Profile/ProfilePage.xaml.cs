@@ -1,19 +1,12 @@
+using SportowyHub.ViewModels;
+
 namespace SportowyHub.Views.Profile;
 
 public partial class ProfilePage : ContentPage
 {
-    public ProfilePage()
+    public ProfilePage(ProfileViewModel viewModel)
     {
+        BindingContext = viewModel;
         InitializeComponent();
-    }
-
-    private async void OnCreateAccountClicked(object? sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("register");
-    }
-
-    private async void OnSignInClicked(object? sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("login");
     }
 }

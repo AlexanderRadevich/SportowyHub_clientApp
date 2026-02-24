@@ -7,19 +7,20 @@
     xmlns:search="clr-namespace:SportowyHub.Views.Search"
     xmlns:favorites="clr-namespace:SportowyHub.Views.Favorites"
     xmlns:profile="clr-namespace:SportowyHub.Views.Profile"
+    xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
     Title="SportowyHub">
 
     <TabBar>
-        <Tab Title="Home" Icon="icon_home.svg">
+        <Tab Title="{x:Static res:AppResources.TabHome}" Icon="icon_home.svg">
             <ShellContent ContentTemplate="{DataTemplate home:HomePage}" />
         </Tab>
-        <Tab Title="Search" Icon="icon_search.svg">
+        <Tab Title="{x:Static res:AppResources.TabSearch}" Icon="icon_search.svg">
             <ShellContent ContentTemplate="{DataTemplate search:SearchPage}" />
         </Tab>
-        <Tab Title="Favorites" Icon="icon_favorites.svg">
+        <Tab Title="{x:Static res:AppResources.TabFavorites}" Icon="icon_favorites.svg">
             <ShellContent ContentTemplate="{DataTemplate favorites:FavoritesPage}" />
         </Tab>
-        <Tab Title="Profile" Icon="icon_profile.svg">
+        <Tab Title="{x:Static res:AppResources.TabProfile}" Icon="icon_profile.svg">
             <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" />
         </Tab>
     </TabBar>

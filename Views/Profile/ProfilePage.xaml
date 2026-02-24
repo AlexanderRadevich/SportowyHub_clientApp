@@ -1,39 +1,108 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
              x:Class="SportowyHub.Views.Profile.ProfilePage"
-             Title="Profile">
+             x:DataType="vm:ProfileViewModel"
+             Title="{x:Static res:AppResources.TabProfile}">
 
-    <VerticalStackLayout VerticalOptions="Center"
-                         HorizontalOptions="Center"
-                         Spacing="16"
-                         Padding="32">
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
 
-        <!-- App Logo -->
-        <Image Source="logo_full.png"
-               HeightRequest="80"
-               Aspect="AspectFit"
-               HorizontalOptions="Center"
-               Margin="0,0,0,16" />
+            <!-- Branding -->
+            <Image Source="logo_full.png"
+                   HeightRequest="48"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center"
+                   Margin="16,24,16,16" />
 
-        <!-- Welcome Title -->
-        <Label Text="Welcome"
-               Style="{StaticResource Headline}"
-               Margin="0,0,0,24" />
+            <!-- Account Section Header -->
+            <Label Text="{x:Static res:AppResources.ProfileAccountSection}"
+                   Style="{StaticResource SectionHeader}"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                   Padding="16,8" />
 
-        <!-- Create Account Button -->
-        <Button Text="Create Account"
-                Style="{StaticResource PrimaryButton}"
-                Clicked="OnCreateAccountClicked"
-                HorizontalOptions="Fill"
-                Margin="0,0,0,8" />
+            <!-- Sign In Row -->
+            <Grid Padding="16,0"
+                  HeightRequest="48"
+                  ColumnDefinitions="*,Auto">
+                <Label Text="{x:Static res:AppResources.ProfileSignIn}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="›"
+                       FontSize="20"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       VerticalOptions="Center" />
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SignInCommand}" />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <BoxView HeightRequest="1"
+                     Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                     Margin="16,0" />
 
-        <!-- Sign In Button -->
-        <Button Text="Sign In"
-                Style="{StaticResource SecondaryButton}"
-                Clicked="OnSignInClicked"
-                HorizontalOptions="Fill" />
+            <!-- Create Account Row -->
+            <Grid Padding="16,0"
+                  HeightRequest="48"
+                  ColumnDefinitions="*,Auto">
+                <Label Text="{x:Static res:AppResources.ProfileCreateAccount}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="›"
+                       FontSize="20"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       VerticalOptions="Center" />
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CreateAccountCommand}" />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <BoxView HeightRequest="1"
+                     Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                     Margin="16,0" />
 
-    </VerticalStackLayout>
+            <!-- Settings Section Header -->
+            <Label Text="{x:Static res:AppResources.ProfileSettingsSection}"
+                   Style="{StaticResource SectionHeader}"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                   Padding="16,8"
+                   Margin="0,8,0,0" />
+
+            <!-- Language Row -->
+            <Grid Padding="16,0"
+                  HeightRequest="48"
+                  ColumnDefinitions="*,Auto">
+                <Label Text="{x:Static res:AppResources.SettingsLanguage}"
+                       VerticalOptions="Center" />
+                <Picker Grid.Column="1"
+                        ItemsSource="{Binding Languages}"
+                        SelectedIndex="{Binding SelectedLanguageIndex}"
+                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End" />
+            </Grid>
+            <BoxView HeightRequest="1"
+                     Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                     Margin="16,0" />
+
+            <!-- Theme Row -->
+            <Grid Padding="16,0"
+                  HeightRequest="48"
+                  ColumnDefinitions="*,Auto">
+                <Label Text="{x:Static res:AppResources.SettingsTheme}"
+                       VerticalOptions="Center" />
+                <Picker Grid.Column="1"
+                        ItemsSource="{Binding Themes}"
+                        SelectedIndex="{Binding SelectedThemeIndex}"
+                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End" />
+            </Grid>
+            <BoxView HeightRequest="1"
+                     Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                     Margin="16,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>
