@@ -6,6 +6,8 @@ using SportowyHub.Views.Favorites;
 using SportowyHub.Views.Profile;
 using SportowyHub.Views.Auth;
 using SportowyHub.ViewModels;
+using SportowyHub.Services.Api;
+using SportowyHub.Services.Auth;
 
 namespace SportowyHub;
 
@@ -22,6 +24,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
+
+        // HTTP infrastructure
+        builder.Services.AddSingleton(_ => new HttpClient
+        {
+            BaseAddress = new Uri(ApiConfig.BaseUrl)
+        });
+        builder.Services.AddSingleton<IRequestProvider, RequestProvider>();
+        builder.Services.AddSingleton<IAuthService, AuthService>();
 
         // Pages
         builder.Services.AddTransient<HomePage>();

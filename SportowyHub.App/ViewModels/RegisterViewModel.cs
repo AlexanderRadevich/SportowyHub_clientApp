@@ -2,11 +2,19 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
+using SportowyHub.Services.Auth;
 
 namespace SportowyHub.ViewModels;
 
 public partial class RegisterViewModel : ObservableObject
 {
+    private readonly IAuthService _authService;
+
+    public RegisterViewModel(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
     private string _email = string.Empty;
@@ -36,6 +44,13 @@ public partial class RegisterViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isConfirmPasswordVisible;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
+    private bool _isLoading;
+
+    [ObservableProperty]
+    private string _registerError = string.Empty;
 
     partial void OnEmailChanged(string value)
     {
@@ -112,6 +127,9 @@ public partial class RegisterViewModel : ObservableObject
 
     private bool CanCreateAccount()
     {
+        if (IsLoading)
+            return false;
+
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
             return false;
 
@@ -131,8 +149,41 @@ public partial class RegisterViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanCreateAccount))]
     private async Task CreateAccount()
     {
-        // UI-only MVP — no backend call
-        await Shell.Current.GoToAsync("..");
+        RegisterError = string.Empty;
+        IsLoading = true;
+
+        try
+        {
+            var registerResult = await _authService.RegisterAsync(Email, Password);
+
+            if (!registerResult.IsSuccess)
+            {
+                if (registerResult.FieldErrors?.TryGetValue("email", out var emailErr) == true)
+                {
+                    EmailError = emailErr;
+                }
+                else
+                {
+                    RegisterError = registerResult.ErrorMessage ?? "Registration failed.";
+                }
+                return;
+            }
+
+            var loginResult = await _authService.LoginAsync(Email, Password);
+
+            if (loginResult.IsSuccess)
+            {
+                await Shell.Current.GoToAsync("//");
+            }
+            else
+            {
+                RegisterError = loginResult.ErrorMessage ?? "Auto-login failed. Please log in manually.";
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]

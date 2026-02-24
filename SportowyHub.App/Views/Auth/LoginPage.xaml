@@ -30,6 +30,9 @@
                        Keyboard="Email"
                        BackgroundColor="Transparent" />
             </Border>
+            <Label Text="{Binding EmailError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding EmailError.Length, Converter={StaticResource IntToBoolConverter}}" />
 
             <!-- Password Field -->
             <Label Text="{x:Static res:AppResources.AuthPassword}" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
@@ -64,12 +67,25 @@
                    HorizontalOptions="End"
                    Margin="0,8,0,0" />
 
+            <!-- Login Error -->
+            <Label Text="{Binding LoginError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding LoginError.Length, Converter={StaticResource IntToBoolConverter}}"
+                   Margin="0,16,0,0" />
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                               Margin="0,8,0,0" />
+
             <!-- Login Button -->
             <Button Text="{x:Static res:AppResources.AuthLogin}"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding LoginCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
                     HorizontalOptions="Fill"
-                    Margin="0,24,0,0" />
+                    Margin="0,8,0,0" />
 
             <!-- Create Account Link -->
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="4" Margin="0,16,0,0">

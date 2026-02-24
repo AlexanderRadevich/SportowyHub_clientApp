@@ -9,7 +9,21 @@
       "Bash(head:*)",
       "Bash(cd \"C:/dev/SportowyHub_clientApp\" && dotnet clean 2>&1)",
       "Bash(cd /c/dev/SportowyHub_clientApp && dotnet build --nologo -v q 2>&1)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(claude mcp:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:appium.io)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:putridparrot.com)",
+      "WebFetch(domain:discuss.appium.io)",
+      "Bash(cd /c/dev/SportowyHub_clientApp/SportowyHub.UITests && dotnet restore 2>&1)",
+      "Bash(cd /c/dev/SportowyHub_clientApp/SportowyHub.UITests && dotnet build --no-restore 2>&1)",
+      "Bash(cd /c/dev/SportowyHub_clientApp && dotnet sln list 2>&1)",
+      "WebFetch(domain:unduly-hypsometric-agatha.ngrok-free.dev)",
+      "mcp__plugin_github_github__get_file_contents",
+      "Bash(cd C:/dev/SportowyHub_clientApp && openspec list --json 2>&1)",
+      "Bash(cd C:/dev/SportowyHub_clientApp && openspec status --change \"add-auth-api\" --json 2>&1)"
     ]
   }
 }
