@@ -34,6 +34,24 @@
                    Style="{StaticResource ErrorLabel}"
                    IsVisible="{Binding EmailError.Length, Converter={StaticResource IntToBoolConverter}}" />
 
+            <!-- Phone Field (Optional) -->
+            <Label Text="{x:Static res:AppResources.AuthPhone}" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding Phone}"
+                       Placeholder="{x:Static res:AppResources.AuthEnterPhone}"
+                       Keyboard="Telephone"
+                       BackgroundColor="Transparent" />
+            </Border>
+            <Label Text="{Binding PhoneError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding PhoneError.Length, Converter={StaticResource IntToBoolConverter}}" />
+
             <!-- Password Field -->
             <Label Text="{x:Static res:AppResources.AuthPassword}" Style="{StaticResource FieldLabel}" Margin="0,8,0,4" />
             <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
