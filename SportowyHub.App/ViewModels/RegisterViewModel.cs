@@ -28,7 +28,14 @@ public partial class RegisterViewModel : ObservableObject
     private string _confirmPassword = string.Empty;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
+    private string _phone = string.Empty;
+
+    [ObservableProperty]
     private string _emailError = string.Empty;
+
+    [ObservableProperty]
+    private string _phoneError = string.Empty;
 
     [ObservableProperty]
     private string _passwordStrength = string.Empty;
@@ -95,12 +102,12 @@ public partial class RegisterViewModel : ObservableObject
         bool hasDigits = Regex.IsMatch(Password, @"\d");
         bool hasSpecial = Regex.IsMatch(Password, @"[^a-zA-Z\d]");
 
-        if (Password.Length >= 8 && hasLetters && hasDigits && hasSpecial)
+        if (Password.Length >= 10 && hasLetters && hasDigits && hasSpecial)
         {
             PasswordStrength = AppResources.PasswordStrengthStrong;
             PasswordStrengthColor = Color.FromArgb("#16A34A");
         }
-        else if (Password.Length >= 6 && hasLetters && hasDigits)
+        else if (Password.Length >= 8 && hasLetters && hasDigits)
         {
             PasswordStrength = AppResources.PasswordStrengthMedium;
             PasswordStrengthColor = Color.FromArgb("#F59E0B");
@@ -130,14 +137,14 @@ public partial class RegisterViewModel : ObservableObject
         if (IsLoading)
             return false;
 
-        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
+        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Phone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
             return false;
 
         var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         if (!Regex.IsMatch(Email, emailPattern))
             return false;
 
-        if (Password.Length < 6)
+        if (Password.Length < 8)
             return false;
 
         if (Password != ConfirmPassword)
@@ -150,35 +157,26 @@ public partial class RegisterViewModel : ObservableObject
     private async Task CreateAccount()
     {
         RegisterError = string.Empty;
+        EmailError = string.Empty;
+        PhoneError = string.Empty;
         IsLoading = true;
 
         try
         {
-            var registerResult = await _authService.RegisterAsync(Email, Password);
+            var registerResult = await _authService.RegisterAsync(Email, Password, ConfirmPassword, Phone);
 
             if (!registerResult.IsSuccess)
             {
                 if (registerResult.FieldErrors?.TryGetValue("email", out var emailErr) == true)
-                {
                     EmailError = emailErr;
-                }
-                else
-                {
-                    RegisterError = registerResult.ErrorMessage ?? "Registration failed.";
-                }
+                if (registerResult.FieldErrors?.TryGetValue("phone", out var phoneErr) == true)
+                    PhoneError = phoneErr;
+
+                RegisterError = registerResult.ErrorMessage ?? "Registration failed.";
                 return;
             }
 
-            var loginResult = await _authService.LoginAsync(Email, Password);
-
-            if (loginResult.IsSuccess)
-            {
-                await Shell.Current.GoToAsync("//");
-            }
-            else
-            {
-                RegisterError = loginResult.ErrorMessage ?? "Auto-login failed. Please log in manually.";
-            }
+            await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
         }
         finally
         {

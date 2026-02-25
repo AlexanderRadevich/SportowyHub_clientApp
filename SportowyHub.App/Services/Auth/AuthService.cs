@@ -11,6 +11,13 @@ public class AuthService : IAuthService
 
     private const string TokenKey = "auth_token";
     private const string UserKey = "auth_user";
+    private const string RefreshTokenKey = "auth_refresh_token";
+    private const string TokenExpiryKey = "auth_token_expiry";
+
+    private static readonly Dictionary<string, string> RefreshTokenHeader = new()
+    {
+        ["X-Include-Refresh-Token"] = "true"
+    };
 
     public AuthService(IRequestProvider requestProvider)
     {
@@ -23,23 +30,22 @@ public class AuthService : IAuthService
         {
             var response = await _requestProvider.PostAsync<LoginRequest, LoginResponse>(
                 "/api/v1/login",
-                new LoginRequest(email, password));
+                new LoginRequest(email, password),
+                headers: RefreshTokenHeader);
 
-            await SecureStorage.SetAsync(TokenKey, response.Token);
-            var userJson = JsonSerializer.Serialize(response.User, SportowyHubJsonContext.Default.UserInfo);
-            await SecureStorage.SetAsync(UserKey, userJson);
+            await StoreTokens(response);
 
             return AuthResult<LoginResponse>.Success(response);
         }
         catch (ServiceAuthenticationException ex)
         {
-            var errorMessage = ParseErrorMessage(ex.Content);
-            return AuthResult<LoginResponse>.Failure(errorMessage);
+            var (errorMessage, fieldErrors, errorCode) = ParseErrorWithFields(ex.Content);
+            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (HttpRequestException ex)
         {
-            var errorMessage = ParseErrorMessage(ex.Message);
-            return AuthResult<LoginResponse>.Failure(errorMessage);
+            var (errorMessage, fieldErrors, errorCode) = ParseErrorWithFields(ex.Message);
+            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
         {
@@ -47,24 +53,81 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<AuthResult<RegisterResponse>> RegisterAsync(string email, string password)
+    private async Task StoreTokens(LoginResponse response)
+    {
+        await SecureStorage.SetAsync(TokenKey, response.AccessToken);
+
+        if (!string.IsNullOrEmpty(response.RefreshToken))
+            await SecureStorage.SetAsync(RefreshTokenKey, response.RefreshToken);
+
+        var expiry = DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn).ToString("O");
+        await SecureStorage.SetAsync(TokenExpiryKey, expiry);
+    }
+
+    public async Task<AuthResult<RegisterResponse>> RegisterAsync(string email, string password, string passwordConfirm, string? phone = null)
     {
         try
         {
             var response = await _requestProvider.PostAsync<RegisterRequest, RegisterResponse>(
                 "/api/v1/register",
-                new RegisterRequest(email, password));
+                new RegisterRequest(email, password, passwordConfirm, phone));
 
             return AuthResult<RegisterResponse>.Success(response);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, fieldErrors) = ParseErrorWithFields(ex.Message);
-            return AuthResult<RegisterResponse>.Failure(errorMessage, fieldErrors);
+            var (errorMessage, fieldErrors, errorCode) = ParseErrorWithFields(ex.Message);
+            return AuthResult<RegisterResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
         {
             return AuthResult<RegisterResponse>.Failure("Connection error. Please check your internet connection and try again.");
+        }
+    }
+
+    public async Task<AuthResult<ResendVerificationResponse>> ResendVerificationAsync(string email)
+    {
+        try
+        {
+            var response = await _requestProvider.PostAsync<ResendVerificationRequest, ResendVerificationResponse>(
+                "/api/v1/resend-verification",
+                new ResendVerificationRequest(email));
+
+            return AuthResult<ResendVerificationResponse>.Success(response);
+        }
+        catch (HttpRequestException ex)
+        {
+            var (errorMessage, _, errorCode) = ParseErrorWithFields(ex.Message);
+            return AuthResult<ResendVerificationResponse>.Failure(errorMessage, errorCode: errorCode);
+        }
+        catch (Exception)
+        {
+            return AuthResult<ResendVerificationResponse>.Failure("Connection error. Please check your internet connection and try again.");
+        }
+    }
+
+    public async Task<AuthResult<LoginResponse>> RefreshTokenAsync()
+    {
+        var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
+        if (string.IsNullOrEmpty(refreshToken))
+            return AuthResult<LoginResponse>.Failure("No refresh token available.");
+
+        try
+        {
+            var response = await _requestProvider.PostAsync<Dictionary<string, string>, LoginResponse>(
+                "/api/v1/refresh",
+                new Dictionary<string, string>(),
+                token: refreshToken,
+                headers: RefreshTokenHeader);
+
+            await StoreTokens(response);
+
+            return AuthResult<LoginResponse>.Success(response);
+        }
+        catch (Exception)
+        {
+            await ClearAuthAsync();
+            return AuthResult<LoginResponse>.Failure("Session expired. Please log in again.");
         }
     }
 
@@ -92,33 +155,19 @@ public class AuthService : IAuthService
     {
         SecureStorage.Remove(TokenKey);
         SecureStorage.Remove(UserKey);
+        SecureStorage.Remove(RefreshTokenKey);
+        SecureStorage.Remove(TokenExpiryKey);
         return Task.CompletedTask;
     }
 
-    private static string ParseErrorMessage(string content)
-    {
-        try
-        {
-            var apiError = JsonSerializer.Deserialize(content, SportowyHubJsonContext.Default.ApiError);
-            if (apiError?.Error?.Message is { } message)
-                return message;
-        }
-        catch
-        {
-            // Ignore parse failures
-        }
-
-        return "An unexpected error occurred. Please try again.";
-    }
-
-    private static (string Message, Dictionary<string, string>? FieldErrors) ParseErrorWithFields(string content)
+    private static (string Message, Dictionary<string, string>? FieldErrors, string? ErrorCode) ParseErrorWithFields(string content)
     {
         try
         {
             var apiError = JsonSerializer.Deserialize(content, SportowyHubJsonContext.Default.ApiError);
             if (apiError?.Error != null)
             {
-                return (apiError.Error.Message, null);
+                return (apiError.Error.Message, apiError.Error.Violations, apiError.Error.Code);
             }
         }
         catch
@@ -126,6 +175,6 @@ public class AuthService : IAuthService
             // Ignore parse failures
         }
 
-        return ("An unexpected error occurred. Please try again.", null);
+        return ("An unexpected error occurred. Please try again.", null, null);
     }
 }

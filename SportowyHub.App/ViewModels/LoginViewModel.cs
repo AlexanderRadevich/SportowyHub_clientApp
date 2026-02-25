@@ -66,6 +66,7 @@ public partial class LoginViewModel : ObservableObject
     private async Task Login()
     {
         LoginError = string.Empty;
+        EmailError = string.Empty;
         IsLoading = true;
 
         try
@@ -76,8 +77,17 @@ public partial class LoginViewModel : ObservableObject
             {
                 await Shell.Current.GoToAsync("//");
             }
+            else if (result.ErrorCode == "EMAIL_NOT_VERIFIED")
+            {
+                await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
+            }
             else
             {
+                if (result.FieldErrors?.TryGetValue("email", out var emailErr) == true)
+                {
+                    EmailError = emailErr;
+                }
+
                 LoginError = result.ErrorMessage ?? "Login failed.";
             }
         }

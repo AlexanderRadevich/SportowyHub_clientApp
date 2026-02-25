@@ -6,6 +6,7 @@ public record AuthResult<T>
     public T? Data { get; init; }
     public string? ErrorMessage { get; init; }
     public Dictionary<string, string>? FieldErrors { get; init; }
+    public string? ErrorCode { get; init; }
 
     public static AuthResult<T> Success(T data) => new()
     {
@@ -13,10 +14,11 @@ public record AuthResult<T>
         Data = data
     };
 
-    public static AuthResult<T> Failure(string message, Dictionary<string, string>? fieldErrors = null) => new()
+    public static AuthResult<T> Failure(string message, Dictionary<string, string>? fieldErrors = null, string? errorCode = null) => new()
     {
         IsSuccess = false,
         ErrorMessage = message,
-        FieldErrors = fieldErrors
+        FieldErrors = fieldErrors,
+        ErrorCode = errorCode
     };
 }

@@ -110,6 +110,12 @@
   <data name="AuthPasswordsDoNotMatch" xml:space="preserve">
     <value>Пароли не совпадают</value>
   </data>
+  <data name="AuthPhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="AuthEnterPhone" xml:space="preserve">
+    <value>Введите номер телефона</value>
+  </data>
   <!-- Password strength -->
   <data name="PasswordStrengthStrong" xml:space="preserve">
     <value>Надёжный</value>
@@ -187,5 +193,24 @@
   </data>
   <data name="SettingsLanguageRu" xml:space="preserve">
     <value>Русский</value>
+  </data>
+  <!-- Email Verification -->
+  <data name="EmailVerificationTitle" xml:space="preserve">
+    <value>Проверьте почту</value>
+  </data>
+  <data name="EmailVerificationDescription" xml:space="preserve">
+    <value>Мы отправили ссылку для подтверждения на {0}. Нажмите на ссылку, чтобы активировать аккаунт.</value>
+  </data>
+  <data name="EmailVerificationResend" xml:space="preserve">
+    <value>Отправить повторно</value>
+  </data>
+  <data name="EmailVerificationResent" xml:space="preserve">
+    <value>Письмо для подтверждения отправлено повторно.</value>
+  </data>
+  <data name="EmailVerificationBackToLogin" xml:space="preserve">
+    <value>Вернуться к входу</value>
+  </data>
+  <data name="EmailVerificationError" xml:space="preserve">
+    <value>Не удалось отправить письмо. Попробуйте ещё раз.</value>
   </data>
 </root>

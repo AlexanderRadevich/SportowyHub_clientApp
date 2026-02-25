@@ -1,11 +1,4 @@
-# Auth API Models
-
-### Requirement: LoginRequest model
-The app SHALL contain a `LoginRequest` record with `Email` (string) and `Password` (string) properties. It SHALL serialize to JSON matching the API schema: `{"email": "...", "password": "..."}`.
-
-#### Scenario: LoginRequest serializes to API format
-- **WHEN** a `LoginRequest` with Email="user@example.com" and Password="secret123" is serialized
-- **THEN** the JSON output SHALL be `{"email":"user@example.com","password":"secret123"}`
+## MODIFIED Requirements
 
 ### Requirement: LoginResponse model
 The app SHALL contain a `LoginResponse` record with `AccessToken` (string), `ExpiresIn` (int), `TokenType` (string), `RefreshToken` (string, nullable), and `Locale` (string, nullable) properties. It SHALL deserialize from the API response: `{"locale": "pl", "access_token": "...", "expires_in": 3600, "token_type": "Bearer", "refresh_token": "..."}`. The `RefreshToken` field is optional and only present when the request includes `X-Include-Refresh-Token: true` header.
@@ -33,46 +26,7 @@ The app SHALL contain a `RegisterRequest` record with `Email` (string), `Passwor
 - **WHEN** a `RegisterRequest` with Phone=null is serialized
 - **THEN** the JSON output SHALL include `email`, `password`, and `password_confirm` fields, and `phone` SHALL be null or omitted
 
-### Requirement: RegisterResponse model
-The app SHALL contain a `RegisterResponse` record with `Id` (int), `Email` (string), `TrustLevel` (string), and `Locale` (string, nullable) properties. It SHALL deserialize from the API 201 response.
-
-#### Scenario: RegisterResponse deserializes from API format
-- **WHEN** the API returns `{"locale":"en","id":42,"email":"user@example.com","trust_level":"TL0"}`
-- **THEN** it SHALL deserialize to a `RegisterResponse` with Id=42, TrustLevel="TL0", and Locale="en"
-
-### Requirement: ApiError model
-The app SHALL contain an `ApiError` record with a `Locale` (string, nullable) property and a nested `Error` object (`ErrorDetail`). `ErrorDetail` SHALL have `Code` (string), `Message` (string), and `Violations` (Dictionary<string, string>, nullable) properties. It SHALL deserialize from both simple error responses and validation error responses.
-
-#### Scenario: ApiError deserializes from 409 response
-- **WHEN** the API returns a 409 with `{"locale":"pl","error":{"code":"email_taken","message":"Email already in use"}}`
-- **THEN** it SHALL deserialize to an `ApiError` with Locale="pl", Error.Code="email_taken", Error.Message="Email already in use", and Error.Violations=null
-
-#### Scenario: ApiError deserializes from 401 response
-- **WHEN** the API returns a 401 with `{"locale":"pl","error":{"code":"INVALID_CREDENTIALS","message":"Invalid email or password"}}`
-- **THEN** it SHALL deserialize to an `ApiError` with Error.Code="INVALID_CREDENTIALS" and Error.Violations=null
-
-#### Scenario: ApiError deserializes from 422 validation response
-- **WHEN** the API returns a 422 with `{"locale":"pl","error":{"code":"VALIDATION_FAILED","message":"Validation failed","violations":{"email":"Invalid email format","password":"Password must be at least 8 characters"}}}`
-- **THEN** it SHALL deserialize to an `ApiError` with Error.Code="VALIDATION_FAILED", Error.Message="Validation failed", and Error.Violations containing keys "email" and "password" with their respective messages
-
-#### Scenario: ApiError deserializes with empty violations
-- **WHEN** the API returns a 422 where `violations` is an empty object `{}`
-- **THEN** Error.Violations SHALL be an empty dictionary
-
-### Requirement: AuthResult generic result wrapper
-The app SHALL contain an `AuthResult<T>` record with `IsSuccess` (bool), `Data` (T?, nullable), `ErrorMessage` (string, nullable), and `FieldErrors` (Dictionary<string, string>, nullable) properties. A static `Success(T data)` factory method SHALL create a successful result. A static `Failure(string message, Dictionary<string, string>? fieldErrors)` factory method SHALL create a failed result.
-
-#### Scenario: Successful AuthResult carries data
-- **WHEN** `AuthResult<LoginResponse>.Success(loginResponse)` is called
-- **THEN** `IsSuccess` SHALL be true, `Data` SHALL contain the response, and `ErrorMessage` SHALL be null
-
-#### Scenario: Failed AuthResult carries error message
-- **WHEN** `AuthResult<LoginResponse>.Failure("Invalid credentials")` is called
-- **THEN** `IsSuccess` SHALL be false, `Data` SHALL be null, and `ErrorMessage` SHALL be "Invalid credentials"
-
-#### Scenario: Failed AuthResult carries field-level errors
-- **WHEN** `AuthResult.Failure("Validation failed", new Dictionary{{"Email", "Email already taken"}})` is called
-- **THEN** `FieldErrors["Email"]` SHALL be "Email already taken"
+## ADDED Requirements
 
 ### Requirement: ResendVerificationRequest model
 The app SHALL contain a `ResendVerificationRequest` record with `Email` (string) property. It SHALL serialize to JSON: `{"email": "..."}`.
@@ -105,3 +59,9 @@ The `AuthResult<T>` record SHALL include an `ErrorCode` (string, nullable) prope
 #### Scenario: New models are serializable via source generation
 - **WHEN** `ResendVerificationRequest` or `ResendVerificationResponse` is serialized/deserialized
 - **THEN** the operation SHALL succeed using the source-generated JSON context
+
+## REMOVED Requirements
+
+### Requirement: LoginResponse model
+**Reason**: Replaced by the MODIFIED LoginResponse above. The old model had `Token` (string) and `User` (UserInfo) fields that do not match the actual backend API response. The backend returns `access_token`, `expires_in`, `token_type`, and optionally `refresh_token` — no `user` object.
+**Migration**: Update all code referencing `response.Token` to use `response.AccessToken`. Remove references to `response.User` — user info is no longer returned by the login endpoint.

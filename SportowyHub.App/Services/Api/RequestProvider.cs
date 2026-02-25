@@ -25,10 +25,16 @@ public class RequestProvider : IRequestProvider
         return (TResult)JsonSerializer.Deserialize(content, typeof(TResult), SportowyHubJsonContext.Default)!;
     }
 
-    public async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = "")
+    public async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", Dictionary<string, string>? headers = null)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, uri);
         SetAuthHeader(request, token);
+
+        if (headers != null)
+        {
+            foreach (var (key, value) in headers)
+                request.Headers.TryAddWithoutValidation(key, value);
+        }
 
         var json = JsonSerializer.Serialize(data, typeof(TRequest), SportowyHubJsonContext.Default);
         request.Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -82,7 +88,7 @@ public class RequestProvider : IRequestProvider
 
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
         {
-            throw new ServiceAuthenticationException(content);
+            throw new ServiceAuthenticationException(content, response.StatusCode);
         }
 
         throw new HttpRequestException(content, null, response.StatusCode);

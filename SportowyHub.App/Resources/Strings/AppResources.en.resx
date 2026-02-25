@@ -110,6 +110,12 @@
   <data name="AuthPasswordsDoNotMatch" xml:space="preserve">
     <value>Passwords do not match</value>
   </data>
+  <data name="AuthPhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="AuthEnterPhone" xml:space="preserve">
+    <value>Enter your phone number</value>
+  </data>
   <!-- Password strength -->
   <data name="PasswordStrengthStrong" xml:space="preserve">
     <value>Strong</value>
@@ -187,5 +193,24 @@
   </data>
   <data name="SettingsLanguageRu" xml:space="preserve">
     <value>Русский</value>
+  </data>
+  <!-- Email Verification -->
+  <data name="EmailVerificationTitle" xml:space="preserve">
+    <value>Check your inbox</value>
+  </data>
+  <data name="EmailVerificationDescription" xml:space="preserve">
+    <value>We've sent a verification link to {0}. Click the link to activate your account.</value>
+  </data>
+  <data name="EmailVerificationResend" xml:space="preserve">
+    <value>Resend verification email</value>
+  </data>
+  <data name="EmailVerificationResent" xml:space="preserve">
+    <value>Verification email has been resent.</value>
+  </data>
+  <data name="EmailVerificationBackToLogin" xml:space="preserve">
+    <value>Back to Login</value>
+  </data>
+  <data name="EmailVerificationError" xml:space="preserve">
+    <value>Failed to send email. Please try again.</value>
   </data>
 </root>

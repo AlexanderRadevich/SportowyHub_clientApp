@@ -1,4 +1,4 @@
-# Auth Service
+## MODIFIED Requirements
 
 ### Requirement: IAuthService interface
 The app SHALL contain an `IAuthService` interface with the following methods:
@@ -65,39 +65,6 @@ The app SHALL contain an `IAuthService` interface with the following methods:
 - **WHEN** `RegisterAsync` is called and the HTTP request throws due to no network connectivity
 - **THEN** the method SHALL return `AuthResult` with `IsSuccess=false` and a user-friendly connection error message
 
-### Requirement: GetTokenAsync retrieves stored JWT
-`GetTokenAsync` SHALL read the JWT from `SecureStorage["auth_token"]`. If no token is stored, it SHALL return null.
-
-#### Scenario: Token exists in storage
-- **WHEN** `GetTokenAsync` is called after a successful login
-- **THEN** it SHALL return the stored JWT string
-
-#### Scenario: No token in storage
-- **WHEN** `GetTokenAsync` is called with no prior login
-- **THEN** it SHALL return null
-
-### Requirement: GetCurrentUserAsync retrieves stored user info
-`GetCurrentUserAsync` SHALL read user info JSON from `SecureStorage["auth_user"]` and deserialize it to a `UserInfo` object. If no user is stored, it SHALL return null.
-
-#### Scenario: User info exists in storage
-- **WHEN** `GetCurrentUserAsync` is called after a successful login
-- **THEN** it SHALL return a `UserInfo` with the stored id, email, and trust_level
-
-#### Scenario: No user in storage
-- **WHEN** `GetCurrentUserAsync` is called with no prior login
-- **THEN** it SHALL return null
-
-### Requirement: IsLoggedInAsync checks for stored token
-`IsLoggedInAsync` SHALL return true if `SecureStorage["auth_token"]` contains a non-empty value, false otherwise.
-
-#### Scenario: User is logged in
-- **WHEN** `IsLoggedInAsync` is called after a successful login
-- **THEN** it SHALL return true
-
-#### Scenario: User is not logged in
-- **WHEN** `IsLoggedInAsync` is called with no stored token
-- **THEN** it SHALL return false
-
 ### Requirement: ClearAuthAsync removes stored credentials
 `ClearAuthAsync` SHALL remove `auth_token`, `auth_user`, `auth_refresh_token`, and `auth_token_expiry` from `SecureStorage`.
 
@@ -105,23 +72,7 @@ The app SHALL contain an `IAuthService` interface with the following methods:
 - **WHEN** `ClearAuthAsync` is called
 - **THEN** `SecureStorage["auth_token"]`, `SecureStorage["auth_user"]`, `SecureStorage["auth_refresh_token"]`, and `SecureStorage["auth_token_expiry"]` SHALL be removed, and subsequent `IsLoggedInAsync` SHALL return false
 
-### Requirement: DI registration for auth service
-`MauiProgram.cs` SHALL register `IAuthService` as a singleton backed by `AuthService`.
-
-#### Scenario: AuthService resolves from DI
-- **WHEN** a ViewModel requests `IAuthService` from the DI container
-- **THEN** it SHALL receive a singleton `AuthService` instance
-
-### Requirement: Startup auth check
-On app startup, `App.xaml.cs` SHALL check `IAuthService.IsLoggedInAsync()`. If true, the app SHALL navigate to the main shell (Home tab). If false, the app SHALL navigate to the Login page.
-
-#### Scenario: App starts with stored token
-- **WHEN** the app launches and a JWT token exists in SecureStorage
-- **THEN** the app SHALL display the main tab bar with Home tab active, skipping the login screen
-
-#### Scenario: App starts without stored token
-- **WHEN** the app launches and no JWT token exists in SecureStorage
-- **THEN** the app SHALL navigate to the Login page
+## ADDED Requirements
 
 ### Requirement: ResendVerificationAsync calls API
 `AuthService.ResendVerificationAsync` SHALL POST to `/api/v1/resend-verification` with the email. On a 200 response, it SHALL return `AuthResult.Success(response)`. On failure, it SHALL parse the error and return `AuthResult.Failure` with the error code.

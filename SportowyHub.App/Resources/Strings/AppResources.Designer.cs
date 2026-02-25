@@ -45,6 +45,16 @@ public static class AppResources
     public static string AuthConfirmYourPassword => ResourceManager.GetString("AuthConfirmYourPassword", Culture)!;
     public static string AuthInvalidEmail => ResourceManager.GetString("AuthInvalidEmail", Culture)!;
     public static string AuthPasswordsDoNotMatch => ResourceManager.GetString("AuthPasswordsDoNotMatch", Culture)!;
+    public static string AuthPhone => ResourceManager.GetString("AuthPhone", Culture)!;
+    public static string AuthEnterPhone => ResourceManager.GetString("AuthEnterPhone", Culture)!;
+
+    // Email Verification
+    public static string EmailVerificationTitle => ResourceManager.GetString("EmailVerificationTitle", Culture)!;
+    public static string EmailVerificationDescription => ResourceManager.GetString("EmailVerificationDescription", Culture)!;
+    public static string EmailVerificationResend => ResourceManager.GetString("EmailVerificationResend", Culture)!;
+    public static string EmailVerificationResent => ResourceManager.GetString("EmailVerificationResent", Culture)!;
+    public static string EmailVerificationBackToLogin => ResourceManager.GetString("EmailVerificationBackToLogin", Culture)!;
+    public static string EmailVerificationError => ResourceManager.GetString("EmailVerificationError", Culture)!;
 
     // Password strength
     public static string PasswordStrengthStrong => ResourceManager.GetString("PasswordStrengthStrong", Culture)!;
