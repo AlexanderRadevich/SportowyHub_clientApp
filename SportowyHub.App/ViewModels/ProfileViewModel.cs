@@ -27,10 +27,10 @@ public partial class ProfileViewModel : ObservableObject
     ];
 
     [ObservableProperty]
-    private int _selectedLanguageIndex;
+    public partial int SelectedLanguageIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedThemeIndex;
+    public partial int SelectedThemeIndex { get; set; }
 
     private bool _initialized;
 
@@ -38,11 +38,11 @@ public partial class ProfileViewModel : ObservableObject
     {
         var langPref = Preferences.Get("app_language", "system");
         var langIdx = Array.IndexOf(LanguageCodes, langPref);
-        _selectedLanguageIndex = langIdx >= 0 ? langIdx : 0;
+        SelectedLanguageIndex = langIdx >= 0 ? langIdx : 0;
 
         var themePref = Preferences.Get("app_theme", "system");
         var themeIdx = Array.IndexOf(ThemeCodes, themePref);
-        _selectedThemeIndex = themeIdx >= 0 ? themeIdx : 0;
+        SelectedThemeIndex = themeIdx >= 0 ? themeIdx : 0;
 
         _initialized = true;
     }

@@ -17,47 +17,47 @@ public partial class RegisterViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    private string _email = string.Empty;
+    public partial string Email { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    private string _password = string.Empty;
+    public partial string Password { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    private string _confirmPassword = string.Empty;
+    public partial string ConfirmPassword { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    private string _phone = string.Empty;
+    public partial string Phone { get; set; }
 
     [ObservableProperty]
-    private string _emailError = string.Empty;
+    public partial string EmailError { get; set; }
 
     [ObservableProperty]
-    private string _phoneError = string.Empty;
+    public partial string PhoneError { get; set; }
 
     [ObservableProperty]
-    private string _passwordStrength = string.Empty;
+    public partial string PasswordStrength { get; set; }
 
     [ObservableProperty]
-    private Color _passwordStrengthColor = Colors.Transparent;
+    public partial Color PasswordStrengthColor { get; set; }
 
     [ObservableProperty]
-    private string _confirmPasswordError = string.Empty;
+    public partial string ConfirmPasswordError { get; set; }
 
     [ObservableProperty]
-    private bool _isPasswordVisible;
+    public partial bool IsPasswordVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isConfirmPasswordVisible;
+    public partial bool IsConfirmPasswordVisible { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string _registerError = string.Empty;
+    public partial string RegisterError { get; set; }
 
     partial void OnEmailChanged(string value)
     {

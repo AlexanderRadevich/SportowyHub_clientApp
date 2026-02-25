@@ -7,7 +7,7 @@ namespace SportowyHub.ViewModels;
 public partial class SearchViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string _searchText = string.Empty;
+    public partial string SearchText { get; set; }
 
     public ObservableCollection<string> RecentSearches { get; } =
     [

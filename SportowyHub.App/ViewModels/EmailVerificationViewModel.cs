@@ -17,23 +17,23 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Description))]
-    private string _email = string.Empty;
+    public partial string Email { get; set; }
 
     public string Description => string.Format(AppResources.EmailVerificationDescription, Email);
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ResendCommand))]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string _statusMessage = string.Empty;
+    public partial string StatusMessage { get; set; }
 
     [ObservableProperty]
-    private bool _isStatusError;
+    public partial bool IsStatusError { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ResendCommand))]
-    private int _cooldownSeconds;
+    public partial int CooldownSeconds { get; set; }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {

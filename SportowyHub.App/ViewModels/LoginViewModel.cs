@@ -17,24 +17,24 @@ public partial class LoginViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    private string _email = string.Empty;
+    public partial string Email { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    private string _password = string.Empty;
+    public partial string Password { get; set; }
 
     [ObservableProperty]
-    private bool _isPasswordVisible;
+    public partial bool IsPasswordVisible { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string _loginError = string.Empty;
+    public partial string LoginError { get; set; }
 
     [ObservableProperty]
-    private string _emailError = string.Empty;
+    public partial string EmailError { get; set; }
 
     partial void OnEmailChanged(string value)
     {
