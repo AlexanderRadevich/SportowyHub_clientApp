@@ -47,8 +47,13 @@ The Registration page SHALL display a vertical form with four labeled input fiel
 - **THEN** the Create Account button SHALL be disabled and an `ActivityIndicator` SHALL be visible
 
 #### Scenario: Successful registration navigates to email verification
-- **WHEN** `RegisterAsync` returns a successful `AuthResult`
+- **WHEN** `RegisterAsync` returns a successful `AuthResult` with `TrustLevel` other than `"TL0"`
 - **THEN** the app SHALL navigate to the email verification page, passing the registered email address
+
+#### Scenario: Successful registration without verification navigates to login
+- **WHEN** `RegisterAsync` returns a successful `AuthResult` with `TrustLevel == "TL0"`
+- **THEN** the app SHALL display a localized success alert (`AuthRegistrationSuccess` title, `AuthRegistrationSuccessMessage` body)
+- **AND** after the user dismisses the alert, SHALL navigate back to the login page
 
 #### Scenario: Registration with taken email shows error
 - **WHEN** `RegisterAsync` returns a failed `AuthResult` with "Email already in use"
@@ -200,7 +205,7 @@ The `LoginViewModel` SHALL inject `IAuthService` via constructor. The `LoginComm
 - **THEN** `LoginError` SHALL display the server's error message
 
 ### Requirement: RegisterViewModel API integration
-The `RegisterViewModel` SHALL inject `IAuthService` via constructor. The `CreateAccountCommand` SHALL call `IAuthService.RegisterAsync(Email, Password, ConfirmPassword, Phone)`, passing the confirm password and required phone values. On success, it SHALL navigate to the email verification page with the registered email. The ViewModel SHALL expose `Phone` (string) as an observable property. The ViewModel SHALL expose an `IsLoading` observable property that is true during API calls. The ViewModel SHALL expose a `RegisterError` observable property for displaying server error messages. The `CreateAccountCommand` SHALL be disabled when `IsLoading` is true. The `CreateAccountCommand` SHALL require the password to be at least 8 characters (matching the API's minimum password length).
+The `RegisterViewModel` SHALL inject `IAuthService` via constructor. The `CreateAccountCommand` SHALL call `IAuthService.RegisterAsync(Email, Password, ConfirmPassword, Phone)`, passing the confirm password and required phone values. On success with `TrustLevel` other than `"TL0"`, it SHALL navigate to the email verification page with the registered email. On success with `TrustLevel == "TL0"`, it SHALL show a localized success alert and navigate back to the login page. The ViewModel SHALL expose `Phone` (string) as an observable property. The ViewModel SHALL expose an `IsLoading` observable property that is true during API calls. The ViewModel SHALL expose a `RegisterError` observable property for displaying server error messages. The `CreateAccountCommand` SHALL be disabled when `IsLoading` is true. The `CreateAccountCommand` SHALL require the password to be at least 8 characters (matching the API's minimum password length).
 
 #### Scenario: RegisterViewModel receives IAuthService via DI
 - **WHEN** the `RegisterViewModel` is constructed
@@ -223,5 +228,10 @@ The `RegisterViewModel` SHALL inject `IAuthService` via constructor. The `Create
 - **THEN** the `EmailError` property SHALL display the server's error message
 
 #### Scenario: Successful registration navigates to email verification
-- **WHEN** `RegisterAsync` returns a successful `AuthResult`
+- **WHEN** `RegisterAsync` returns a successful `AuthResult` with `TrustLevel` other than `"TL0"`
 - **THEN** the ViewModel SHALL navigate to `email-verification?email={Email}`
+
+#### Scenario: Successful unverified registration shows alert and navigates to login
+- **WHEN** `RegisterAsync` returns a successful `AuthResult` with `TrustLevel == "TL0"`
+- **THEN** the ViewModel SHALL display a `DisplayAlert` with localized title `AuthRegistrationSuccess` and message `AuthRegistrationSuccessMessage`
+- **AND** after dismissal, SHALL navigate to the login page via `Shell.Current.GoToAsync("..")`

@@ -48,6 +48,10 @@ public static class AppResources
     public static string AuthPhone => ResourceManager.GetString("AuthPhone", Culture)!;
     public static string AuthEnterPhone => ResourceManager.GetString("AuthEnterPhone", Culture)!;
 
+    // Registration Success
+    public static string AuthRegistrationSuccess => ResourceManager.GetString("AuthRegistrationSuccess", Culture)!;
+    public static string AuthRegistrationSuccessMessage => ResourceManager.GetString("AuthRegistrationSuccessMessage", Culture)!;
+
     // Email Verification
     public static string EmailVerificationTitle => ResourceManager.GetString("EmailVerificationTitle", Culture)!;
     public static string EmailVerificationDescription => ResourceManager.GetString("EmailVerificationDescription", Culture)!;

@@ -194,6 +194,13 @@
   <data name="SettingsLanguageRu" xml:space="preserve">
     <value>Русский</value>
   </data>
+  <!-- Registration Success -->
+  <data name="AuthRegistrationSuccess" xml:space="preserve">
+    <value>Обліковий запис створено</value>
+  </data>
+  <data name="AuthRegistrationSuccessMessage" xml:space="preserve">
+    <value>Ваш обліковий запис успішно створено. Тепер ви можете увійти.</value>
+  </data>
   <!-- Email Verification -->
   <data name="EmailVerificationTitle" xml:space="preserve">
     <value>Перевірте свою пошту</value>

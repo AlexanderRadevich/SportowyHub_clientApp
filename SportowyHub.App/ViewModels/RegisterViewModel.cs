@@ -174,7 +174,18 @@ public partial class RegisterViewModel : ObservableObject
                 return;
             }
 
-            await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
+            if (registerResult.Data!.TrustLevel == "TL0")
+            {
+                await Shell.Current.DisplayAlert(
+                    AppResources.AuthRegistrationSuccess,
+                    AppResources.AuthRegistrationSuccessMessage,
+                    "OK");
+                await Shell.Current.GoToAsync("..");
+            }
+            else
+            {
+                await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
+            }
         }
         finally
         {

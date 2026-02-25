@@ -194,6 +194,13 @@
   <data name="SettingsLanguageRu" xml:space="preserve">
     <value>Русский</value>
   </data>
+  <!-- Registration Success -->
+  <data name="AuthRegistrationSuccess" xml:space="preserve">
+    <value>Konto utworzone</value>
+  </data>
+  <data name="AuthRegistrationSuccessMessage" xml:space="preserve">
+    <value>Twoje konto zostało pomyślnie utworzone. Możesz się teraz zalogować.</value>
+  </data>
   <!-- Email Verification -->
   <data name="EmailVerificationTitle" xml:space="preserve">
     <value>Sprawdź swoją skrzynkę</value>
