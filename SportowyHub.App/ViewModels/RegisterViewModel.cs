@@ -176,7 +176,7 @@ public partial class RegisterViewModel : ObservableObject
 
             if (registerResult.Data!.TrustLevel == "TL0")
             {
-                await Shell.Current.DisplayAlert(
+                await Shell.Current.DisplayAlertAsync(
                     AppResources.AuthRegistrationSuccess,
                     AppResources.AuthRegistrationSuccessMessage,
                     "OK");
