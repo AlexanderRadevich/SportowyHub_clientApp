@@ -49,8 +49,7 @@ public partial class LoginViewModel : ObservableObject
             return;
         }
 
-        var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        EmailError = Regex.IsMatch(Email, emailPattern)
+        EmailError = EmailRegex().IsMatch(Email)
             ? string.Empty
             : AppResources.AuthInvalidEmail;
     }
@@ -108,4 +107,7 @@ public partial class LoginViewModel : ObservableObject
     {
         await Shell.Current.GoToAsync("//register");
     }
+
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
+    private static partial Regex EmailRegex();
 }

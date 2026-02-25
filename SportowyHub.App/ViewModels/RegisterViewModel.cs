@@ -83,8 +83,7 @@ public partial class RegisterViewModel : ObservableObject
             return;
         }
 
-        var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        EmailError = Regex.IsMatch(Email, emailPattern)
+        EmailError = EmailRegex().IsMatch(Email)
             ? string.Empty
             : AppResources.AuthInvalidEmail;
     }
@@ -98,9 +97,9 @@ public partial class RegisterViewModel : ObservableObject
             return;
         }
 
-        bool hasLetters = Regex.IsMatch(Password, @"[a-zA-Z]");
-        bool hasDigits = Regex.IsMatch(Password, @"\d");
-        bool hasSpecial = Regex.IsMatch(Password, @"[^a-zA-Z\d]");
+        bool hasLetters = HasLettersRegex().IsMatch(Password);
+        bool hasDigits = HasDigitsRegex().IsMatch(Password);
+        bool hasSpecial = HasSpecialRegex().IsMatch(Password);
 
         if (Password.Length >= 10 && hasLetters && hasDigits && hasSpecial)
         {
@@ -140,8 +139,7 @@ public partial class RegisterViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Phone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
             return false;
 
-        var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        if (!Regex.IsMatch(Email, emailPattern))
+        if (!EmailRegex().IsMatch(Email))
             return false;
 
         if (Password.Length < 8)
@@ -195,4 +193,16 @@ public partial class RegisterViewModel : ObservableObject
     {
         IsConfirmPasswordVisible = !IsConfirmPasswordVisible;
     }
+
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
+    private static partial Regex EmailRegex();
+
+    [GeneratedRegex(@"[a-zA-Z]")]
+    private static partial Regex HasLettersRegex();
+
+    [GeneratedRegex(@"\d")]
+    private static partial Regex HasDigitsRegex();
+
+    [GeneratedRegex(@"[^a-zA-Z\d]")]
+    private static partial Regex HasSpecialRegex();
 }
