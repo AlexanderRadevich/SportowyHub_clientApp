@@ -32,6 +32,18 @@ public class ProfilePage
     private AppiumElement FindThemeLabel() =>
         (AppiumElement)_wait.Until(d => d.FindElement(MobileBy.Id("ThemeLabel")));
 
+    public void TapSignIn()
+    {
+        var row = _wait.Until(d => d.FindElement(MobileBy.Id("SignInRow")));
+        row.Click();
+    }
+
+    public void TapCreateAccount()
+    {
+        var row = _wait.Until(d => d.FindElement(MobileBy.Id("CreateAccountRow")));
+        row.Click();
+    }
+
     public bool IsSettingsSectionVisible()
     {
         try

@@ -51,10 +51,10 @@ public class AppShellPage
         });
     }
 
-    public void NavigateToHome() => NavigateToTabByNames("Strona główna", "Home");
-    public void NavigateToSearch() => NavigateToTabByNames("Szukaj", "Search");
-    public void NavigateToFavorites() => NavigateToTabByNames("Ulubione", "Favorites");
-    public void NavigateToProfile() => NavigateToTabByNames("Profil", "Profile");
+    public void NavigateToHome() => NavigateToTabByNames("Strona główna", "Home", "Головна", "Главная");
+    public void NavigateToSearch() => NavigateToTabByNames("Szukaj", "Search", "Пошук", "Поиск");
+    public void NavigateToFavorites() => NavigateToTabByNames("Ulubione", "Favorites", "Обране", "Избранное");
+    public void NavigateToProfile() => NavigateToTabByNames("Profil", "Profile", "Профіль", "Профиль");
 
     /// <summary>
     /// Waits for the shell to finish recreating after a language or theme change.

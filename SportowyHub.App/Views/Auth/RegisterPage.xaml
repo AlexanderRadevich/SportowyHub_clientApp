@@ -11,7 +11,8 @@
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="8">
 
-            <Label Text="{x:Static res:AppResources.AuthCreateAccount}"
+            <Label AutomationId="RegisterHeadline"
+                   Text="{x:Static res:AppResources.AuthCreateAccount}"
                    Style="{StaticResource Headline}"
                    HorizontalOptions="Start"
                    Margin="0,16,0,24" />

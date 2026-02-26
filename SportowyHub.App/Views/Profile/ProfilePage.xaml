@@ -27,7 +27,8 @@
             <Grid Padding="16,0"
                   HeightRequest="48"
                   ColumnDefinitions="*,Auto">
-                <Label Text="{x:Static res:AppResources.ProfileSignIn}"
+                <Label AutomationId="SignInRow"
+                       Text="{x:Static res:AppResources.ProfileSignIn}"
                        VerticalOptions="Center" />
                 <Label Grid.Column="1"
                        Text="›"
@@ -46,7 +47,8 @@
             <Grid Padding="16,0"
                   HeightRequest="48"
                   ColumnDefinitions="*,Auto">
-                <Label Text="{x:Static res:AppResources.ProfileCreateAccount}"
+                <Label AutomationId="CreateAccountRow"
+                       Text="{x:Static res:AppResources.ProfileCreateAccount}"
                        VerticalOptions="Center" />
                 <Label Grid.Column="1"
                        Text="›"
