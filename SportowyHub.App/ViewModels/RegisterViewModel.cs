@@ -32,19 +32,19 @@ public partial class RegisterViewModel : ObservableObject
     public partial string Phone { get; set; }
 
     [ObservableProperty]
-    public partial string EmailError { get; set; }
+    public partial string EmailError { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string PhoneError { get; set; }
+    public partial string PhoneError { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string PasswordStrength { get; set; }
+    public partial string PasswordStrength { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial Color PasswordStrengthColor { get; set; }
 
     [ObservableProperty]
-    public partial string ConfirmPasswordError { get; set; }
+    public partial string ConfirmPasswordError { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsPasswordVisible { get; set; }
@@ -57,7 +57,7 @@ public partial class RegisterViewModel : ObservableObject
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial string RegisterError { get; set; }
+    public partial string RegisterError { get; set; } = string.Empty;
 
     partial void OnEmailChanged(string value)
     {

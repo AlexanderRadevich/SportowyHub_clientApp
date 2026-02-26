@@ -31,10 +31,10 @@ public partial class LoginViewModel : ObservableObject
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial string LoginError { get; set; }
+    public partial string LoginError { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string EmailError { get; set; }
+    public partial string EmailError { get; set; } = string.Empty;
 
     partial void OnEmailChanged(string value)
     {
