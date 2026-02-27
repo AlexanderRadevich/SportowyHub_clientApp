@@ -151,6 +151,27 @@ public class AuthService : IAuthService
         return !string.IsNullOrEmpty(token);
     }
 
+    public async Task LogoutAsync()
+    {
+        var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
+        if (!string.IsNullOrEmpty(refreshToken))
+        {
+            try
+            {
+                await _requestProvider.PostAsync<Dictionary<string, string>, object>(
+                    "/api/v1/logout",
+                    new Dictionary<string, string>(),
+                    token: refreshToken);
+            }
+            catch
+            {
+                // Best-effort: server revocation failure must not block local sign-out
+            }
+        }
+
+        await ClearAuthAsync();
+    }
+
     public Task ClearAuthAsync()
     {
         SecureStorage.Remove(TokenKey);

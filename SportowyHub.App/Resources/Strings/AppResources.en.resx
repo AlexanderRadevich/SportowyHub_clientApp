@@ -154,6 +154,9 @@
   <data name="ProfileCreateAccount" xml:space="preserve">
     <value>Create Account</value>
   </data>
+  <data name="ProfileAccountProfile" xml:space="preserve">
+    <value>Account Profile</value>
+  </data>
   <data name="ProfileSignIn" xml:space="preserve">
     <value>Sign In</value>
   </data>
@@ -219,5 +222,18 @@
   </data>
   <data name="EmailVerificationError" xml:space="preserve">
     <value>Failed to send email. Please try again.</value>
+  </data>
+  <!-- Sign Out -->
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SignOutConfirmTitle" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SignOutConfirmMessage" xml:space="preserve">
+    <value>Are you sure you want to sign out?</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
 </root>

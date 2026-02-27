@@ -12,4 +12,5 @@ public interface IAuthService
     Task<UserInfo?> GetCurrentUserAsync();
     Task<bool> IsLoggedInAsync();
     Task ClearAuthAsync();
+    Task LogoutAsync();
 }

@@ -154,6 +154,9 @@
   <data name="ProfileCreateAccount" xml:space="preserve">
     <value>Створити обліковий запис</value>
   </data>
+  <data name="ProfileAccountProfile" xml:space="preserve">
+    <value>Профіль акаунта</value>
+  </data>
   <data name="ProfileSignIn" xml:space="preserve">
     <value>Увійти</value>
   </data>
@@ -219,5 +222,18 @@
   </data>
   <data name="EmailVerificationError" xml:space="preserve">
     <value>Не вдалося надіслати лист. Спробуйте ще раз.</value>
+  </data>
+  <!-- Sign Out -->
+  <data name="SignOut" xml:space="preserve">
+    <value>Вийти</value>
+  </data>
+  <data name="SignOutConfirmTitle" xml:space="preserve">
+    <value>Вихід</value>
+  </data>
+  <data name="SignOutConfirmMessage" xml:space="preserve">
+    <value>Ви впевнені, що хочете вийти?</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
   </data>
 </root>

@@ -80,6 +80,7 @@ public static class AppResources
     // Profile
     public static string ProfileWelcome => ResourceManager.GetString("ProfileWelcome", Culture)!;
     public static string ProfileCreateAccount => ResourceManager.GetString("ProfileCreateAccount", Culture)!;
+    public static string ProfileAccountProfile => ResourceManager.GetString("ProfileAccountProfile", Culture)!;
     public static string ProfileSignIn => ResourceManager.GetString("ProfileSignIn", Culture)!;
     public static string ProfileAccountSection => ResourceManager.GetString("ProfileAccountSection", Culture)!;
     public static string ProfileSettingsSection => ResourceManager.GetString("ProfileSettingsSection", Culture)!;
@@ -95,4 +96,10 @@ public static class AppResources
     public static string SettingsLanguageEn => ResourceManager.GetString("SettingsLanguageEn", Culture)!;
     public static string SettingsLanguageUk => ResourceManager.GetString("SettingsLanguageUk", Culture)!;
     public static string SettingsLanguageRu => ResourceManager.GetString("SettingsLanguageRu", Culture)!;
+
+    // Sign Out
+    public static string SignOut => ResourceManager.GetString("SignOut", Culture)!;
+    public static string SignOutConfirmTitle => ResourceManager.GetString("SignOutConfirmTitle", Culture)!;
+    public static string SignOutConfirmMessage => ResourceManager.GetString("SignOutConfirmMessage", Culture)!;
+    public static string Cancel => ResourceManager.GetString("Cancel", Culture)!;
 }

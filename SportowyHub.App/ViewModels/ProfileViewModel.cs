@@ -2,11 +2,14 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
+using SportowyHub.Services.Auth;
 
 namespace SportowyHub.ViewModels;
 
 public partial class ProfileViewModel : ObservableObject
 {
+    private readonly IAuthService _authService;
+
     private static readonly string[] LanguageCodes = ["system", "pl", "en", "uk", "ru"];
     private static readonly string[] ThemeCodes = ["system", "light", "dark"];
 
@@ -32,10 +35,15 @@ public partial class ProfileViewModel : ObservableObject
     [ObservableProperty]
     public partial int SelectedThemeIndex { get; set; }
 
+    [ObservableProperty]
+    public partial bool IsLoggedIn { get; set; }
+
     private bool _initialized;
 
-    public ProfileViewModel()
+    public ProfileViewModel(IAuthService authService)
     {
+        _authService = authService;
+
         var langPref = Preferences.Get("app_language", "system");
         var langIdx = Array.IndexOf(LanguageCodes, langPref);
         SelectedLanguageIndex = langIdx >= 0 ? langIdx : 0;
@@ -45,6 +53,12 @@ public partial class ProfileViewModel : ObservableObject
         SelectedThemeIndex = themeIdx >= 0 ? themeIdx : 0;
 
         _initialized = true;
+    }
+
+    [RelayCommand]
+    private async Task RefreshAuthState()
+    {
+        IsLoggedIn = await _authService.IsLoggedInAsync();
     }
 
     partial void OnSelectedThemeIndexChanged(int value)
@@ -102,6 +116,22 @@ public partial class ProfileViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task SignOut()
+    {
+        var confirmed = await Application.Current!.Windows[0].Page!.DisplayAlertAsync(
+            AppResources.SignOutConfirmTitle,
+            AppResources.SignOutConfirmMessage,
+            AppResources.SignOut,
+            AppResources.Cancel);
+
+        if (!confirmed)
+            return;
+
+        await _authService.LogoutAsync();
+        await RefreshAuthState();
+    }
+
+    [RelayCommand]
     private async Task SignInAsync()
     {
         await Shell.Current.GoToAsync("login");
@@ -111,5 +141,11 @@ public partial class ProfileViewModel : ObservableObject
     private async Task CreateAccountAsync()
     {
         await Shell.Current.GoToAsync("register");
+    }
+
+    [RelayCommand]
+    private async Task GoToAccountProfile()
+    {
+        await Shell.Current.GoToAsync("account-profile");
     }
 }

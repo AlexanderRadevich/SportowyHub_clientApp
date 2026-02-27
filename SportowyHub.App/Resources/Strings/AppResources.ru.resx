@@ -154,6 +154,9 @@
   <data name="ProfileCreateAccount" xml:space="preserve">
     <value>Создать аккаунт</value>
   </data>
+  <data name="ProfileAccountProfile" xml:space="preserve">
+    <value>Профиль аккаунта</value>
+  </data>
   <data name="ProfileSignIn" xml:space="preserve">
     <value>Войти</value>
   </data>
@@ -219,5 +222,18 @@
   </data>
   <data name="EmailVerificationError" xml:space="preserve">
     <value>Не удалось отправить письмо. Попробуйте ещё раз.</value>
+  </data>
+  <!-- Sign Out -->
+  <data name="SignOut" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="SignOutConfirmTitle" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="SignOutConfirmMessage" xml:space="preserve">
+    <value>Вы уверены, что хотите выйти?</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
   </data>
 </root>

@@ -23,45 +23,88 @@
                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                    Padding="16,8" />
 
-            <!-- Sign In Row -->
-            <Grid Padding="16,0"
-                  HeightRequest="48"
-                  ColumnDefinitions="*,Auto">
-                <Label AutomationId="SignInRow"
-                       Text="{x:Static res:AppResources.ProfileSignIn}"
-                       VerticalOptions="Center" />
-                <Label Grid.Column="1"
-                       Text="›"
-                       FontSize="20"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                       VerticalOptions="Center" />
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SignInCommand}" />
-                </Grid.GestureRecognizers>
-            </Grid>
-            <BoxView HeightRequest="1"
-                     Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
-                     Margin="16,0" />
+            <!-- Sign In Row (logged out) -->
+            <VerticalStackLayout IsVisible="{Binding IsLoggedIn, Converter={StaticResource InvertBoolConverter}}">
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label AutomationId="SignInRow"
+                           Text="{x:Static res:AppResources.ProfileSignIn}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="›"
+                           FontSize="20"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SignInCommand}" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+            </VerticalStackLayout>
 
-            <!-- Create Account Row -->
-            <Grid Padding="16,0"
-                  HeightRequest="48"
-                  ColumnDefinitions="*,Auto">
-                <Label AutomationId="CreateAccountRow"
-                       Text="{x:Static res:AppResources.ProfileCreateAccount}"
-                       VerticalOptions="Center" />
-                <Label Grid.Column="1"
-                       Text="›"
-                       FontSize="20"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                       VerticalOptions="Center" />
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding CreateAccountCommand}" />
-                </Grid.GestureRecognizers>
-            </Grid>
-            <BoxView HeightRequest="1"
-                     Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
-                     Margin="16,0" />
+            <!-- Create Account Row (logged out) -->
+            <VerticalStackLayout IsVisible="{Binding IsLoggedIn, Converter={StaticResource InvertBoolConverter}}">
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label AutomationId="CreateAccountRow"
+                           Text="{x:Static res:AppResources.ProfileCreateAccount}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="›"
+                           FontSize="20"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CreateAccountCommand}" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+            </VerticalStackLayout>
+
+            <!-- Account Profile Row (logged in) -->
+            <VerticalStackLayout IsVisible="{Binding IsLoggedIn}">
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfileAccountProfile}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="›"
+                           FontSize="20"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToAccountProfileCommand}" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+            </VerticalStackLayout>
+
+            <!-- Sign Out Row (logged in) -->
+            <VerticalStackLayout IsVisible="{Binding IsLoggedIn}">
+                <Grid AutomationId="ProfileSignOutRow"
+                      Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label Text="{x:Static res:AppResources.SignOut}"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                           VerticalOptions="Center" />
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SignOutCommand}" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+            </VerticalStackLayout>
 
             <!-- Settings Section Header -->
             <Label AutomationId="SettingsLabel"
