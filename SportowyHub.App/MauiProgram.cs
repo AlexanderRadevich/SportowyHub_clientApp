@@ -8,6 +8,7 @@ using SportowyHub.Views.Auth;
 using SportowyHub.ViewModels;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Toast;
 
 namespace SportowyHub;
 
@@ -47,6 +48,7 @@ public static class MauiProgram
         });
         builder.Services.AddSingleton<IRequestProvider, RequestProvider>();
         builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<IToastService, ToastService>();
 
         // Pages
         builder.Services.AddTransient<HomePage>();

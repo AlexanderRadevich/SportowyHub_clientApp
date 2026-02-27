@@ -3,16 +3,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
 public partial class RegisterViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
+    private readonly IToastService _toastService;
 
-    public RegisterViewModel(IAuthService authService)
+    public RegisterViewModel(IAuthService authService, IToastService toastService)
     {
         _authService = authService;
+        _toastService = toastService;
     }
 
     [ObservableProperty]
@@ -171,6 +174,7 @@ public partial class RegisterViewModel : ObservableObject
                     PhoneError = phoneErr;
 
                 RegisterError = registerResult.ErrorMessage ?? "Registration failed.";
+                await _toastService.ShowError(RegisterError);
                 IsLoading = false;
                 return;
             }
@@ -188,9 +192,10 @@ public partial class RegisterViewModel : ObservableObject
                 await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
             }
         }
-        catch
+        catch (Exception ex)
         {
             RegisterError = "Connection error. Please try again.";
+            await _toastService.ShowError(ex.Message);
             IsLoading = false;
         }
     }

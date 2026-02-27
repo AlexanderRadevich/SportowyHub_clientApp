@@ -102,4 +102,15 @@ public static class AppResources
     public static string SignOutConfirmTitle => ResourceManager.GetString("SignOutConfirmTitle", Culture)!;
     public static string SignOutConfirmMessage => ResourceManager.GetString("SignOutConfirmMessage", Culture)!;
     public static string Cancel => ResourceManager.GetString("Cancel", Culture)!;
+
+    // Account Profile
+    public static string ProfileContact => ResourceManager.GetString("ProfileContact", Culture)!;
+    public static string ProfileEmail => ResourceManager.GetString("ProfileEmail", Culture)!;
+    public static string ProfilePhone => ResourceManager.GetString("ProfilePhone", Culture)!;
+    public static string ProfileAccount => ResourceManager.GetString("ProfileAccount", Culture)!;
+    public static string ProfileVerified => ResourceManager.GetString("ProfileVerified", Culture)!;
+    public static string ProfileNotVerified => ResourceManager.GetString("ProfileNotVerified", Culture)!;
+    public static string ProfileNotSet => ResourceManager.GetString("ProfileNotSet", Culture)!;
+    public static string ProfileTrustLevel => ResourceManager.GetString("ProfileTrustLevel", Culture)!;
+    public static string ProfileLoadError => ResourceManager.GetString("ProfileLoadError", Culture)!;
 }

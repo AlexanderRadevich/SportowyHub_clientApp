@@ -3,16 +3,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
 public partial class LoginViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
+    private readonly IToastService _toastService;
 
-    public LoginViewModel(IAuthService authService)
+    public LoginViewModel(IAuthService authService, IToastService toastService)
     {
         _authService = authService;
+        _toastService = toastService;
     }
 
     [ObservableProperty]
@@ -74,8 +77,8 @@ public partial class LoginViewModel : ObservableObject
 
             if (result.IsSuccess)
             {
-                await Shell.Current.GoToAsync("..");
-                Shell.Current.CurrentItem = Shell.Current.Items[0];
+                await Shell.Current.GoToAsync(".."); // pop login from Profile tab stack
+                await Shell.Current.GoToAsync("//home");
                 return;
             }
 
@@ -91,10 +94,12 @@ public partial class LoginViewModel : ObservableObject
             }
 
             LoginError = result.ErrorMessage ?? "Login failed.";
+            await _toastService.ShowError(LoginError);
         }
-        catch
+        catch (Exception ex)
         {
             LoginError = "Connection error. Please try again.";
+            await _toastService.ShowError(ex.Message);
         }
 
         IsLoading = false;

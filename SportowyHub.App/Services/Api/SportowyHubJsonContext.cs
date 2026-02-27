@@ -15,5 +15,6 @@ namespace SportowyHub.Services.Api;
 [JsonSerializable(typeof(UserInfo))]
 [JsonSerializable(typeof(ResendVerificationRequest))]
 [JsonSerializable(typeof(ResendVerificationResponse))]
+[JsonSerializable(typeof(UserProfile))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 public partial class SportowyHubJsonContext : JsonSerializerContext;

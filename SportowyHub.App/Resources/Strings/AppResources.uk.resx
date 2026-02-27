@@ -236,4 +236,32 @@
   <data name="Cancel" xml:space="preserve">
     <value>Скасувати</value>
   </data>
+  <!-- Account Profile -->
+  <data name="ProfileContact" xml:space="preserve">
+    <value>Контакт</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Електронна пошта</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="ProfileAccount" xml:space="preserve">
+    <value>Обліковий запис</value>
+  </data>
+  <data name="ProfileVerified" xml:space="preserve">
+    <value>Підтверджено</value>
+  </data>
+  <data name="ProfileNotVerified" xml:space="preserve">
+    <value>Не підтверджено</value>
+  </data>
+  <data name="ProfileNotSet" xml:space="preserve">
+    <value>Не вказано</value>
+  </data>
+  <data name="ProfileTrustLevel" xml:space="preserve">
+    <value>Рівень довіри</value>
+  </data>
+  <data name="ProfileLoadError" xml:space="preserve">
+    <value>Не вдалося завантажити профіль. Спробуйте ще раз.</value>
+  </data>
 </root>

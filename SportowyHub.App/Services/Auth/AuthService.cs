@@ -156,20 +156,23 @@ public class AuthService : IAuthService
         var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
         if (!string.IsNullOrEmpty(refreshToken))
         {
-            try
-            {
-                await _requestProvider.PostAsync<Dictionary<string, string>, object>(
-                    "/api/v1/logout",
-                    new Dictionary<string, string>(),
-                    token: refreshToken);
-            }
-            catch
-            {
-                // Best-effort: server revocation failure must not block local sign-out
-            }
+            // The API doesn't have a logout endpoint, but if it did, we would call it here to invalidate the refresh token on the server.
+            //await _requestProvider.PostAsync<Dictionary<string, string>, object>(
+            //    "/api/v1/logout",
+            //    new Dictionary<string, string>(),
+            //    token: refreshToken);
         }
 
         await ClearAuthAsync();
+    }
+
+    public async Task<UserProfile?> GetProfileAsync()
+    {
+        var token = await SecureStorage.GetAsync(TokenKey);
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        return await _requestProvider.GetAsync<UserProfile>("/api/private/profile", token);
     }
 
     public Task ClearAuthAsync()

@@ -2,27 +2,188 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
              x:Class="SportowyHub.Views.Profile.AccountProfilePage"
+             x:DataType="vm:AccountProfileViewModel"
              Title="{x:Static res:AppResources.ProfileAccountProfile}"
              Shell.TabBarIsVisible="False">
 
-    <Grid RowDefinitions="*,Auto" Padding="16">
-        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-            <Label Text="{x:Static res:AppResources.ProfileAccountProfile}"
-                   Style="{StaticResource Headline}"
-                   HorizontalTextAlignment="Center" />
+    <Grid>
+        <!-- Loading State -->
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="{StaticResource Primary}" />
+
+        <!-- Error State -->
+        <VerticalStackLayout IsVisible="{Binding HasError}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="32">
+            <Label Text="{x:Static res:AppResources.ProfileLoadError}"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            <Button Text="{x:Static res:AppResources.ProfileAccountProfile}"
+                    Command="{Binding LoadProfileCommand}"
+                    Style="{StaticResource SecondaryButton}"
+                    HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <Button Grid.Row="1"
-                Text="{x:Static res:AppResources.SignOut}"
-                Command="{Binding SignOutCommand}"
-                AutomationId="SignOutButton"
-                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                BackgroundColor="Transparent"
-                FontFamily="OpenSansSemibold"
-                FontSize="16"
-                HeightRequest="50"
-                Margin="0,0,0,16" />
+        <!-- Profile Content -->
+        <ScrollView IsVisible="{Binding Profile, Converter={StaticResource IsNotNullConverter}}">
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Header -->
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     Spacing="4"
+                                     Padding="16,24,16,16">
+                    <!-- Avatar Placeholder -->
+                    <Border StrokeShape="RoundRectangle 40"
+                            WidthRequest="80"
+                            HeightRequest="80"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                            StrokeThickness="1"
+                            HorizontalOptions="Center">
+                        <Label Text="&#x1F464;"
+                               FontSize="32"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+
+                    <!-- Display Name -->
+                    <Label Text="{Binding DisplayName}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="20"
+                           HorizontalTextAlignment="Center" />
+
+                    <!-- Email (shown below name if name exists) -->
+                    <Label Text="{Binding DisplayEmail}"
+                           IsVisible="{Binding Profile.FirstName, Converter={StaticResource IsNotNullConverter}}"
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           HorizontalTextAlignment="Center" />
+
+                    <!-- Trust Level -->
+                    <Label Text="{Binding Profile.TrustLevel, StringFormat='{0}'}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- Contact Section Header -->
+                <Label Text="{x:Static res:AppResources.ProfileContact}"
+                       Style="{StaticResource SectionHeader}"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                       Padding="16,8" />
+
+                <!-- Email Row -->
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="Auto,*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfileEmail}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{Binding Profile.Email}"
+                           HorizontalTextAlignment="End"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           Margin="8,0" />
+                    <Label Grid.Column="2"
+                           VerticalOptions="Center"
+                           FontSize="12">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Profile.EmailVerified}"
+                                         Value="True">
+                                <Setter Property="Text" Value="{x:Static res:AppResources.ProfileVerified}" />
+                                <Setter Property="TextColor" Value="{StaticResource Success}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Profile.EmailVerified}"
+                                         Value="False">
+                                <Setter Property="Text" Value="{x:Static res:AppResources.ProfileNotVerified}" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+
+                <!-- Phone Row -->
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="Auto,*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfilePhone}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{Binding Profile.Phone, TargetNullValue={x:Static res:AppResources.ProfileNotSet}}"
+                           HorizontalTextAlignment="End"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           Margin="8,0" />
+                    <Label Grid.Column="2"
+                           VerticalOptions="Center"
+                           FontSize="12">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Profile.PhoneVerified}"
+                                         Value="True">
+                                <Setter Property="Text" Value="{x:Static res:AppResources.ProfileVerified}" />
+                                <Setter Property="TextColor" Value="{StaticResource Success}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Profile.PhoneVerified}"
+                                         Value="False">
+                                <Setter Property="Text" Value="{x:Static res:AppResources.ProfileNotVerified}" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+
+                <!-- Account Section Header -->
+                <Label Text="{x:Static res:AppResources.ProfileAccount}"
+                       Style="{StaticResource SectionHeader}"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                       Padding="16,8"
+                       Margin="0,8,0,0" />
+
+                <!-- Trust Level Row -->
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfileTrustLevel}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{Binding Profile.TrustLevel}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+
+                <!-- Sign Out Button -->
+                <Button Text="{x:Static res:AppResources.SignOut}"
+                        Command="{Binding SignOutCommand}"
+                        AutomationId="SignOutButton"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        BackgroundColor="Transparent"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="50"
+                        Margin="16,24,16,16" />
+
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 
 </ContentPage>

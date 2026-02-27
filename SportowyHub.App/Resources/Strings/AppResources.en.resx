@@ -236,4 +236,32 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <!-- Account Profile -->
+  <data name="ProfileContact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="ProfileAccount" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="ProfileVerified" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="ProfileNotVerified" xml:space="preserve">
+    <value>Not verified</value>
+  </data>
+  <data name="ProfileNotSet" xml:space="preserve">
+    <value>Not set</value>
+  </data>
+  <data name="ProfileTrustLevel" xml:space="preserve">
+    <value>Trust level</value>
+  </data>
+  <data name="ProfileLoadError" xml:space="preserve">
+    <value>Failed to load profile. Please try again.</value>
+  </data>
 </root>

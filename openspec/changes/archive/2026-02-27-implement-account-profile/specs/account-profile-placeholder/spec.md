@@ -1,4 +1,4 @@
-# Account Profile Placeholder
+## MODIFIED Requirements
 
 ### Requirement: Account Profile placeholder page
 The app SHALL have an `AccountProfilePage` registered as shell route `account-profile`. The page SHALL hide the tab bar (`Shell.TabBarIsVisible="False"`). The page SHALL use `AccountProfileViewModel` as its `BindingContext`, injected via constructor. The page SHALL display the user's profile data fetched from `GET /api/private/profile` in a scrollable grouped layout. The page SHALL display a "Sign Out" button at the bottom of the content. The page title SHALL be the localized `ProfileAccountProfile` resource.
@@ -24,21 +24,6 @@ The app SHALL have an `AccountProfilePage` registered as shell route `account-pr
 - **WHEN** the Account Profile page is displayed
 - **THEN** the Sign Out button SHALL use red text color (`Primary` theme color) with transparent background to indicate a destructive action
 
-### Requirement: Sign Out confirmation dialog
-When the user taps the Sign Out button, the app SHALL display a confirmation dialog before proceeding. The dialog SHALL use localized strings for title (`SignOutConfirmTitle`), message (`SignOutConfirmMessage`), accept button (`SignOut`), and cancel button (`Cancel`).
-
-#### Scenario: Tapping Sign Out shows confirmation
-- **WHEN** the user taps the "Sign Out" button
-- **THEN** a confirmation dialog SHALL appear with localized title, message, accept, and cancel buttons
-
-#### Scenario: User cancels sign out
-- **WHEN** the user taps "Cancel" on the sign-out confirmation dialog
-- **THEN** the dialog SHALL dismiss and the user SHALL remain on the Account Profile page with no state changes
-
-#### Scenario: User confirms sign out
-- **WHEN** the user taps the accept button on the sign-out confirmation dialog
-- **THEN** the app SHALL call `IAuthService.LogoutAsync()` and navigate back to the Profile tab
-
 ### Requirement: AccountProfileViewModel sign-out integration
 The `AccountProfileViewModel` SHALL inject `IAuthService` via constructor. It SHALL expose a `SignOutCommand` relay command. The command SHALL show a confirmation dialog, call `IAuthService.LogoutAsync()` on confirm, and navigate back via `Shell.Current.GoToAsync("..")`.
 
@@ -54,6 +39,8 @@ The `AccountProfileViewModel` SHALL inject `IAuthService` via constructor. It SH
 - **WHEN** `LogoutAsync()` completes
 - **THEN** the ViewModel SHALL navigate to the Profile tab via `Shell.Current.GoToAsync("..")`
 
+## ADDED Requirements
+
 ### Requirement: UserProfile API model
 The app SHALL define a `UserProfile` record matching the `GET /api/private/profile` flat response. The record SHALL include all fields from the response: `Id`, `Email`, `FirstName`, `LastName`, `Locale`, `AvatarUrl`, `NotificationsEnabled`, `QuietHoursStart`, `QuietHoursEnd`, `Phone`, `PhoneVerified`, `EmailVerified`, `TrustLevel`. All nullable JSON fields SHALL map to nullable C# types. The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
 
@@ -66,11 +53,19 @@ The app SHALL define a `UserProfile` record matching the `GET /api/private/profi
 - **THEN** the corresponding C# properties SHALL be `null`, not default values
 
 ### Requirement: GetProfileAsync on auth service
-`IAuthService` SHALL expose a `Task<UserProfile?> GetProfileAsync()` method. `AuthService` SHALL implement it by reading the access token from SecureStorage and calling `GET /api/private/profile` with Bearer authorization. The method SHALL return `null` when no token exists and let exceptions propagate to the caller for network/auth errors.
+`IAuthService` SHALL expose a `Task<UserProfile?> GetProfileAsync()` method. `AuthService` SHALL implement it by reading the access token from SecureStorage and calling `GET /api/private/profile` with Bearer authorization. The method SHALL return `null` on any error (auth failure, network error, deserialization error) without throwing exceptions.
 
 #### Scenario: GetProfileAsync returns profile on success
 - **WHEN** `GetProfileAsync()` is called and the user has a valid token
 - **THEN** the method SHALL return a `UserProfile` object with data from the API
+
+#### Scenario: GetProfileAsync returns null on auth failure
+- **WHEN** `GetProfileAsync()` is called and the token is expired or invalid (401/403)
+- **THEN** the method SHALL return `null`
+
+#### Scenario: GetProfileAsync returns null on network error
+- **WHEN** `GetProfileAsync()` is called and the network is unavailable
+- **THEN** the method SHALL return `null`
 
 #### Scenario: GetProfileAsync returns null when no token exists
 - **WHEN** `GetProfileAsync()` is called and no token is stored

@@ -236,4 +236,32 @@
   <data name="Cancel" xml:space="preserve">
     <value>Anuluj</value>
   </data>
+  <!-- Account Profile -->
+  <data name="ProfileContact" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="ProfileAccount" xml:space="preserve">
+    <value>Konto</value>
+  </data>
+  <data name="ProfileVerified" xml:space="preserve">
+    <value>Zweryfikowany</value>
+  </data>
+  <data name="ProfileNotVerified" xml:space="preserve">
+    <value>Niezweryfikowany</value>
+  </data>
+  <data name="ProfileNotSet" xml:space="preserve">
+    <value>Nie ustawiono</value>
+  </data>
+  <data name="ProfileTrustLevel" xml:space="preserve">
+    <value>Poziom zaufania</value>
+  </data>
+  <data name="ProfileLoadError" xml:space="preserve">
+    <value>Nie udało się załadować profilu. Spróbuj ponownie.</value>
+  </data>
 </root>

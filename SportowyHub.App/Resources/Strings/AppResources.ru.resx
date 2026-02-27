@@ -236,4 +236,32 @@
   <data name="Cancel" xml:space="preserve">
     <value>Отмена</value>
   </data>
+  <!-- Account Profile -->
+  <data name="ProfileContact" xml:space="preserve">
+    <value>Контакт</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Электронная почта</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="ProfileAccount" xml:space="preserve">
+    <value>Аккаунт</value>
+  </data>
+  <data name="ProfileVerified" xml:space="preserve">
+    <value>Подтверждён</value>
+  </data>
+  <data name="ProfileNotVerified" xml:space="preserve">
+    <value>Не подтверждён</value>
+  </data>
+  <data name="ProfileNotSet" xml:space="preserve">
+    <value>Не указано</value>
+  </data>
+  <data name="ProfileTrustLevel" xml:space="preserve">
+    <value>Уровень доверия</value>
+  </data>
+  <data name="ProfileLoadError" xml:space="preserve">
+    <value>Не удалось загрузить профиль. Попробуйте ещё раз.</value>
+  </data>
 </root>

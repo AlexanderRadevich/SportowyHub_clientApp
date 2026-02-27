@@ -2,17 +2,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
 public partial class EmailVerificationViewModel : ObservableObject, IQueryAttributable
 {
     private readonly IAuthService _authService;
+    private readonly IToastService _toastService;
     private IDispatcherTimer? _cooldownTimer;
 
-    public EmailVerificationViewModel(IAuthService authService)
+    public EmailVerificationViewModel(IAuthService authService, IToastService toastService)
     {
         _authService = authService;
+        _toastService = toastService;
     }
 
     [ObservableProperty]
@@ -63,12 +66,14 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
             {
                 StatusMessage = result.ErrorMessage ?? AppResources.EmailVerificationError;
                 IsStatusError = true;
+                await _toastService.ShowError(StatusMessage);
             }
         }
-        catch
+        catch (Exception ex)
         {
             StatusMessage = AppResources.EmailVerificationError;
             IsStatusError = true;
+            await _toastService.ShowError(ex.Message);
         }
         finally
         {

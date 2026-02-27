@@ -12,7 +12,7 @@
 
     <TabBar>
         <Tab Title="{x:Static res:AppResources.TabHome}" Icon="icon_home.svg">
-            <ShellContent AutomationId="TabHome" ContentTemplate="{DataTemplate home:HomePage}" />
+            <ShellContent AutomationId="TabHome" Route="home" ContentTemplate="{DataTemplate home:HomePage}" />
         </Tab>
         <Tab Title="{x:Static res:AppResources.TabSearch}" Icon="icon_search.svg">
             <ShellContent AutomationId="TabSearch" ContentTemplate="{DataTemplate search:SearchPage}" />
