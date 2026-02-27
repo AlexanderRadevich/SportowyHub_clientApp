@@ -33,7 +33,7 @@ public class RegisterPage
     public void TypeEmail(string text)
     {
         var entry = _wait.Until(d => d.FindElement(MobileBy.Id("RegisterEmailEntry")));
-        entry.SendKeys(text);
+        PasteIntoEntry(entry, text);
     }
 
     public string GetEmailText()
@@ -51,7 +51,7 @@ public class RegisterPage
     public void TypePhone(string text)
     {
         var entry = _wait.Until(d => d.FindElement(MobileBy.Id("RegisterPhoneEntry")));
-        entry.SendKeys(text);
+        PasteIntoEntry(entry, text);
     }
 
     public string GetPhoneText()
@@ -69,7 +69,7 @@ public class RegisterPage
     public void TypePassword(string text)
     {
         var entry = _wait.Until(d => d.FindElement(MobileBy.Id("RegisterPasswordEntry")));
-        entry.SendKeys(text);
+        PasteIntoEntry(entry, text);
     }
 
     public string GetPasswordText()
@@ -87,7 +87,7 @@ public class RegisterPage
     public void TypeConfirmPassword(string text)
     {
         var entry = _wait.Until(d => d.FindElement(MobileBy.Id("RegisterConfirmPasswordEntry")));
-        entry.SendKeys(text);
+        PasteIntoEntry(entry, text);
     }
 
     public string GetConfirmPasswordText()
@@ -100,5 +100,27 @@ public class RegisterPage
     {
         var entry = _wait.Until(d => d.FindElement(MobileBy.Id("RegisterConfirmPasswordEntry")));
         entry.Clear();
+    }
+
+    /// <summary>
+    /// Pastes text into a focused Entry via clipboard + Ctrl+V.
+    /// This sends real Android KeyEvents through the input system,
+    /// ensuring MAUI's TextWatcher fires and the binding updates.
+    /// </summary>
+    private void PasteIntoEntry(IWebElement entry, string text)
+    {
+        entry.Click();
+        Thread.Sleep(300);
+
+        _driver.SetClipboardText(text, "plaintext");
+
+        // Ctrl+V: keycode 50 = KEYCODE_V, metastate 4096 = META_CTRL_ON
+        _driver.ExecuteScript("mobile: pressKey", new Dictionary<string, object>
+        {
+            { "keycode", 50 },
+            { "metastate", 4096 }
+        });
+
+        Thread.Sleep(500);
     }
 }

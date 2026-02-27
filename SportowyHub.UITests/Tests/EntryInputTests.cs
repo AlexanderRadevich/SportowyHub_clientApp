@@ -56,12 +56,26 @@ public class EntryInputTests : AppiumSetup
     [Test, Order(3)]
     public void LoginPasswordEntry_AcceptsTypedText()
     {
-        _login.TypePassword("Password123!");
-        Assert.That(_login.GetPasswordText(), Is.EqualTo("Password123!"),
-            "LoginPasswordEntry should contain the typed text");
+        try
+        {
+            _login.TypePassword("Password123!");
+            // Password fields are masked on Android; verify text was entered by checking length
+            var passwordText = _login.GetPasswordText();
+            Assert.That(passwordText, Has.Length.EqualTo("Password123!".Length),
+                $"LoginPasswordEntry should accept typed text (masked: '{passwordText}')");
 
-        _login.ClearPassword();
-        Driver.Navigate().Back();
+            _login.ClearPassword();
+        }
+        finally
+        {
+            try
+            {
+                if (Driver.IsKeyboardShown())
+                    Driver.HideKeyboard();
+            }
+            catch { }
+            Driver.Navigate().Back();
+        }
     }
 
     // --- Register screen ---
@@ -93,8 +107,10 @@ public class EntryInputTests : AppiumSetup
     public void RegisterPasswordEntry_AcceptsTypedText()
     {
         _register.TypePassword("StrongPass1!");
-        Assert.That(_register.GetPasswordText(), Is.EqualTo("StrongPass1!"),
-            "RegisterPasswordEntry should contain the typed text");
+        // Password fields are masked on Android; verify text was entered by checking length
+        var passwordText = _register.GetPasswordText();
+        Assert.That(passwordText, Has.Length.EqualTo("StrongPass1!".Length),
+            $"RegisterPasswordEntry should accept typed text (masked: '{passwordText}')");
 
         _register.ClearPassword();
     }
@@ -102,11 +118,28 @@ public class EntryInputTests : AppiumSetup
     [Test, Order(7)]
     public void RegisterConfirmPasswordEntry_AcceptsTypedText()
     {
-        _register.TypeConfirmPassword("StrongPass1!");
-        Assert.That(_register.GetConfirmPasswordText(), Is.EqualTo("StrongPass1!"),
-            "RegisterConfirmPasswordEntry should contain the typed text");
+        try
+        {
+            // Dismiss keyboard from previous test so ConfirmPassword entry is accessible
+            try { if (Driver.IsKeyboardShown()) Driver.HideKeyboard(); } catch { }
 
-        _register.ClearConfirmPassword();
-        Driver.Navigate().Back();
+            _register.TypeConfirmPassword("StrongPass1!");
+            // Password fields are masked on Android; verify text was entered by checking length
+            var confirmText = _register.GetConfirmPasswordText();
+            Assert.That(confirmText, Has.Length.EqualTo("StrongPass1!".Length),
+                $"RegisterConfirmPasswordEntry should accept typed text (masked: '{confirmText}')");
+
+            _register.ClearConfirmPassword();
+        }
+        finally
+        {
+            try
+            {
+                if (Driver.IsKeyboardShown())
+                    Driver.HideKeyboard();
+            }
+            catch { }
+            Driver.Navigate().Back();
+        }
     }
 }

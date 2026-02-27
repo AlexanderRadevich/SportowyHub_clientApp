@@ -83,7 +83,8 @@
                                Margin="0,8,0,0" />
 
             <!-- Login Button -->
-            <Button Text="{x:Static res:AppResources.AuthLogin}"
+            <Button AutomationId="LoginButton"
+                    Text="{x:Static res:AppResources.AuthLogin}"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding LoginCommand}"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"

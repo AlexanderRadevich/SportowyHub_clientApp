@@ -72,7 +72,8 @@
                 <Grid Padding="16,0"
                       HeightRequest="48"
                       ColumnDefinitions="*,Auto">
-                    <Label Text="{x:Static res:AppResources.ProfileAccountProfile}"
+                    <Label AutomationId="AccountProfileRow"
+                           Text="{x:Static res:AppResources.ProfileAccountProfile}"
                            VerticalOptions="Center" />
                     <Label Grid.Column="1"
                            Text="›"

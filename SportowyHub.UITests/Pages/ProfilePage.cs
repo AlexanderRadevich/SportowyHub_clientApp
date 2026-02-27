@@ -44,6 +44,26 @@ public class ProfilePage
         row.Click();
     }
 
+    public void TapAccountProfile()
+    {
+        var row = _wait.Until(d => d.FindElement(MobileBy.Id("AccountProfileRow")));
+        row.Click();
+    }
+
+    public bool IsSignInRowVisible()
+    {
+        try
+        {
+            var shortWait = new WebDriverWait(_driver, TimeSpan.FromSeconds(3));
+            shortWait.Until(d => d.FindElement(MobileBy.Id("SignInRow")));
+            return true;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return false;
+        }
+    }
+
     public bool IsSettingsSectionVisible()
     {
         try

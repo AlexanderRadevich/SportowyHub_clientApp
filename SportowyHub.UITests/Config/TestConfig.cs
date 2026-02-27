@@ -18,4 +18,10 @@ public static class TestConfig
     /// Extra wait in milliseconds after AppShell recreation (language/theme change).
     /// </summary>
     public const int ShellRecreationWaitMs = 3000;
+
+    /// <summary>
+    /// Test account credentials for login E2E tests.
+    /// </summary>
+    public const string TestEmail = "alex10@gmail.com";
+    public const string TestPassword = "qwerty12345";
 }
