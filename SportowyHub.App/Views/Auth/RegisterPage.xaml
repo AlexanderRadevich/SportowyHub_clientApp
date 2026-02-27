@@ -26,7 +26,8 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="12" />
                 </Border.StrokeShape>
-                <Entry Text="{Binding Email}"
+                <Entry AutomationId="RegisterEmailEntry"
+                       Text="{Binding Email}"
                        Placeholder="{x:Static res:AppResources.AuthEnterEmail}"
                        Keyboard="Email"
                        BackgroundColor="Transparent" />
@@ -44,7 +45,8 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="12" />
                 </Border.StrokeShape>
-                <Entry Text="{Binding Phone}"
+                <Entry AutomationId="RegisterPhoneEntry"
+                       Text="{Binding Phone}"
                        Placeholder="{x:Static res:AppResources.AuthEnterPhone}"
                        Keyboard="Telephone"
                        BackgroundColor="Transparent" />
@@ -64,6 +66,7 @@
                 </Border.StrokeShape>
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry Grid.Column="0"
+                           AutomationId="RegisterPasswordEntry"
                            Text="{Binding Password}"
                            Placeholder="{x:Static res:AppResources.AuthEnterPassword}"
                            IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertBoolConverter}}"
@@ -95,6 +98,7 @@
                 </Border.StrokeShape>
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry Grid.Column="0"
+                           AutomationId="RegisterConfirmPasswordEntry"
                            Text="{Binding ConfirmPassword}"
                            Placeholder="{x:Static res:AppResources.AuthConfirmYourPassword}"
                            IsPassword="{Binding IsConfirmPasswordVisible, Converter={StaticResource InvertBoolConverter}}"

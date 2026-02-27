@@ -20,7 +20,7 @@ The Home screen SHALL display a search bar at the top of the page. The search ba
 - **THEN** the app SHALL navigate to the dedicated Search page
 
 ### Requirement: Search page with autofocus input
-The Search page SHALL display a full editable search input field at the top that receives focus automatically when the page appears. The input SHALL use localized placeholder text (`SearchPlaceholder`). The input SHALL include a clear button (visible when text is entered) and a back button in the top-left corner. Both the back and clear icons SHALL use a theme-aware tint color: `Secondary` (#39485F) in light theme and `White` (#FFFFFF) in dark theme.
+The Search page SHALL display a full editable search input field at the top that receives focus automatically when the page appears. The input SHALL use localized placeholder text (`SearchPlaceholder`). The input SHALL include a clear button (visible when text is entered) and a back button in the top-left corner. Both the back and clear icons SHALL use a theme-aware tint color: `Secondary` (#39485F) in light theme and `White` (#FFFFFF) in dark theme. The Search Entry SHALL have `AutomationId="SearchEntry"`.
 
 #### Scenario: Search page input is auto-focused
 - **WHEN** the Search page is displayed
@@ -49,6 +49,10 @@ The Search page SHALL display a full editable search input field at the top that
 #### Scenario: Search page icons adapt to light theme
 - **WHEN** the Search page is in light theme
 - **THEN** the back and clear icons SHALL be tinted `#39485F` (Secondary)
+
+#### Scenario: Search Entry is locatable by AutomationId
+- **WHEN** the Search page is displayed
+- **THEN** the Search Entry SHALL have `AutomationId="SearchEntry"`
 
 ### Requirement: Recent and popular searches display
 Below the search input, the Search page SHALL display two sections with localized headers: "Recent Searches" (`SearchRecentSearches`) and "Popular Searches" (`SearchPopularSearches`). For MVP, these SHALL contain hardcoded placeholder data displayed as tappable items in vertical lists.

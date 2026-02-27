@@ -26,7 +26,8 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="12" />
                 </Border.StrokeShape>
-                <Entry Text="{Binding Email}"
+                <Entry AutomationId="LoginEmailEntry"
+                       Text="{Binding Email}"
                        Placeholder="{x:Static res:AppResources.AuthEnterEmail}"
                        Keyboard="Email"
                        BackgroundColor="Transparent" />
@@ -46,6 +47,7 @@
                 </Border.StrokeShape>
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry Grid.Column="0"
+                           AutomationId="LoginPasswordEntry"
                            Text="{Binding Password}"
                            Placeholder="{x:Static res:AppResources.AuthEnterPassword}"
                            IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InvertBoolConverter}}"

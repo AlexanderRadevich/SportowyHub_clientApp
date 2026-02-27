@@ -43,7 +43,7 @@ The app SHALL support three theme modes: Light, Dark, and System. In System mode
 - **THEN** `UserAppTheme` SHALL be set before `InitializeComponent()` in the `App` constructor
 
 ### Requirement: Branded control styles in Styles.xaml
-`Resources/Styles/Styles.xaml` SHALL define implicit and named styles for MAUI controls using the brand color palette.
+`Resources/Styles/Styles.xaml` SHALL define implicit and named styles for MAUI controls using the brand color palette. The implicit `Entry` style SHALL include a `CursorColor` setter with `AppThemeBinding` using `Primary` for light theme and `PrimaryDark` for dark theme.
 
 #### Scenario: Primary button style
 - **WHEN** a `Button` uses the `PrimaryButton` style
@@ -60,6 +60,14 @@ The app SHALL support three theme modes: Light, Dark, and System. In System mode
 #### Scenario: Shell tab bar theming
 - **WHEN** the Shell renders the tab bar
 - **THEN** the tab bar background SHALL use `Background`, foreground (active) SHALL use `Primary`/`PrimaryDark`, and unselected tabs SHALL use `TextSecondary`
+
+#### Scenario: Entry cursor is visible in light theme
+- **WHEN** an `Entry` field is focused in light theme
+- **THEN** the cursor color SHALL be `Primary` (`#DE0F21`)
+
+#### Scenario: Entry cursor is visible in dark theme
+- **WHEN** an `Entry` field is focused in dark theme
+- **THEN** the cursor color SHALL be `PrimaryDark` (`#FF3B4D`)
 
 ### Requirement: 8pt spacing system
 All padding, margins, and spacing values SHALL follow an 8pt grid system (multiples of 8: 8, 16, 24, 32, etc.). Consistent spacing SHALL be maintained across all screens and themes.

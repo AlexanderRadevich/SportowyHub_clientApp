@@ -23,6 +23,21 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            })
+            .ConfigureMauiHandlers(handlers =>
+            {
+#if ANDROID
+                Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("CursorColor", (handler, view) =>
+                {
+                    if (!OperatingSystem.IsAndroidVersionAtLeast(29))
+                        return;
+
+                    var color = Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Android.Graphics.Color.ParseColor("#FF3B4D")
+                        : Android.Graphics.Color.ParseColor("#DE0F21");
+                    handler.PlatformView.TextCursorDrawable?.SetTint(color);
+                });
+#endif
             });
 
         // HTTP infrastructure

@@ -1,7 +1,7 @@
 # Auth Screens
 
 ### Requirement: Profile logged-out state
-When the user is not logged in, the Profile tab SHALL display a grouped-list hub layout. The Account section SHALL contain a "Sign In" row (`ProfileSignIn`) and a "Create Account" row (`ProfileCreateAccount`) as tappable list items with chevron indicators. Tapping "Sign In" SHALL navigate to the Login page. Tapping "Create Account" SHALL navigate to the Registration page. All text labels SHALL be sourced from `AppResources` localized resources.
+When the user is not logged in, the Profile tab SHALL display a grouped-list hub layout. The Account section SHALL contain a "Sign In" row (`ProfileSignIn`) and a "Create Account" row (`ProfileCreateAccount`) as tappable list items with chevron indicators. The Sign In row Grid SHALL have `AutomationId="SignInRow"` and the Create Account row Grid SHALL have `AutomationId="CreateAccountRow"`. Tapping "Sign In" SHALL navigate to the Login page. Tapping "Create Account" SHALL navigate to the Registration page. All text labels SHALL be sourced from `AppResources` localized resources.
 
 #### Scenario: Profile shows account rows when logged out
 - **WHEN** the user navigates to the Profile tab and is not logged in
@@ -15,8 +15,16 @@ When the user is not logged in, the Profile tab SHALL display a grouped-list hub
 - **WHEN** the user taps the "Sign In" row
 - **THEN** the app SHALL navigate to the Login page
 
+#### Scenario: Sign In row is locatable by AutomationId
+- **WHEN** the Profile page is displayed in logged-out state
+- **THEN** the Sign In row Grid SHALL have `AutomationId="SignInRow"`
+
+#### Scenario: Create Account row is locatable by AutomationId
+- **WHEN** the Profile page is displayed in logged-out state
+- **THEN** the Create Account row Grid SHALL have `AutomationId="CreateAccountRow"`
+
 ### Requirement: Registration screen with three fields
-The Registration page SHALL display a vertical form with four labeled input fields: Email, Phone, Password, and Confirm Password. The Phone field SHALL use `Keyboard="Telephone"` and display a localized label (`AuthPhone`) and placeholder (`AuthEnterPhone`). The phone field SHALL appear between Email and Password. Each field label, placeholder, and the page title SHALL be sourced from `AppResources` localized resources. A primary "Create Account" button (`AuthCreateAccount`) SHALL be at the bottom. The Registration page SHALL display a general error message area above the Create Account button for server-side errors (email taken, validation failures).
+The Registration page SHALL display a vertical form with four labeled input fields: Email, Phone, Password, and Confirm Password. The Phone field SHALL use `Keyboard="Telephone"` and display a localized label (`AuthPhone`) and placeholder (`AuthEnterPhone`). The phone field SHALL appear between Email and Password. Each field label, placeholder, and the page title SHALL be sourced from `AppResources` localized resources. A primary "Create Account" button (`AuthCreateAccount`) SHALL be at the bottom. The Registration page SHALL display a general error message area above the Create Account button for server-side errors (email taken, validation failures). The headline Label SHALL have `AutomationId="RegisterHeadline"`. The Email Entry SHALL have `AutomationId="RegisterEmailEntry"`. The Phone Entry SHALL have `AutomationId="RegisterPhoneEntry"`. The Password Entry SHALL have `AutomationId="RegisterPasswordEntry"`. The Confirm Password Entry SHALL have `AutomationId="RegisterConfirmPasswordEntry"`.
 
 #### Scenario: Registration form layout
 - **WHEN** the Registration page is displayed
@@ -66,6 +74,26 @@ The Registration page SHALL display a vertical form with four labeled input fiel
 #### Scenario: Network error during registration shows message
 - **WHEN** `RegisterAsync` fails due to a network error
 - **THEN** a user-friendly connection error message SHALL be displayed
+
+#### Scenario: Registration headline is locatable by AutomationId
+- **WHEN** the Registration page is displayed
+- **THEN** the headline Label SHALL have `AutomationId="RegisterHeadline"`
+
+#### Scenario: Register Email Entry is locatable by AutomationId
+- **WHEN** the Registration page is displayed
+- **THEN** the Email Entry SHALL have `AutomationId="RegisterEmailEntry"`
+
+#### Scenario: Register Phone Entry is locatable by AutomationId
+- **WHEN** the Registration page is displayed
+- **THEN** the Phone Entry SHALL have `AutomationId="RegisterPhoneEntry"`
+
+#### Scenario: Register Password Entry is locatable by AutomationId
+- **WHEN** the Registration page is displayed
+- **THEN** the Password Entry SHALL have `AutomationId="RegisterPasswordEntry"`
+
+#### Scenario: Register Confirm Password Entry is locatable by AutomationId
+- **WHEN** the Registration page is displayed
+- **THEN** the Confirm Password Entry SHALL have `AutomationId="RegisterConfirmPasswordEntry"`
 
 ### Requirement: Email validation on Registration
 The email field SHALL validate the input in real-time as the user types. A localized error message (`AuthInvalidEmail`) SHALL appear below the field when the email format is invalid.
@@ -120,7 +148,7 @@ Both the Password and Confirm Password fields on the Registration page, and the 
 - **THEN** the password text SHALL be masked again
 
 ### Requirement: Login screen with two fields
-The Login page SHALL display a vertical form with localized Email and Password fields, a primary "Login" button (`AuthLogin`), a "Forgot password?" link (`AuthForgotPassword`), and a "Create Account" link (`AuthCreateAccount`) with a "Don't have an account?" prefix (`AuthNoAccount`). All text SHALL be sourced from `AppResources` localized resources. The Login page SHALL display a localized email validation error label below the email field when the email format is invalid, matching the Registration page pattern. The Login page SHALL display a general error message area above the Login button for server-side errors (invalid credentials, connection failures).
+The Login page SHALL display a vertical form with localized Email and Password fields, a primary "Login" button (`AuthLogin`), a "Forgot password?" link (`AuthForgotPassword`), and a "Create Account" link (`AuthCreateAccount`) with a "Don't have an account?" prefix (`AuthNoAccount`). All text SHALL be sourced from `AppResources` localized resources. The Login page SHALL display a localized email validation error label below the email field when the email format is invalid, matching the Registration page pattern. The Login page SHALL display a general error message area above the Login button for server-side errors (invalid credentials, connection failures). The headline Label SHALL have `AutomationId="LoginHeadline"`. The Email Entry SHALL have `AutomationId="LoginEmailEntry"`. The Password Entry SHALL have `AutomationId="LoginPasswordEntry"`.
 
 #### Scenario: Login form layout
 - **WHEN** the Login page is displayed
@@ -161,6 +189,18 @@ The Login page SHALL display a vertical form with localized Email and Password f
 #### Scenario: Network error during login shows message
 - **WHEN** `LoginAsync` fails due to a network error
 - **THEN** a user-friendly connection error message SHALL be displayed
+
+#### Scenario: Login headline is locatable by AutomationId
+- **WHEN** the Login page is displayed
+- **THEN** the headline Label SHALL have `AutomationId="LoginHeadline"`
+
+#### Scenario: Login Email Entry is locatable by AutomationId
+- **WHEN** the Login page is displayed
+- **THEN** the Email Entry SHALL have `AutomationId="LoginEmailEntry"`
+
+#### Scenario: Login Password Entry is locatable by AutomationId
+- **WHEN** the Login page is displayed
+- **THEN** the Password Entry SHALL have `AutomationId="LoginPasswordEntry"`
 
 ### Requirement: Error messages below fields
 All form validation error messages across Registration and Login pages SHALL appear directly below the respective input field in red/error-colored text. Error messages SHALL appear and disappear in real-time as the user modifies input.

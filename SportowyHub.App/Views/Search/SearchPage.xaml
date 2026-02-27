@@ -36,6 +36,7 @@
                 </ImageButton>
                 <Entry Grid.Column="1"
                        x:Name="SearchEntry"
+                       AutomationId="SearchEntry"
                        Text="{Binding SearchText}"
                        Placeholder="{x:Static res:AppResources.SearchPlaceholder}"
                        BackgroundColor="Transparent"

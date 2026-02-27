@@ -29,4 +29,40 @@ public class LoginPage
             return false;
         }
     }
+
+    public void TypeEmail(string text)
+    {
+        var entry = _wait.Until(d => d.FindElement(MobileBy.Id("LoginEmailEntry")));
+        entry.SendKeys(text);
+    }
+
+    public string GetEmailText()
+    {
+        var entry = _wait.Until(d => d.FindElement(MobileBy.Id("LoginEmailEntry")));
+        return entry.Text;
+    }
+
+    public void ClearEmail()
+    {
+        var entry = _wait.Until(d => d.FindElement(MobileBy.Id("LoginEmailEntry")));
+        entry.Clear();
+    }
+
+    public void TypePassword(string text)
+    {
+        var entry = _wait.Until(d => d.FindElement(MobileBy.Id("LoginPasswordEntry")));
+        entry.SendKeys(text);
+    }
+
+    public string GetPasswordText()
+    {
+        var entry = _wait.Until(d => d.FindElement(MobileBy.Id("LoginPasswordEntry")));
+        return entry.Text;
+    }
+
+    public void ClearPassword()
+    {
+        var entry = _wait.Until(d => d.FindElement(MobileBy.Id("LoginPasswordEntry")));
+        entry.Clear();
+    }
 }
