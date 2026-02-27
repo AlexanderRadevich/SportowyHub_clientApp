@@ -17,11 +17,11 @@ public partial class LoginViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string Email { get; set; }
+    public partial string Email { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
-    public partial string Password { get; set; }
+    public partial string Password { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsPasswordVisible { get; set; }
@@ -74,26 +74,30 @@ public partial class LoginViewModel : ObservableObject
 
             if (result.IsSuccess)
             {
-                await Shell.Current.GoToAsync("//");
+                await Shell.Current.GoToAsync("..");
+                Shell.Current.CurrentItem = Shell.Current.Items[0];
+                return;
             }
-            else if (result.ErrorCode == "EMAIL_NOT_VERIFIED")
+
+            if (result.ErrorCode == "EMAIL_NOT_VERIFIED")
             {
                 await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
+                return;
             }
-            else
-            {
-                if (result.FieldErrors?.TryGetValue("email", out var emailErr) == true)
-                {
-                    EmailError = emailErr;
-                }
 
-                LoginError = result.ErrorMessage ?? "Login failed.";
+            if (result.FieldErrors?.TryGetValue("email", out var emailErr) == true)
+            {
+                EmailError = emailErr;
             }
+
+            LoginError = result.ErrorMessage ?? "Login failed.";
         }
-        finally
+        catch
         {
-            IsLoading = false;
+            LoginError = "Connection error. Please try again.";
         }
+
+        IsLoading = false;
     }
 
     [RelayCommand]
@@ -105,7 +109,7 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToRegister()
     {
-        await Shell.Current.GoToAsync("//register");
+        await Shell.Current.GoToAsync("../register");
     }
 
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]

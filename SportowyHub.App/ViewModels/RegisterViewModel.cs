@@ -17,19 +17,19 @@ public partial class RegisterViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    public partial string Email { get; set; }
+    public partial string Email { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    public partial string Password { get; set; }
+    public partial string Password { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    public partial string ConfirmPassword { get; set; }
+    public partial string ConfirmPassword { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-    public partial string Phone { get; set; }
+    public partial string Phone { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string EmailError { get; set; } = string.Empty;
@@ -171,6 +171,7 @@ public partial class RegisterViewModel : ObservableObject
                     PhoneError = phoneErr;
 
                 RegisterError = registerResult.ErrorMessage ?? "Registration failed.";
+                IsLoading = false;
                 return;
             }
 
@@ -187,8 +188,9 @@ public partial class RegisterViewModel : ObservableObject
                 await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
             }
         }
-        finally
+        catch
         {
+            RegisterError = "Connection error. Please try again.";
             IsLoading = false;
         }
     }

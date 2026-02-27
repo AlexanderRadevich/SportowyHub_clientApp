@@ -17,7 +17,7 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Description))]
-    public partial string Email { get; set; }
+    public partial string Email { get; set; } = string.Empty;
 
     public string Description => string.Format(AppResources.EmailVerificationDescription, Email);
 
@@ -26,7 +26,7 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    public partial string StatusMessage { get; set; }
+    public partial string StatusMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsStatusError { get; set; }
