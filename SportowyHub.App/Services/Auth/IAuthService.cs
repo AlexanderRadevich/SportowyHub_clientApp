@@ -14,4 +14,5 @@ public interface IAuthService
     Task ClearAuthAsync();
     Task LogoutAsync();
     Task<UserProfile?> GetProfileAsync();
+    Task<UserProfile?> UpdateProfileAsync(UpdateProfileRequest request);
 }

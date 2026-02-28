@@ -61,6 +61,21 @@ public class RequestProvider : IRequestProvider
         return (TResult)JsonSerializer.Deserialize(content, typeof(TResult), SportowyHubJsonContext.Default)!;
     }
 
+    public async Task<TResponse> PutAsync<TRequest, TResponse>(string uri, TRequest data, string token = "")
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, uri);
+        SetAuthHeader(request, token);
+
+        var json = JsonSerializer.Serialize(data, typeof(TRequest), SportowyHubJsonContext.Default);
+        request.Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+        await HandleResponse(response);
+
+        var content = await response.Content.ReadAsStringAsync();
+        return (TResponse)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default)!;
+    }
+
     public async Task DeleteAsync(string uri, string token = "")
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, uri);

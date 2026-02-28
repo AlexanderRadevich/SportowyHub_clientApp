@@ -61,16 +61,23 @@
 
                     <!-- Email (shown below name if name exists) -->
                     <Label Text="{Binding DisplayEmail}"
-                           IsVisible="{Binding Profile.FirstName, Converter={StaticResource IsNotNullConverter}}"
+                           IsVisible="{Binding HasName}"
                            FontSize="14"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                            HorizontalTextAlignment="Center" />
 
-                    <!-- Trust Level -->
-                    <Label Text="{Binding Profile.TrustLevel, StringFormat='{0}'}"
+                    <!-- Trust Level + Reputation -->
+                    <Label Text="{Binding TrustInfo}"
                            FontSize="13"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                            HorizontalTextAlignment="Center" />
+
+                    <!-- Edit Profile Button -->
+                    <Button Text="{x:Static res:AppResources.EditProfileTitle}"
+                            Command="{Binding EditProfileCommand}"
+                            Style="{StaticResource SecondaryButton}"
+                            HorizontalOptions="Center"
+                            Margin="0,8,0,0" />
                 </VerticalStackLayout>
 
                 <!-- Contact Section Header -->
@@ -166,6 +173,65 @@
                            Text="{Binding Profile.TrustLevel}"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                            VerticalOptions="Center" />
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+
+                <!-- Reputation Score Row -->
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfileReputationScore}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{Binding Profile.ReputationScore}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+
+                <!-- Balance Row -->
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfileBalance}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{Binding FormattedBalance}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                </Grid>
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                         Margin="16,0" />
+
+                <!-- Google Account Row -->
+                <Grid Padding="16,0"
+                      HeightRequest="48"
+                      ColumnDefinitions="*,Auto">
+                    <Label Text="{x:Static res:AppResources.ProfileGoogleLinked}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           VerticalOptions="Center"
+                           FontSize="12">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding IsGoogleLinked}"
+                                         Value="True">
+                                <Setter Property="Text" Value="{x:Static res:AppResources.ProfileLinked}" />
+                                <Setter Property="TextColor" Value="{StaticResource Success}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding IsGoogleLinked}"
+                                         Value="False">
+                                <Setter Property="Text" Value="{x:Static res:AppResources.ProfileNotLinked}" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
                 </Grid>
                 <BoxView HeightRequest="1"
                          Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"

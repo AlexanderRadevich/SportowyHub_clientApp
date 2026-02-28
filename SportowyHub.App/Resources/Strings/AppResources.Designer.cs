@@ -113,4 +113,22 @@ public static class AppResources
     public static string ProfileNotSet => ResourceManager.GetString("ProfileNotSet", Culture)!;
     public static string ProfileTrustLevel => ResourceManager.GetString("ProfileTrustLevel", Culture)!;
     public static string ProfileLoadError => ResourceManager.GetString("ProfileLoadError", Culture)!;
+    public static string ProfileReputationScore => ResourceManager.GetString("ProfileReputationScore", Culture)!;
+    public static string ProfileBalance => ResourceManager.GetString("ProfileBalance", Culture)!;
+    public static string ProfileGoogleLinked => ResourceManager.GetString("ProfileGoogleLinked", Culture)!;
+    public static string ProfileLinked => ResourceManager.GetString("ProfileLinked", Culture)!;
+    public static string ProfileNotLinked => ResourceManager.GetString("ProfileNotLinked", Culture)!;
+
+    // Edit Profile
+    public static string EditProfileTitle => ResourceManager.GetString("EditProfileTitle", Culture)!;
+    public static string EditProfileFirstName => ResourceManager.GetString("EditProfileFirstName", Culture)!;
+    public static string EditProfileLastName => ResourceManager.GetString("EditProfileLastName", Culture)!;
+    public static string EditProfilePhone => ResourceManager.GetString("EditProfilePhone", Culture)!;
+    public static string EditProfileNotifications => ResourceManager.GetString("EditProfileNotifications", Culture)!;
+    public static string EditProfileQuietHoursStart => ResourceManager.GetString("EditProfileQuietHoursStart", Culture)!;
+    public static string EditProfileQuietHoursEnd => ResourceManager.GetString("EditProfileQuietHoursEnd", Culture)!;
+    public static string EditProfileSave => ResourceManager.GetString("EditProfileSave", Culture)!;
+    public static string EditProfileSuccess => ResourceManager.GetString("EditProfileSuccess", Culture)!;
+    public static string EditProfileError => ResourceManager.GetString("EditProfileError", Culture)!;
+    public static string EditProfileInvalidTime => ResourceManager.GetString("EditProfileInvalidTime", Culture)!;
 }

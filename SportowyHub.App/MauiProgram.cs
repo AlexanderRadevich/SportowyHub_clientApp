@@ -56,6 +56,7 @@ public static class MauiProgram
         builder.Services.AddTransient<FavoritesPage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<AccountProfilePage>();
+        builder.Services.AddTransient<EditProfilePage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<EmailVerificationPage>();
@@ -67,6 +68,7 @@ public static class MauiProgram
         builder.Services.AddTransient<EmailVerificationViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<AccountProfileViewModel>();
+        builder.Services.AddTransient<EditProfileViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

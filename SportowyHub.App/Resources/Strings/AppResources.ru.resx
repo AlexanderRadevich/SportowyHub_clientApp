@@ -264,4 +264,53 @@
   <data name="ProfileLoadError" xml:space="preserve">
     <value>Не удалось загрузить профиль. Попробуйте ещё раз.</value>
   </data>
+  <data name="ProfileReputationScore" xml:space="preserve">
+    <value>Очки репутации</value>
+  </data>
+  <data name="ProfileBalance" xml:space="preserve">
+    <value>Баланс</value>
+  </data>
+  <data name="ProfileGoogleLinked" xml:space="preserve">
+    <value>Аккаунт Google</value>
+  </data>
+  <data name="ProfileLinked" xml:space="preserve">
+    <value>Привязан</value>
+  </data>
+  <data name="ProfileNotLinked" xml:space="preserve">
+    <value>Не привязан</value>
+  </data>
+  <!-- Edit Profile -->
+  <data name="EditProfileTitle" xml:space="preserve">
+    <value>Редактировать профиль</value>
+  </data>
+  <data name="EditProfileFirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="EditProfileLastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="EditProfilePhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="EditProfileNotifications" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="EditProfileQuietHoursStart" xml:space="preserve">
+    <value>Тихий час с</value>
+  </data>
+  <data name="EditProfileQuietHoursEnd" xml:space="preserve">
+    <value>Тихий час до</value>
+  </data>
+  <data name="EditProfileSave" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="EditProfileSuccess" xml:space="preserve">
+    <value>Профиль обновлён</value>
+  </data>
+  <data name="EditProfileError" xml:space="preserve">
+    <value>Не удалось обновить профиль</value>
+  </data>
+  <data name="EditProfileInvalidTime" xml:space="preserve">
+    <value>Неверный формат времени (HH:mm)</value>
+  </data>
 </root>

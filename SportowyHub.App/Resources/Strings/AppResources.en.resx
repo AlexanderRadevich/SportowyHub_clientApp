@@ -264,4 +264,53 @@
   <data name="ProfileLoadError" xml:space="preserve">
     <value>Failed to load profile. Please try again.</value>
   </data>
+  <data name="ProfileReputationScore" xml:space="preserve">
+    <value>Reputation score</value>
+  </data>
+  <data name="ProfileBalance" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="ProfileGoogleLinked" xml:space="preserve">
+    <value>Google Account</value>
+  </data>
+  <data name="ProfileLinked" xml:space="preserve">
+    <value>Linked</value>
+  </data>
+  <data name="ProfileNotLinked" xml:space="preserve">
+    <value>Not linked</value>
+  </data>
+  <!-- Edit Profile -->
+  <data name="EditProfileTitle" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  <data name="EditProfileFirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="EditProfileLastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="EditProfilePhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="EditProfileNotifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="EditProfileQuietHoursStart" xml:space="preserve">
+    <value>Quiet hours from</value>
+  </data>
+  <data name="EditProfileQuietHoursEnd" xml:space="preserve">
+    <value>Quiet hours to</value>
+  </data>
+  <data name="EditProfileSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="EditProfileSuccess" xml:space="preserve">
+    <value>Profile updated successfully</value>
+  </data>
+  <data name="EditProfileError" xml:space="preserve">
+    <value>Failed to update profile</value>
+  </data>
+  <data name="EditProfileInvalidTime" xml:space="preserve">
+    <value>Invalid time format (HH:mm)</value>
+  </data>
 </root>

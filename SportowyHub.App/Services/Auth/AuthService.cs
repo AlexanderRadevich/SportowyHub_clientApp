@@ -175,6 +175,15 @@ public class AuthService : IAuthService
         return await _requestProvider.GetAsync<UserProfile>("/api/private/profile", token);
     }
 
+    public async Task<UserProfile?> UpdateProfileAsync(UpdateProfileRequest request)
+    {
+        var token = await SecureStorage.GetAsync(TokenKey);
+        if (string.IsNullOrEmpty(token))
+            return null;
+
+        return await _requestProvider.PutAsync<UpdateProfileRequest, UserProfile>("/api/private/profile", request, token);
+    }
+
     public Task ClearAuthAsync()
     {
         SecureStorage.Remove(TokenKey);

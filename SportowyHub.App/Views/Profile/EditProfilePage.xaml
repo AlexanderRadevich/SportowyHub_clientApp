@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             x:Class="SportowyHub.Views.Profile.EditProfilePage"
+             x:DataType="vm:EditProfileViewModel"
+             Title="{x:Static res:AppResources.EditProfileTitle}"
+             Shell.TabBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="8">
+
+            <!-- First Name -->
+            <Label Text="{x:Static res:AppResources.EditProfileFirstName}" Style="{StaticResource FieldLabel}" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding FirstName}"
+                       Placeholder="{x:Static res:AppResources.EditProfileFirstName}"
+                       BackgroundColor="Transparent" />
+            </Border>
+
+            <!-- Last Name -->
+            <Label Text="{x:Static res:AppResources.EditProfileLastName}" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding LastName}"
+                       Placeholder="{x:Static res:AppResources.EditProfileLastName}"
+                       BackgroundColor="Transparent" />
+            </Border>
+
+            <!-- Phone -->
+            <Label Text="{x:Static res:AppResources.EditProfilePhone}" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding Phone}"
+                       Placeholder="{x:Static res:AppResources.EditProfilePhone}"
+                       Keyboard="Telephone"
+                       BackgroundColor="Transparent" />
+            </Border>
+            <Label Text="{Binding PhoneError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding PhoneError.Length, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- Notifications -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,16,0,0">
+                <Label Text="{x:Static res:AppResources.EditProfileNotifications}"
+                       VerticalOptions="Center" />
+                <Switch Grid.Column="1"
+                        IsToggled="{Binding NotificationsEnabled}"
+                        OnColor="{StaticResource Primary}" />
+            </Grid>
+
+            <!-- Quiet Hours Start -->
+            <Label Text="{x:Static res:AppResources.EditProfileQuietHoursStart}" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding QuietHoursStart}"
+                       Placeholder="HH:mm"
+                       Keyboard="Numeric"
+                       BackgroundColor="Transparent" />
+            </Border>
+            <Label Text="{Binding QuietHoursStartError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding QuietHoursStartError.Length, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- Quiet Hours End -->
+            <Label Text="{x:Static res:AppResources.EditProfileQuietHoursEnd}" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding QuietHoursEnd}"
+                       Placeholder="HH:mm"
+                       Keyboard="Numeric"
+                       BackgroundColor="Transparent" />
+            </Border>
+            <Label Text="{Binding QuietHoursEndError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding QuietHoursEndError.Length, Converter={StaticResource IntToBoolConverter}}" />
+
+            <!-- General Error -->
+            <Label Text="{Binding GeneralError}"
+                   Style="{StaticResource ErrorLabel}"
+                   IsVisible="{Binding GeneralError.Length, Converter={StaticResource IntToBoolConverter}}"
+                   Margin="0,16,0,0" />
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                               Margin="0,8,0,0" />
+
+            <!-- Save Button -->
+            <Button Text="{x:Static res:AppResources.EditProfileSave}"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    HorizontalOptions="Fill"
+                    Margin="0,8,0,16" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

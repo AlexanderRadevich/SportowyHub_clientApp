@@ -105,3 +105,57 @@ The `AuthResult<T>` record SHALL include an `ErrorCode` (string, nullable) prope
 #### Scenario: New models are serializable via source generation
 - **WHEN** `ResendVerificationRequest` or `ResendVerificationResponse` is serialized/deserialized
 - **THEN** the operation SHALL succeed using the source-generated JSON context
+
+### Requirement: UserAccount nested model
+The app SHALL define a `UserAccount` record with properties: `FirstName` (string?), `LastName` (string?), `FullName` (string?), `AvatarUrl` (string?), `AvatarThumbnailUrl` (string?), `NotificationsEnabled` (bool), `QuietHoursStart` (string?), `QuietHoursEnd` (string?), `Locale` (string?), `BalanceGrosze` (int), `BalanceUpdatedAt` (string?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+
+#### Scenario: UserAccount deserializes from nested account object
+- **WHEN** the API returns a profile response with `"account": {"first_name": "John", "last_name": "Doe", "full_name": "John Doe", "balance_grosze": 1500, "notifications_enabled": true}`
+- **THEN** the `UserAccount` record SHALL contain FirstName="John", LastName="Doe", FullName="John Doe", BalanceGrosze=1500, NotificationsEnabled=true
+
+#### Scenario: UserAccount handles all-null optional fields
+- **WHEN** the API returns an account object with all nullable fields as null
+- **THEN** the corresponding C# properties SHALL be `null`, and `BalanceGrosze` SHALL be 0, `NotificationsEnabled` SHALL deserialize to its actual value
+
+### Requirement: OauthLinked nested model
+The app SHALL define an `OauthLinked` record with property `Google` (bool). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+
+#### Scenario: OauthLinked deserializes from API response
+- **WHEN** the API returns `"oauth_linked": {"google": true}`
+- **THEN** the `OauthLinked` record SHALL contain Google=true
+
+#### Scenario: OauthLinked with no providers linked
+- **WHEN** the API returns `"oauth_linked": {"google": false}`
+- **THEN** the `OauthLinked` record SHALL contain Google=false
+
+### Requirement: JSON context registrations for new profile models
+`SportowyHubJsonContext` SHALL include `[JsonSerializable]` attributes for `UserAccount` and `OauthLinked`.
+
+#### Scenario: New models are serializable via source generation
+- **WHEN** `UserAccount` or `OauthLinked` is deserialized via the source-generated JSON context
+- **THEN** the operation SHALL succeed without runtime reflection
+
+### Requirement: UpdateProfileRequest model
+The app SHALL define an `UpdateProfileRequest` record with properties: `Phone` (string?) and `Account` (UpdateProfileAccountRequest?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+
+#### Scenario: UpdateProfileRequest serializes to API format
+- **WHEN** an `UpdateProfileRequest` with Phone="123456789" and Account with FirstName="John" is serialized
+- **THEN** the JSON output SHALL be `{"phone":"123456789","account":{"first_name":"John",...}}`
+
+#### Scenario: UpdateProfileRequest with null optional fields
+- **WHEN** an `UpdateProfileRequest` with Phone=null is serialized
+- **THEN** `phone` SHALL be null in the JSON output
+
+### Requirement: UpdateProfileAccountRequest model
+The app SHALL define an `UpdateProfileAccountRequest` record with properties: `FirstName` (string?), `LastName` (string?), `NotificationsEnabled` (bool), `QuietHoursStart` (string?), `QuietHoursEnd` (string?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+
+#### Scenario: UpdateProfileAccountRequest serializes nested fields
+- **WHEN** an `UpdateProfileAccountRequest` with FirstName="John", LastName="Doe", NotificationsEnabled=true is serialized
+- **THEN** the JSON output SHALL include `"first_name":"John"`, `"last_name":"Doe"`, `"notifications_enabled":true`
+
+### Requirement: PutAsync with separate request and response types
+`IRequestProvider` SHALL expose a `PutAsync<TRequest, TResponse>` method that accepts a request body of type `TRequest` and returns a response of type `TResponse`. The implementation SHALL follow the same pattern as `PostAsync<TRequest, TResponse>`.
+
+#### Scenario: PutAsync sends request type and deserializes response type
+- **WHEN** `PutAsync<UpdateProfileRequest, UserProfile>` is called
+- **THEN** the request SHALL be serialized as `UpdateProfileRequest` and the response SHALL be deserialized as `UserProfile`
