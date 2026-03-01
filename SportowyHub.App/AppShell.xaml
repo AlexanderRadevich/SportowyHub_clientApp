@@ -8,7 +8,13 @@
     xmlns:favorites="clr-namespace:SportowyHub.Views.Favorites"
     xmlns:profile="clr-namespace:SportowyHub.Views.Profile"
     xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="SportowyHub">
+
+    <Shell.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgroundDark}}"
+                                  StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent}" />
+    </Shell.Behaviors>
 
     <TabBar>
         <Tab Title="{x:Static res:AppResources.TabHome}" Icon="icon_home.svg">
