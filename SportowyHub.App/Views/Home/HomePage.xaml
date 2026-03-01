@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:models="clr-namespace:SportowyHub.Models.Api"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Home.HomePage"
+             x:DataType="vm:HomeViewModel"
              Title="{x:Static res:AppResources.HomeTitle}">
 
     <Grid RowDefinitions="Auto,*" Padding="16">
 
-        <!-- Search Bar -->
         <Border Grid.Row="0"
                 BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
                 StrokeThickness="{AppThemeBinding Light=0, Dark=1}"
@@ -19,7 +21,7 @@
                 <RoundRectangle CornerRadius="14" />
             </Border.StrokeShape>
             <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnSearchBarTapped" />
+                <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
             </Border.GestureRecognizers>
             <HorizontalStackLayout Spacing="12">
                 <Image Source="icon_search_bar.svg"
@@ -37,15 +39,72 @@
             </HorizontalStackLayout>
         </Border>
 
-        <!-- Placeholder content -->
-        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center">
-            <Label Text="{x:Static res:AppResources.HomeTitle}"
-                   Style="{StaticResource Headline}"
-                   Margin="0,0,0,8" />
-            <Label Text="{x:Static res:AppResources.HomeContentComingSoon}"
-                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                   HorizontalTextAlignment="Center" />
-        </VerticalStackLayout>
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <Grid>
+                <CollectionView ItemsSource="{Binding Listings}"
+                                RemainingItemsThreshold="5"
+                                RemainingItemsThresholdReachedCommand="{Binding LoadMoreListingsCommand}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ListingSummary">
+                            <Border Padding="12"
+                                    Margin="0,0,0,8"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToListingDetailCommand}"
+                                        CommandParameter="{Binding}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Title}"
+                                           FontSize="16"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2" />
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label FontSize="15"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="Price" />
+                                                    <Binding Path="Currency" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding City}"
+                                           FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40">
+                            <Label Text="{x:Static res:AppResources.HomeEmptyListings}"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                   VerticalOptions="Start"
+                                   HorizontalOptions="Center"
+                                   Margin="0,16,0,0" />
+            </Grid>
+        </RefreshView>
 
     </Grid>
 

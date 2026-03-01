@@ -133,6 +133,15 @@
   <data name="HomeContentComingSoon" xml:space="preserve">
     <value>Wkrótce pojawi się zawartość</value>
   </data>
+  <data name="HomeEmptyListings" xml:space="preserve">
+    <value>Brak ogłoszeń do wyświetlenia</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>Coś poszło nie tak. Spróbuj ponownie.</value>
+  </data>
+  <data name="SearchNoResults" xml:space="preserve">
+    <value>Nie znaleziono wyników</value>
+  </data>
   <!-- Search -->
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Szukaj produktów...</value>

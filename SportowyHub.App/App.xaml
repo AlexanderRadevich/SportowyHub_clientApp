@@ -12,6 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <converters:InvertIntToBoolConverter x:Key="InvertIntToBoolConverter" />
             <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
             <converters:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />

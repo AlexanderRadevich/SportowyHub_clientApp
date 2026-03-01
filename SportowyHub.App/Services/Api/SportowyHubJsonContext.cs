@@ -20,5 +20,12 @@ namespace SportowyHub.Services.Api;
 [JsonSerializable(typeof(OauthLinked))]
 [JsonSerializable(typeof(UpdateProfileRequest))]
 [JsonSerializable(typeof(UpdateProfileAccountRequest))]
+[JsonSerializable(typeof(ListingSummary))]
+[JsonSerializable(typeof(ListingsResponse))]
+[JsonSerializable(typeof(ListingDetail))]
+[JsonSerializable(typeof(SearchResultItem))]
+[JsonSerializable(typeof(GeoLocation))]
+[JsonSerializable(typeof(SearchAttribute))]
+[JsonSerializable(typeof(SearchResponse))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 public partial class SportowyHubJsonContext : JsonSerializerContext;

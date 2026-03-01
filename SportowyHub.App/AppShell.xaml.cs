@@ -13,5 +13,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("email-verification", typeof(EmailVerificationPage));
         Routing.RegisterRoute("account-profile", typeof(Views.Profile.AccountProfilePage));
         Routing.RegisterRoute("edit-profile", typeof(Views.Profile.EditProfilePage));
+        Routing.RegisterRoute("listing-detail", typeof(Views.Listings.ListingDetailPage));
     }
 }

@@ -5,9 +5,11 @@ using SportowyHub.Views.Search;
 using SportowyHub.Views.Favorites;
 using SportowyHub.Views.Profile;
 using SportowyHub.Views.Auth;
+using SportowyHub.Views.Listings;
 using SportowyHub.ViewModels;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
@@ -49,6 +51,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRequestProvider, RequestProvider>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
         builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<IListingsService, ListingsService>();
         builder.Services.AddSingleton<IToastService, ToastService>();
 
         // Pages
@@ -61,6 +64,7 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<EmailVerificationPage>();
+        builder.Services.AddTransient<ListingDetailPage>();
 
         // ViewModels
         builder.Services.AddTransient<SearchViewModel>();
@@ -70,6 +74,8 @@ public static class MauiProgram
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<AccountProfileViewModel>();
         builder.Services.AddTransient<EditProfileViewModel>();
+        builder.Services.AddTransient<HomeViewModel>();
+        builder.Services.AddTransient<ListingDetailViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -133,6 +133,15 @@
   <data name="HomeContentComingSoon" xml:space="preserve">
     <value>Контент скоро появится</value>
   </data>
+  <data name="HomeEmptyListings" xml:space="preserve">
+    <value>Нет объявлений для отображения</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>Что-то пошло не так. Попробуйте ещё раз.</value>
+  </data>
+  <data name="SearchNoResults" xml:space="preserve">
+    <value>Результаты не найдены</value>
+  </data>
   <!-- Search -->
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Искать товары...</value>

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:models="clr-namespace:SportowyHub.Models.Api"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Search.SearchPage"
@@ -9,9 +10,8 @@
              Title="{x:Static res:AppResources.TabSearch}"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*" Padding="16">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
 
-        <!-- Search Input Bar -->
         <Border Grid.Row="0"
                 BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
                 StrokeThickness="{AppThemeBinding Light=0, Dark=1}"
@@ -58,11 +58,17 @@
             </Grid>
         </Border>
 
-        <!-- Search Suggestions -->
-        <ScrollView Grid.Row="1">
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsSearching}"
+                           IsVisible="{Binding IsSearching}"
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                           HorizontalOptions="Center"
+                           Margin="0,0,0,8" />
+
+        <ScrollView Grid.Row="2"
+                    IsVisible="{Binding SearchText.Length, Converter={StaticResource InvertIntToBoolConverter}}">
             <VerticalStackLayout Spacing="24">
 
-                <!-- Recent Searches -->
                 <VerticalStackLayout Spacing="8">
                     <Label Text="{x:Static res:AppResources.SearchRecentSearches}" Style="{StaticResource SectionHeader}" />
                     <CollectionView ItemsSource="{Binding RecentSearches}">
@@ -83,7 +89,6 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <!-- Popular Searches -->
                 <VerticalStackLayout Spacing="8">
                     <Label Text="{x:Static res:AppResources.SearchPopularSearches}" Style="{StaticResource SectionHeader}" />
                     <CollectionView ItemsSource="{Binding PopularSearches}">
@@ -106,6 +111,54 @@
 
             </VerticalStackLayout>
         </ScrollView>
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding SearchResults}"
+                        IsVisible="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}"
+                        RemainingItemsThreshold="5"
+                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreSearchResultsCommand}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:SearchResultItem">
+                    <Border Padding="12"
+                            Margin="0,0,0,8"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                            StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=GoToListingDetailCommand}"
+                                CommandParameter="{Binding}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding Title}"
+                                   FontSize="16"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2" />
+                            <Label FontSize="15"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                   Text="{Binding Price, StringFormat='{0:F2}'}" />
+                            <Label Text="{Binding City}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40">
+                    <Label Text="{x:Static res:AppResources.SearchNoResults}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           HorizontalTextAlignment="Center"
+                           IsVisible="{Binding ShowNoResults}" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
 
     </Grid>
 

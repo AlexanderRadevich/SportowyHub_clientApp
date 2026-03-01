@@ -131,4 +131,13 @@ public static class AppResources
     public static string EditProfileSuccess => ResourceManager.GetString("EditProfileSuccess", Culture)!;
     public static string EditProfileError => ResourceManager.GetString("EditProfileError", Culture)!;
     public static string EditProfileInvalidTime => ResourceManager.GetString("EditProfileInvalidTime", Culture)!;
+
+    // Home Feed
+    public static string HomeEmptyListings => ResourceManager.GetString("HomeEmptyListings", Culture)!;
+
+    // Errors
+    public static string ErrorGeneric => ResourceManager.GetString("ErrorGeneric", Culture)!;
+
+    // Search Results
+    public static string SearchNoResults => ResourceManager.GetString("SearchNoResults", Culture)!;
 }

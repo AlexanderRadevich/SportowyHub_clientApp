@@ -1,18 +1,25 @@
+using SportowyHub.ViewModels;
+
 namespace SportowyHub.Views.Home;
 
 public partial class HomePage : ContentPage
 {
-    public HomePage()
+    private readonly HomeViewModel _viewModel;
+
+    public HomePage(HomeViewModel viewModel)
     {
         InitializeComponent();
+        _viewModel = viewModel;
+        BindingContext = viewModel;
     }
 
-    private async void OnSearchBarTapped(object? sender, TappedEventArgs e)
+    protected override void OnAppearing()
     {
-        // Navigate to the Search tab (index 1)
-        if (Shell.Current is Shell shell)
+        base.OnAppearing();
+
+        if (_viewModel.Listings.Count == 0)
         {
-            shell.CurrentItem = shell.Items[0].Items[1];
+            _viewModel.LoadListingsCommand.Execute(null);
         }
     }
 }
