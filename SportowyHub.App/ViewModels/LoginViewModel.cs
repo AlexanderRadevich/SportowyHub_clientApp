@@ -3,21 +3,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
-public partial class LoginViewModel : ObservableObject
+public partial class LoginViewModel(
+    IAuthService authService,
+    INavigationService nav,
+    IToastService toastService) : ObservableObject
 {
-    private readonly IAuthService _authService;
-    private readonly IToastService _toastService;
-
-    public LoginViewModel(IAuthService authService, IToastService toastService)
-    {
-        _authService = authService;
-        _toastService = toastService;
-    }
-
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
     public partial string Email { get; set; } = string.Empty;
@@ -65,7 +60,7 @@ public partial class LoginViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(CanLogin))]
-    private async Task Login()
+    private async Task Login(CancellationToken ct)
     {
         LoginError = string.Empty;
         EmailError = string.Empty;
@@ -73,18 +68,18 @@ public partial class LoginViewModel : ObservableObject
 
         try
         {
-            var result = await _authService.LoginAsync(Email, Password);
+            var result = await authService.LoginAsync(Email, Password, ct);
 
             if (result.IsSuccess)
             {
-                await Shell.Current.GoToAsync(".."); // pop login from Profile tab stack
-                await Shell.Current.GoToAsync("//home");
+                await nav.GoToAsync("..");
+                await nav.GoToAsync("//home");
                 return;
             }
 
             if (result.ErrorCode == "EMAIL_NOT_VERIFIED")
             {
-                await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
+                await nav.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
                 return;
             }
 
@@ -94,15 +89,17 @@ public partial class LoginViewModel : ObservableObject
             }
 
             LoginError = result.ErrorMessage ?? "Login failed.";
-            await _toastService.ShowError(LoginError);
+            await toastService.ShowError(LoginError);
         }
         catch (Exception ex)
         {
             LoginError = "Connection error. Please try again.";
-            await _toastService.ShowError(ex.Message);
+            await toastService.ShowError(ex.Message);
         }
-
-        IsLoading = false;
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]
@@ -114,7 +111,7 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToRegister()
     {
-        await Shell.Current.GoToAsync("../register");
+        await nav.GoToAsync("../register");
     }
 
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]

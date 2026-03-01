@@ -6,21 +6,16 @@ using SportowyHub.Models.Api;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
-public partial class EditProfileViewModel : ObservableObject, IQueryAttributable
+public partial class EditProfileViewModel(
+    IAuthService authService,
+    INavigationService nav,
+    IToastService toastService) : ObservableObject, IQueryAttributable
 {
-    private readonly IAuthService _authService;
-    private readonly IToastService _toastService;
-
-    public EditProfileViewModel(IAuthService authService, IToastService toastService)
-    {
-        _authService = authService;
-        _toastService = toastService;
-    }
-
     [ObservableProperty]
     public partial string FirstName { get; set; } = string.Empty;
 
@@ -88,13 +83,15 @@ public partial class EditProfileViewModel : ObservableObject, IQueryAttributable
     private bool CanSave() => !IsLoading;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
-    private async Task Save()
+    private async Task Save(CancellationToken ct)
     {
         GeneralError = string.Empty;
         PhoneError = string.Empty;
 
         if (!string.IsNullOrWhiteSpace(QuietHoursStartError) || !string.IsNullOrWhiteSpace(QuietHoursEndError))
+        {
             return;
+        }
 
         IsLoading = true;
 
@@ -109,42 +106,30 @@ public partial class EditProfileViewModel : ObservableObject, IQueryAttributable
                     QuietHoursStart: string.IsNullOrWhiteSpace(QuietHoursStart) ? null : QuietHoursStart,
                     QuietHoursEnd: string.IsNullOrWhiteSpace(QuietHoursEnd) ? null : QuietHoursEnd));
 
-            await _authService.UpdateProfileAsync(request);
-            await _toastService.ShowSuccess(AppResources.EditProfileSuccess);
-            await Shell.Current.GoToAsync("..");
+            await authService.UpdateProfileAsync(request, ct);
+            await toastService.ShowSuccess(AppResources.EditProfileSuccess);
+            await nav.GoBackAsync();
         }
         catch (HttpRequestException ex)
         {
-            var (message, fieldErrors, _) = ParseError(ex.Message);
+            var (message, fieldErrors, _) = ApiErrorParser.Parse(ex.Message, AppResources.EditProfileError);
 
             if (fieldErrors?.TryGetValue("phone", out var phoneErr) == true)
+            {
                 PhoneError = phoneErr;
+            }
 
             GeneralError = message;
         }
         catch (Exception ex)
         {
             GeneralError = AppResources.EditProfileError;
-            await _toastService.ShowError(ex.Message);
+            await toastService.ShowError(ex.Message);
         }
-
-        IsLoading = false;
-    }
-
-    private static (string Message, Dictionary<string, string>? FieldErrors, string? ErrorCode) ParseError(string content)
-    {
-        try
+        finally
         {
-            var apiError = JsonSerializer.Deserialize(content, SportowyHubJsonContext.Default.ApiError);
-            if (apiError?.Error != null)
-                return (apiError.Error.Message, apiError.Error.Violations, apiError.Error.Code);
+            IsLoading = false;
         }
-        catch
-        {
-            // Ignore parse failures
-        }
-
-        return (AppResources.EditProfileError, null, null);
     }
 
     [GeneratedRegex(@"^([01]\d|2[0-3]):[0-5]\d$")]

@@ -3,21 +3,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
-public partial class RegisterViewModel : ObservableObject
+public partial class RegisterViewModel(
+    IAuthService authService,
+    INavigationService nav,
+    IToastService toastService) : ObservableObject
 {
-    private readonly IAuthService _authService;
-    private readonly IToastService _toastService;
-
-    public RegisterViewModel(IAuthService authService, IToastService toastService)
-    {
-        _authService = authService;
-        _toastService = toastService;
-    }
-
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
     public partial string Email { get; set; } = string.Empty;
@@ -137,25 +132,35 @@ public partial class RegisterViewModel : ObservableObject
     private bool CanCreateAccount()
     {
         if (IsLoading)
+        {
             return false;
+        }
 
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Phone) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
+        {
             return false;
+        }
 
         if (!EmailRegex().IsMatch(Email))
+        {
             return false;
+        }
 
         if (Password.Length < 8)
+        {
             return false;
+        }
 
         if (Password != ConfirmPassword)
+        {
             return false;
+        }
 
         return true;
     }
 
     [RelayCommand(CanExecute = nameof(CanCreateAccount))]
-    private async Task CreateAccount()
+    private async Task CreateAccount(CancellationToken ct)
     {
         RegisterError = string.Empty;
         EmailError = string.Empty;
@@ -164,38 +169,45 @@ public partial class RegisterViewModel : ObservableObject
 
         try
         {
-            var registerResult = await _authService.RegisterAsync(Email, Password, ConfirmPassword, Phone);
+            var registerResult = await authService.RegisterAsync(Email, Password, ConfirmPassword, Phone, ct);
 
             if (!registerResult.IsSuccess)
             {
                 if (registerResult.FieldErrors?.TryGetValue("email", out var emailErr) == true)
+                {
                     EmailError = emailErr;
+                }
+
                 if (registerResult.FieldErrors?.TryGetValue("phone", out var phoneErr) == true)
+                {
                     PhoneError = phoneErr;
+                }
 
                 RegisterError = registerResult.ErrorMessage ?? "Registration failed.";
-                await _toastService.ShowError(RegisterError);
-                IsLoading = false;
+                await toastService.ShowError(RegisterError);
                 return;
             }
 
             if (registerResult.Data!.TrustLevel == "TL0")
             {
-                await Shell.Current.DisplayAlertAsync(
+                await nav.DisplayAlertAsync(
                     AppResources.AuthRegistrationSuccess,
                     AppResources.AuthRegistrationSuccessMessage,
                     "OK");
-                await Shell.Current.GoToAsync("..");
+                await nav.GoBackAsync();
             }
             else
             {
-                await Shell.Current.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
+                await nav.GoToAsync($"email-verification?email={Uri.EscapeDataString(Email)}");
             }
         }
         catch (Exception ex)
         {
             RegisterError = "Connection error. Please try again.";
-            await _toastService.ShowError(ex.Message);
+            await toastService.ShowError(ex.Message);
+        }
+        finally
+        {
             IsLoading = false;
         }
     }

@@ -2,21 +2,17 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
-public partial class EmailVerificationViewModel : ObservableObject, IQueryAttributable
+public partial class EmailVerificationViewModel(
+    IAuthService authService,
+    INavigationService nav,
+    IToastService toastService) : ObservableObject, IQueryAttributable
 {
-    private readonly IAuthService _authService;
-    private readonly IToastService _toastService;
     private IDispatcherTimer? _cooldownTimer;
-
-    public EmailVerificationViewModel(IAuthService authService, IToastService toastService)
-    {
-        _authService = authService;
-        _toastService = toastService;
-    }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Description))]
@@ -41,20 +37,22 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue("email", out var email) && email is string emailStr)
+        {
             Email = emailStr;
+        }
     }
 
     private bool CanResend() => !IsLoading && CooldownSeconds <= 0;
 
     [RelayCommand(CanExecute = nameof(CanResend))]
-    private async Task Resend()
+    private async Task Resend(CancellationToken ct)
     {
         StatusMessage = string.Empty;
         IsLoading = true;
 
         try
         {
-            var result = await _authService.ResendVerificationAsync(Email);
+            var result = await authService.ResendVerificationAsync(Email, ct);
 
             if (result.IsSuccess)
             {
@@ -66,14 +64,14 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
             {
                 StatusMessage = result.ErrorMessage ?? AppResources.EmailVerificationError;
                 IsStatusError = true;
-                await _toastService.ShowError(StatusMessage);
+                await toastService.ShowError(StatusMessage);
             }
         }
         catch (Exception ex)
         {
             StatusMessage = AppResources.EmailVerificationError;
             IsStatusError = true;
-            await _toastService.ShowError(ex.Message);
+            await toastService.ShowError(ex.Message);
         }
         finally
         {
@@ -84,7 +82,7 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
     [RelayCommand]
     private async Task BackToLogin()
     {
-        await Shell.Current.GoToAsync("../../login");
+        await nav.GoToAsync("../../login");
     }
 
     private void StartCooldown()
@@ -98,7 +96,9 @@ public partial class EmailVerificationViewModel : ObservableObject, IQueryAttrib
         {
             CooldownSeconds--;
             if (CooldownSeconds <= 0)
+            {
                 _cooldownTimer.Stop();
+            }
         };
         _cooldownTimer.Start();
     }

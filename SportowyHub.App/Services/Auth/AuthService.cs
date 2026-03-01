@@ -5,33 +5,27 @@ using SportowyHub.Services.Exceptions;
 
 namespace SportowyHub.Services.Auth;
 
-public class AuthService : IAuthService
+public class AuthService(IRequestProvider requestProvider) : IAuthService
 {
-    private readonly IRequestProvider _requestProvider;
-
     private const string TokenKey = "auth_token";
     private const string UserKey = "auth_user";
     private const string RefreshTokenKey = "auth_refresh_token";
     private const string TokenExpiryKey = "auth_token_expiry";
 
-    private static readonly Dictionary<string, string> RefreshTokenHeader = new()
+    private static readonly Dictionary<string, string> _refreshTokenHeader = new()
     {
         ["X-Include-Refresh-Token"] = "true"
     };
 
-    public AuthService(IRequestProvider requestProvider)
-    {
-        _requestProvider = requestProvider;
-    }
-
-    public async Task<AuthResult<LoginResponse>> LoginAsync(string email, string password)
+    public async Task<AuthResult<LoginResponse>> LoginAsync(string email, string password, CancellationToken ct = default)
     {
         try
         {
-            var response = await _requestProvider.PostAsync<LoginRequest, LoginResponse>(
+            var response = await requestProvider.PostAsync<LoginRequest, LoginResponse>(
                 "/api/v1/login",
                 new LoginRequest(email, password),
-                headers: RefreshTokenHeader);
+                headers: _refreshTokenHeader,
+                ct: ct);
 
             await StoreTokens(response);
 
@@ -39,12 +33,12 @@ public class AuthService : IAuthService
         }
         catch (ServiceAuthenticationException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ParseErrorWithFields(ex.Content);
+            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Content, "An unexpected error occurred. Please try again.");
             return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ParseErrorWithFields(ex.Message);
+            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
             return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
@@ -58,25 +52,28 @@ public class AuthService : IAuthService
         await SecureStorage.SetAsync(TokenKey, response.AccessToken);
 
         if (!string.IsNullOrEmpty(response.RefreshToken))
+        {
             await SecureStorage.SetAsync(RefreshTokenKey, response.RefreshToken);
+        }
 
         var expiry = DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn).ToString("O");
         await SecureStorage.SetAsync(TokenExpiryKey, expiry);
     }
 
-    public async Task<AuthResult<RegisterResponse>> RegisterAsync(string email, string password, string passwordConfirm, string? phone = null)
+    public async Task<AuthResult<RegisterResponse>> RegisterAsync(string email, string password, string passwordConfirm, string? phone = null, CancellationToken ct = default)
     {
         try
         {
-            var response = await _requestProvider.PostAsync<RegisterRequest, RegisterResponse>(
+            var response = await requestProvider.PostAsync<RegisterRequest, RegisterResponse>(
                 "/api/v1/register",
-                new RegisterRequest(email, password, passwordConfirm, phone));
+                new RegisterRequest(email, password, passwordConfirm, phone),
+                ct: ct);
 
             return AuthResult<RegisterResponse>.Success(response);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ParseErrorWithFields(ex.Message);
+            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
             return AuthResult<RegisterResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
@@ -85,19 +82,20 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<AuthResult<ResendVerificationResponse>> ResendVerificationAsync(string email)
+    public async Task<AuthResult<ResendVerificationResponse>> ResendVerificationAsync(string email, CancellationToken ct = default)
     {
         try
         {
-            var response = await _requestProvider.PostAsync<ResendVerificationRequest, ResendVerificationResponse>(
+            var response = await requestProvider.PostAsync<ResendVerificationRequest, ResendVerificationResponse>(
                 "/api/v1/resend-verification",
-                new ResendVerificationRequest(email));
+                new ResendVerificationRequest(email),
+                ct: ct);
 
             return AuthResult<ResendVerificationResponse>.Success(response);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, _, errorCode) = ParseErrorWithFields(ex.Message);
+            var (errorMessage, _, errorCode) = ApiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
             return AuthResult<ResendVerificationResponse>.Failure(errorMessage, errorCode: errorCode);
         }
         catch (Exception)
@@ -106,19 +104,22 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<AuthResult<LoginResponse>> RefreshTokenAsync()
+    public async Task<AuthResult<LoginResponse>> RefreshTokenAsync(CancellationToken ct = default)
     {
         var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
         if (string.IsNullOrEmpty(refreshToken))
+        {
             return AuthResult<LoginResponse>.Failure("No refresh token available.");
+        }
 
         try
         {
-            var response = await _requestProvider.PostAsync<Dictionary<string, string>, LoginResponse>(
+            var response = await requestProvider.PostAsync<Dictionary<string, string>, LoginResponse>(
                 "/api/v1/refresh",
                 new Dictionary<string, string>(),
                 token: refreshToken,
-                headers: RefreshTokenHeader);
+                headers: _refreshTokenHeader,
+                ct: ct);
 
             await StoreTokens(response);
 
@@ -140,7 +141,9 @@ public class AuthService : IAuthService
     {
         var userJson = await SecureStorage.GetAsync(UserKey);
         if (string.IsNullOrEmpty(userJson))
+        {
             return null;
+        }
 
         return JsonSerializer.Deserialize(userJson, SportowyHubJsonContext.Default.UserInfo);
     }
@@ -153,35 +156,30 @@ public class AuthService : IAuthService
 
     public async Task LogoutAsync()
     {
-        var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
-        if (!string.IsNullOrEmpty(refreshToken))
-        {
-            // The API doesn't have a logout endpoint, but if it did, we would call it here to invalidate the refresh token on the server.
-            //await _requestProvider.PostAsync<Dictionary<string, string>, object>(
-            //    "/api/v1/logout",
-            //    new Dictionary<string, string>(),
-            //    token: refreshToken);
-        }
-
+        await SecureStorage.GetAsync(RefreshTokenKey);
         await ClearAuthAsync();
     }
 
-    public async Task<UserProfile?> GetProfileAsync()
+    public async Task<UserProfile?> GetProfileAsync(CancellationToken ct = default)
     {
         var token = await SecureStorage.GetAsync(TokenKey);
         if (string.IsNullOrEmpty(token))
+        {
             return null;
+        }
 
-        return await _requestProvider.GetAsync<UserProfile>("/api/private/profile", token);
+        return await requestProvider.GetAsync<UserProfile>("/api/private/profile", token, ct);
     }
 
-    public async Task<UserProfile?> UpdateProfileAsync(UpdateProfileRequest request)
+    public async Task<UserProfile?> UpdateProfileAsync(UpdateProfileRequest request, CancellationToken ct = default)
     {
         var token = await SecureStorage.GetAsync(TokenKey);
         if (string.IsNullOrEmpty(token))
+        {
             return null;
+        }
 
-        return await _requestProvider.PutAsync<UpdateProfileRequest, UserProfile>("/api/private/profile", request, token);
+        return await requestProvider.PutAsync<UpdateProfileRequest, UserProfile>("/api/private/profile", request, token, ct);
     }
 
     public Task ClearAuthAsync()
@@ -191,23 +189,5 @@ public class AuthService : IAuthService
         SecureStorage.Remove(RefreshTokenKey);
         SecureStorage.Remove(TokenExpiryKey);
         return Task.CompletedTask;
-    }
-
-    private static (string Message, Dictionary<string, string>? FieldErrors, string? ErrorCode) ParseErrorWithFields(string content)
-    {
-        try
-        {
-            var apiError = JsonSerializer.Deserialize(content, SportowyHubJsonContext.Default.ApiError);
-            if (apiError?.Error != null)
-            {
-                return (apiError.Error.Message, apiError.Error.Violations, apiError.Error.Code);
-            }
-        }
-        catch
-        {
-            // Ignore parse failures
-        }
-
-        return ("An unexpected error occurred. Please try again.", null, null);
     }
 }

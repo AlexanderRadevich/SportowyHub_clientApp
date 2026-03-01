@@ -5,15 +5,16 @@ using SportowyHub.Models.Api;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
 
-public partial class AccountProfileViewModel : ObservableObject
+public partial class AccountProfileViewModel(
+    IAuthService authService,
+    INavigationService nav,
+    IToastService toastService) : ObservableObject
 {
-    private readonly IAuthService _authService;
-    private readonly IToastService _toastService;
-
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
 
@@ -28,7 +29,9 @@ public partial class AccountProfileViewModel : ObservableObject
         get
         {
             if (!string.IsNullOrWhiteSpace(Profile?.Account?.FullName))
+            {
                 return Profile.Account.FullName;
+            }
 
             var parts = new[] { Profile?.Account?.FirstName, Profile?.Account?.LastName }
                 .Where(p => !string.IsNullOrWhiteSpace(p));
@@ -65,39 +68,36 @@ public partial class AccountProfileViewModel : ObservableObject
             || !string.IsNullOrWhiteSpace(a.FirstName)
             || !string.IsNullOrWhiteSpace(a.LastName));
 
-    public AccountProfileViewModel(IAuthService authService, IToastService toastService)
-    {
-        _authService = authService;
-        _toastService = toastService;
-    }
-
     [RelayCommand]
-    private async Task LoadProfile()
+    private async Task LoadProfile(CancellationToken ct)
     {
         IsLoading = true;
         HasError = false;
 
         try
         {
-            Profile = await _authService.GetProfileAsync();
+            Profile = await authService.GetProfileAsync(ct);
 
             if (Profile is null)
+            {
                 HasError = true;
+            }
         }
         catch (Exception ex)
         {
             HasError = true;
-            await _toastService.ShowError(ex.Message);
+            await toastService.ShowError(ex.Message);
         }
-
-        OnPropertyChanged(nameof(DisplayName));
-        OnPropertyChanged(nameof(DisplayEmail));
-        OnPropertyChanged(nameof(FormattedBalance));
-        OnPropertyChanged(nameof(TrustInfo));
-        OnPropertyChanged(nameof(IsGoogleLinked));
-        OnPropertyChanged(nameof(HasName));
-
-        IsLoading = false;
+        finally
+        {
+            OnPropertyChanged(nameof(DisplayName));
+            OnPropertyChanged(nameof(DisplayEmail));
+            OnPropertyChanged(nameof(FormattedBalance));
+            OnPropertyChanged(nameof(TrustInfo));
+            OnPropertyChanged(nameof(IsGoogleLinked));
+            OnPropertyChanged(nameof(HasName));
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]
@@ -106,31 +106,33 @@ public partial class AccountProfileViewModel : ObservableObject
         if (Profile is null) return;
 
         var json = JsonSerializer.Serialize(Profile, SportowyHubJsonContext.Default.UserProfile);
-        await Shell.Current.GoToAsync($"edit-profile?profile={Uri.EscapeDataString(json)}");
+        await nav.GoToAsync($"edit-profile?profile={Uri.EscapeDataString(json)}");
     }
 
     [RelayCommand]
     private async Task SignOut()
     {
-        var confirmed = await Application.Current!.Windows[0].Page!.DisplayAlertAsync(
+        var confirmed = await nav.DisplayAlertAsync(
             AppResources.SignOutConfirmTitle,
             AppResources.SignOutConfirmMessage,
             AppResources.SignOut,
             AppResources.Cancel);
 
         if (!confirmed)
+        {
             return;
+        }
 
         try
         {
-            await _authService.LogoutAsync();
+            await authService.LogoutAsync();
         }
         catch (Exception ex)
         {
-            await _authService.ClearAuthAsync();
-            await _toastService.ShowError(ex.Message);
+            await authService.ClearAuthAsync();
+            await toastService.ShowError(ex.Message);
         }
 
-        await Shell.Current.GoToAsync("..");
+        await nav.GoBackAsync();
     }
 }

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
@@ -10,6 +11,7 @@ namespace SportowyHub.ViewModels;
 public partial class ProfileViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
+    private readonly INavigationService _nav;
     private readonly IToastService _toastService;
 
     private static readonly string[] LanguageCodes = ["system", "pl", "en", "uk", "ru"];
@@ -42,9 +44,10 @@ public partial class ProfileViewModel : ObservableObject
 
     private bool _initialized;
 
-    public ProfileViewModel(IAuthService authService, IToastService toastService)
+    public ProfileViewModel(IAuthService authService, INavigationService nav, IToastService toastService)
     {
         _authService = authService;
+        _nav = nav;
         _toastService = toastService;
 
         var langPref = Preferences.Get("app_language", "system");
@@ -80,7 +83,6 @@ public partial class ProfileViewModel : ObservableObject
                 _ => AppTheme.Unspecified
             };
 
-            // Recreate Shell so IconTintColorBehavior re-applies with the new theme
             if (Application.Current.Windows.Count > 0)
             {
                 Application.Current.Windows[0].Page = new AppShell();
@@ -95,7 +97,6 @@ public partial class ProfileViewModel : ObservableObject
         var code = value >= 0 && value < LanguageCodes.Length ? LanguageCodes[value] : "system";
         Preferences.Set("app_language", code);
 
-        // Determine the culture to apply
         CultureInfo culture;
         if (code == "system")
         {
@@ -111,7 +112,6 @@ public partial class ProfileViewModel : ObservableObject
         CultureInfo.CurrentUICulture = culture;
         CultureInfo.CurrentCulture = culture;
 
-        // Recreate Shell to refresh all {x:Static} bindings
         if (Application.Current?.Windows.Count > 0)
         {
             Application.Current.Windows[0].Page = new AppShell();
@@ -121,14 +121,16 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task SignOut()
     {
-        var confirmed = await Application.Current!.Windows[0].Page!.DisplayAlertAsync(
+        var confirmed = await _nav.DisplayAlertAsync(
             AppResources.SignOutConfirmTitle,
             AppResources.SignOutConfirmMessage,
             AppResources.SignOut,
             AppResources.Cancel);
 
         if (!confirmed)
+        {
             return;
+        }
 
         try
         {
@@ -146,18 +148,18 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task SignInAsync()
     {
-        await Shell.Current.GoToAsync("login");
+        await _nav.GoToAsync("login");
     }
 
     [RelayCommand]
     private async Task CreateAccountAsync()
     {
-        await Shell.Current.GoToAsync("register");
+        await _nav.GoToAsync("register");
     }
 
     [RelayCommand]
     private async Task GoToAccountProfile()
     {
-        await Shell.Current.GoToAsync("account-profile");
+        await _nav.GoToAsync("account-profile");
     }
 }

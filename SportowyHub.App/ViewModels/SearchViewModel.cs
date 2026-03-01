@@ -1,10 +1,11 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SportowyHub.Services.Navigation;
 
 namespace SportowyHub.ViewModels;
 
-public partial class SearchViewModel : ObservableObject
+public partial class SearchViewModel(INavigationService nav) : ObservableObject
 {
     [ObservableProperty]
     public partial string SearchText { get; set; } = string.Empty;
@@ -36,7 +37,7 @@ public partial class SearchViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBack()
     {
-        await Shell.Current.GoToAsync("..");
+        await nav.GoBackAsync();
     }
 
     [RelayCommand]

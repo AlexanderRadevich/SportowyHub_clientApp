@@ -1,5 +1,7 @@
 # SportowyHub — .NET MAUI Application
 
+Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
+
 ## Coding Style & Naming Conventions
 - C#: governed by root `.editorconfig` — 4-space indent, CRLF line endings, `var` preferred, PascalCase for types/members, private fields `_camelCase`, interfaces prefixed `I`.
 - Braces: always use `{}` for `if`, `else`, `for`, `while`, and `foreach` bodies—even single statements. Example: `if (isValid) { Save(); }` (not `if (isValid) Save();`).
