@@ -152,6 +152,9 @@
   <data name="SearchPopularSearches" xml:space="preserve">
     <value>Популярні пошуки</value>
   </data>
+  <data name="SearchClearRecent" xml:space="preserve">
+    <value>Очистити</value>
+  </data>
   <!-- Favorites -->
   <data name="FavoritesTitle" xml:space="preserve">
     <value>Обране</value>

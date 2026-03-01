@@ -14,5 +14,6 @@ public partial class SearchPage : ContentPage
     {
         base.OnAppearing();
         SearchEntry.Focus();
+        ((SearchViewModel)BindingContext).AppearingCommand.Execute(null);
     }
 }

@@ -11,6 +11,7 @@ using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
+using SportowyHub.Services.RecentSearches;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub;
@@ -53,6 +54,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IListingsService, ListingsService>();
         builder.Services.AddSingleton<IToastService, ToastService>();
+        builder.Services.AddSingleton<IRecentSearchesService, RecentSearchesService>();
 
         // Pages
         builder.Services.AddTransient<HomePage>();

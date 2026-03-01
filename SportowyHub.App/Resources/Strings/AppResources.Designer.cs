@@ -73,6 +73,7 @@ public static class AppResources
     public static string SearchPlaceholder => ResourceManager.GetString("SearchPlaceholder", Culture)!;
     public static string SearchRecentSearches => ResourceManager.GetString("SearchRecentSearches", Culture)!;
     public static string SearchPopularSearches => ResourceManager.GetString("SearchPopularSearches", Culture)!;
+    public static string SearchClearRecent => ResourceManager.GetString("SearchClearRecent", Culture)!;
 
     // Favorites
     public static string FavoritesTitle => ResourceManager.GetString("FavoritesTitle", Culture)!;

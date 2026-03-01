@@ -28,4 +28,5 @@ namespace SportowyHub.Services.Api;
 [JsonSerializable(typeof(SearchAttribute))]
 [JsonSerializable(typeof(SearchResponse))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(List<string>))]
 public partial class SportowyHubJsonContext : JsonSerializerContext;

@@ -69,8 +69,20 @@
                     IsVisible="{Binding SearchText.Length, Converter={StaticResource InvertIntToBoolConverter}}">
             <VerticalStackLayout Spacing="24">
 
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="{x:Static res:AppResources.SearchRecentSearches}" Style="{StaticResource SectionHeader}" />
+                <VerticalStackLayout Spacing="8"
+                                     IsVisible="{Binding RecentSearches.Count, Converter={StaticResource IntToBoolConverter}}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{x:Static res:AppResources.SearchRecentSearches}" Style="{StaticResource SectionHeader}" />
+                        <Label Grid.Column="1"
+                               Text="{x:Static res:AppResources.SearchClearRecent}"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                               FontSize="13"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ClearRecentSearchesCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
                     <CollectionView ItemsSource="{Binding RecentSearches}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="x:String">

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
+using SportowyHub.Services.RecentSearches;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
@@ -11,7 +12,8 @@ namespace SportowyHub.ViewModels;
 public partial class SearchViewModel(
     IListingsService listingsService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject
+    IToastService toastService,
+    IRecentSearchesService recentSearchesService) : ObservableObject
 {
     private const int PageSize = 30;
     private int _searchOffset;
@@ -33,14 +35,7 @@ public partial class SearchViewModel(
     [ObservableProperty]
     public partial bool ShowNoResults { get; set; }
 
-    public ObservableCollection<string> RecentSearches { get; } =
-    [
-        "Running shoes",
-        "Basketball",
-        "Yoga mat",
-        "Dumbbells",
-        "Tennis racket"
-    ];
+    public ObservableCollection<string> RecentSearches { get; } = [];
 
     public ObservableCollection<string> PopularSearches { get; } =
     [
@@ -107,6 +102,12 @@ public partial class SearchViewModel(
             TotalResults = response.Total;
             HasSearchResults = SearchResults.Count > 0;
             ShowNoResults = SearchResults.Count == 0 && !string.IsNullOrWhiteSpace(SearchText);
+
+            if (offset == 0)
+            {
+                recentSearchesService.Add(query);
+                LoadRecentSearches();
+            }
         }
         catch (TaskCanceledException)
         {
@@ -139,9 +140,12 @@ public partial class SearchViewModel(
     }
 
     [RelayCommand]
-    private async Task GoBack()
+    private void GoBack()
     {
-        await nav.GoBackAsync();
+        if (Shell.Current is Shell shell)
+        {
+            shell.CurrentItem = shell.Items[0].Items[0];
+        }
     }
 
     [RelayCommand]
@@ -154,5 +158,27 @@ public partial class SearchViewModel(
     private async Task GoToListingDetail(SearchResultItem item)
     {
         await nav.GoToAsync($"listing-detail?id={Uri.EscapeDataString(item.Id)}");
+    }
+
+    [RelayCommand]
+    private void Appearing()
+    {
+        LoadRecentSearches();
+    }
+
+    [RelayCommand]
+    private void ClearRecentSearches()
+    {
+        recentSearchesService.Clear();
+        RecentSearches.Clear();
+    }
+
+    private void LoadRecentSearches()
+    {
+        RecentSearches.Clear();
+        foreach (var item in recentSearchesService.GetAll())
+        {
+            RecentSearches.Add(item);
+        }
     }
 }

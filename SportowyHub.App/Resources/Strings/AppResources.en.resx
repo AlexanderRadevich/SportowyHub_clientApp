@@ -152,6 +152,9 @@
   <data name="SearchPopularSearches" xml:space="preserve">
     <value>Popular Searches</value>
   </data>
+  <data name="SearchClearRecent" xml:space="preserve">
+    <value>Clear</value>
+  </data>
   <!-- Favorites -->
   <data name="FavoritesTitle" xml:space="preserve">
     <value>Favorites</value>
