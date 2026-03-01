@@ -68,7 +68,10 @@
       "Bash(powershell.exe:*)",
       "Bash(\"/c/Program Files \\(x86\\)/Android/android-sdk/platform-tools/adb.exe\" devices:*)",
       "Bash(\"/c/Program Files \\(x86\\)/Android/android-sdk/platform-tools/adb.exe\" version:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(dotnet:*)",
+      "Bash(do mkdir:*)",
+      "Bash(mkdir:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
