@@ -5,6 +5,7 @@
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              x:Class="SportowyHub.Views.Listings.ListingDetailPage"
              x:DataType="vm:ListingDetailViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="{Binding Listing.Title, FallbackValue=''}"
              Shell.TabBarIsVisible="False">
 
@@ -18,9 +19,22 @@
         <ScrollView IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}">
             <VerticalStackLayout Padding="16" Spacing="12">
 
-                <Label Text="{Binding Listing.Title}"
-                       Style="{StaticResource Headline}"
-                       Margin="0,8,0,0" />
+                <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+                    <Label Text="{Binding Listing.Title}"
+                           Style="{StaticResource Headline}" />
+                    <ImageButton Grid.Column="1"
+                                 Source="{Binding IsFavorited, Converter={StaticResource BoolToHeartConverter}}"
+                                 HeightRequest="28"
+                                 WidthRequest="28"
+                                 BackgroundColor="Transparent"
+                                 VerticalOptions="Start"
+                                 Command="{Binding ToggleFavoriteCommand}"
+                                 IsEnabled="{Binding IsTogglingFavorite, Converter={StaticResource InvertBoolConverter}}">
+                        <ImageButton.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </ImageButton.Behaviors>
+                    </ImageButton>
+                </Grid>
 
                 <Label Text="{Binding FormattedPrice}"
                        FontSize="20"

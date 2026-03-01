@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Favorites;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
@@ -13,6 +14,7 @@ public partial class ProfileViewModel : ObservableObject
     private readonly IAuthService _authService;
     private readonly INavigationService _nav;
     private readonly IToastService _toastService;
+    private readonly IFavoritesService _favoritesService;
 
     private static readonly string[] LanguageCodes = ["system", "pl", "en", "uk", "ru"];
     private static readonly string[] ThemeCodes = ["system", "light", "dark"];
@@ -44,11 +46,12 @@ public partial class ProfileViewModel : ObservableObject
 
     private bool _initialized;
 
-    public ProfileViewModel(IAuthService authService, INavigationService nav, IToastService toastService)
+    public ProfileViewModel(IAuthService authService, INavigationService nav, IToastService toastService, IFavoritesService favoritesService)
     {
         _authService = authService;
         _nav = nav;
         _toastService = toastService;
+        _favoritesService = favoritesService;
 
         var langPref = Preferences.Get("app_language", "system");
         var langIdx = Array.IndexOf(LanguageCodes, langPref);
@@ -142,6 +145,7 @@ public partial class ProfileViewModel : ObservableObject
             await _toastService.ShowError(ex.Message);
         }
 
+        _favoritesService.ClearCache();
         await RefreshAuthState();
     }
 

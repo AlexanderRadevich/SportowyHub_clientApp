@@ -16,6 +16,7 @@
             <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
             <converters:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:BoolToHeartConverter x:Key="BoolToHeartConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

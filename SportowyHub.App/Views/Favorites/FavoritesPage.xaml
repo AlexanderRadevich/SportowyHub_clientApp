@@ -1,10 +1,107 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:models="clr-namespace:SportowyHub.Models.Api"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Favorites.FavoritesPage"
+             x:DataType="vm:FavoritesViewModel"
              Title="{x:Static res:AppResources.FavoritesTitle}">
-    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-        <Label Text="{x:Static res:AppResources.FavoritesTitle}" Style="{StaticResource Headline}" />
-    </VerticalStackLayout>
+
+    <Grid>
+        <VerticalStackLayout IsVisible="{Binding IsLoggedIn, Converter={StaticResource InvertBoolConverter}}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="32">
+            <Label Text="{x:Static res:AppResources.FavoritesSignInPrompt}"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            <Button Text="{x:Static res:AppResources.FavoritesSignIn}"
+                    Command="{Binding SignInCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <Grid IsVisible="{Binding IsLoggedIn}" Padding="16">
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+
+            <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshFavoritesCommand}"
+                         IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}">
+                <CollectionView ItemsSource="{Binding Favorites}"
+                                RemainingItemsThreshold="5"
+                                RemainingItemsThresholdReachedCommand="{Binding LoadMoreFavoritesCommand}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:FavoriteItem">
+                            <Border Padding="12"
+                                    Margin="0,0,0,8"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FavoritesViewModel}}, Path=GoToListingDetailCommand}"
+                                        CommandParameter="{Binding}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding Title}"
+                                               FontSize="16"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2" />
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Label FontSize="15"
+                                                   FontFamily="OpenSansSemibold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+                                                <Label.Text>
+                                                    <MultiBinding StringFormat="{}{0} {1}">
+                                                        <Binding Path="Price" />
+                                                        <Binding Path="Currency" />
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding City}"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                                    </VerticalStackLayout>
+                                    <ImageButton Grid.Column="1"
+                                                 Source="icon_heart_filled.svg"
+                                                 HeightRequest="24"
+                                                 WidthRequest="24"
+                                                 BackgroundColor="Transparent"
+                                                 VerticalOptions="Center"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FavoritesViewModel}}, Path=RemoveFavoriteCommand}"
+                                                 CommandParameter="{Binding}">
+                                        <ImageButton.Behaviors>
+                                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                        </ImageButton.Behaviors>
+                                    </ImageButton>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40">
+                            <Label Text="{x:Static res:AppResources.FavoritesEmpty}"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding IsEmpty}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+    </Grid>
+
 </ContentPage>

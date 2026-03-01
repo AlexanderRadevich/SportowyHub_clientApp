@@ -27,6 +27,10 @@ namespace SportowyHub.Services.Api;
 [JsonSerializable(typeof(GeoLocation))]
 [JsonSerializable(typeof(SearchAttribute))]
 [JsonSerializable(typeof(SearchResponse))]
+[JsonSerializable(typeof(FavoriteItem))]
+[JsonSerializable(typeof(FavoritesIdsResponse))]
+[JsonSerializable(typeof(FavoritesListResponse))]
+[JsonSerializable(typeof(FavoriteActionResponse))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(List<string>))]
 public partial class SportowyHubJsonContext : JsonSerializerContext;

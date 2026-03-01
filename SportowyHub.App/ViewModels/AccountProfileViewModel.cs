@@ -5,6 +5,7 @@ using SportowyHub.Models.Api;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Favorites;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
@@ -13,7 +14,8 @@ namespace SportowyHub.ViewModels;
 public partial class AccountProfileViewModel(
     IAuthService authService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject
+    IToastService toastService,
+    IFavoritesService favoritesService) : ObservableObject
 {
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -133,6 +135,7 @@ public partial class AccountProfileViewModel(
             await toastService.ShowError(ex.Message);
         }
 
+        favoritesService.ClearCache();
         await nav.GoBackAsync();
     }
 }

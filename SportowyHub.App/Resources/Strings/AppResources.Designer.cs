@@ -77,6 +77,9 @@ public static class AppResources
 
     // Favorites
     public static string FavoritesTitle => ResourceManager.GetString("FavoritesTitle", Culture)!;
+    public static string FavoritesEmpty => ResourceManager.GetString("FavoritesEmpty", Culture)!;
+    public static string FavoritesSignInPrompt => ResourceManager.GetString("FavoritesSignInPrompt", Culture)!;
+    public static string FavoritesSignIn => ResourceManager.GetString("FavoritesSignIn", Culture)!;
 
     // Profile
     public static string ProfileWelcome => ResourceManager.GetString("ProfileWelcome", Culture)!;

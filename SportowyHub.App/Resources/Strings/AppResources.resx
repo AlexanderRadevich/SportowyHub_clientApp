@@ -159,6 +159,15 @@
   <data name="FavoritesTitle" xml:space="preserve">
     <value>Ulubione</value>
   </data>
+  <data name="FavoritesEmpty" xml:space="preserve">
+    <value>Nie masz jeszcze ulubionych</value>
+  </data>
+  <data name="FavoritesSignInPrompt" xml:space="preserve">
+    <value>Zaloguj się, aby zobaczyć swoje ulubione</value>
+  </data>
+  <data name="FavoritesSignIn" xml:space="preserve">
+    <value>Zaloguj się</value>
+  </data>
   <!-- Profile -->
   <data name="ProfileWelcome" xml:space="preserve">
     <value>Witaj</value>

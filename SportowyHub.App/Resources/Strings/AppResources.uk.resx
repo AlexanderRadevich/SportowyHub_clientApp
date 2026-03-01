@@ -159,6 +159,15 @@
   <data name="FavoritesTitle" xml:space="preserve">
     <value>Обране</value>
   </data>
+  <data name="FavoritesEmpty" xml:space="preserve">
+    <value>У вас ще немає обраного</value>
+  </data>
+  <data name="FavoritesSignInPrompt" xml:space="preserve">
+    <value>Увійдіть, щоб побачити обране</value>
+  </data>
+  <data name="FavoritesSignIn" xml:space="preserve">
+    <value>Увійти</value>
+  </data>
   <!-- Profile -->
   <data name="ProfileWelcome" xml:space="preserve">
     <value>Ласкаво просимо</value>
