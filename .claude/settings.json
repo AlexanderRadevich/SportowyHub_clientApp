@@ -1,5 +1,5 @@
 {
-"permissions": {
+  "permissions": {
     "allow": [
       "Bash(cd:*)",
       "Bash(ls:*)",
@@ -13,6 +13,7 @@
   },
   "enabledPlugins": {
     "csharp-lsp@claude-plugins-official": true,
-    "github@claude-plugins-official": true
+    "github@claude-plugins-official": true,
+    "maui-skills@maui-skills": true
   }
 }

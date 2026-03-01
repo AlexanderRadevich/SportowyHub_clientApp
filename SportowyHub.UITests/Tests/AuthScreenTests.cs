@@ -1,47 +1,37 @@
-using NUnit.Framework;
 using SportowyHub.UITests.Helpers;
 using SportowyHub.UITests.Pages;
 
 namespace SportowyHub.UITests.Tests;
 
-[TestFixture]
-public class AuthScreenTests : AppiumSetup
+[Collection(AppiumDriverCollection.Name)]
+public class AuthScreenTests(AppiumDriverFixture fixture)
 {
-    private AppShellPage _shell = null!;
-    private ProfilePage _profile = null!;
-    private LoginPage _login = null!;
-    private RegisterPage _register = null!;
+    private readonly AppShellPage _shell = new(fixture.Driver);
+    private readonly ProfilePage _profile = new(fixture.Driver);
+    private readonly LoginPage _login = new(fixture.Driver);
+    private readonly RegisterPage _register = new(fixture.Driver);
 
-    [OneTimeSetUp]
-    public void SetUpPages()
-    {
-        _shell = new AppShellPage(Driver);
-        _profile = new ProfilePage(Driver);
-        _login = new LoginPage(Driver);
-        _register = new RegisterPage(Driver);
-    }
-
-    [Test, Order(1)]
+    [Fact, TestPriority(1)]
     public void TapSignIn_LoginScreenOpens()
     {
         _shell.NavigateToProfile();
         _profile.TapSignIn();
 
-        Assert.That(_login.IsHeadlineVisible(), Is.True,
+        Assert.True(_login.IsHeadlineVisible(),
             "Login page headline should be visible after tapping Sign In");
 
-        Driver.Navigate().Back();
+        fixture.Driver.Navigate().Back();
     }
 
-    [Test, Order(2)]
+    [Fact, TestPriority(2)]
     public void TapCreateAccount_RegisterScreenOpens()
     {
         _shell.NavigateToProfile();
         _profile.TapCreateAccount();
 
-        Assert.That(_register.IsHeadlineVisible(), Is.True,
+        Assert.True(_register.IsHeadlineVisible(),
             "Register page headline should be visible after tapping Create Account");
 
-        Driver.Navigate().Back();
+        fixture.Driver.Navigate().Back();
     }
 }

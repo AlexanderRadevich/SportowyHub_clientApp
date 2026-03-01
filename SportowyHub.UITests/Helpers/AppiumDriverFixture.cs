@@ -1,17 +1,14 @@
-using NUnit.Framework;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using SportowyHub.UITests.Config;
 
 namespace SportowyHub.UITests.Helpers;
 
-[TestFixture]
-public class AppiumSetup
+public sealed class AppiumDriverFixture : IAsyncLifetime
 {
-    protected AndroidDriver Driver { get; private set; } = null!;
+    public AndroidDriver Driver { get; private set; } = null!;
 
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
+    public ValueTask InitializeAsync()
     {
         var options = new AppiumOptions
         {
@@ -24,11 +21,13 @@ public class AppiumSetup
 
         Driver = new AndroidDriver(TestConfig.AppiumServerUrl, options, TimeSpan.FromSeconds(60));
         Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(TestConfig.DefaultWaitSeconds);
+
+        return ValueTask.CompletedTask;
     }
 
-    [OneTimeTearDown]
-    public void OneTimeTearDown()
+    public ValueTask DisposeAsync()
     {
         Driver?.Quit();
+        return ValueTask.CompletedTask;
     }
 }

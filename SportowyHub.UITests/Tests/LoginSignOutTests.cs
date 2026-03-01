@@ -1,54 +1,42 @@
-using NUnit.Framework;
 using SportowyHub.UITests.Config;
 using SportowyHub.UITests.Helpers;
 using SportowyHub.UITests.Pages;
 
 namespace SportowyHub.UITests.Tests;
 
-[TestFixture]
-public class LoginSignOutTests : AppiumSetup
+[Collection(AppiumDriverCollection.Name)]
+public class LoginSignOutTests(AppiumDriverFixture fixture)
 {
-    private AppShellPage _shell = null!;
-    private ProfilePage _profile = null!;
-    private LoginPage _login = null!;
-    private AccountProfilePage _accountProfile = null!;
+    private readonly AppShellPage _shell = new(fixture.Driver);
+    private readonly ProfilePage _profile = new(fixture.Driver);
+    private readonly LoginPage _login = new(fixture.Driver);
+    private readonly AccountProfilePage _accountProfile = new(fixture.Driver);
 
-    [OneTimeSetUp]
-    public void SetUpPages()
-    {
-        _shell = new AppShellPage(Driver);
-        _profile = new ProfilePage(Driver);
-        _login = new LoginPage(Driver);
-        _accountProfile = new AccountProfilePage(Driver);
-    }
-
-    [Test, Order(1)]
+    [Fact, TestPriority(1)]
     public void Login_WithValidCredentials_NavigatesToHome()
     {
         _shell.NavigateToProfile();
 
-        Assert.That(_profile.IsSignInRowVisible(), Is.True,
+        Assert.True(_profile.IsSignInRowVisible(),
             "Should start in logged-out state with Sign In row visible");
 
         _profile.TapSignIn();
 
-        Assert.That(_login.IsHeadlineVisible(), Is.True,
+        Assert.True(_login.IsHeadlineVisible(),
             "Login page should be visible");
 
         _login.TypeEmail(TestConfig.TestEmail);
         _login.TypePassword(TestConfig.TestPassword);
         _login.TapLogin();
 
-        // Wait for navigation to Home tab after successful login
         Thread.Sleep(2000);
 
-        ToastHelper.AssertNoErrorToast(Driver);
+        ToastHelper.AssertNoErrorToast(fixture.Driver);
 
-        // Verify we're on the Home tab by navigating to it (should already be there)
         _shell.NavigateToHome();
     }
 
-    [Test, Order(2)]
+    [Fact, TestPriority(2)]
     public void SignOut_FromAccountProfile_ReturnsToLoggedOutState()
     {
         _shell.NavigateToProfile();
@@ -58,12 +46,11 @@ public class LoginSignOutTests : AppiumSetup
         _accountProfile.TapSignOut();
         _accountProfile.ConfirmSignOut();
 
-        // Wait for sign-out and navigation back to Profile
         Thread.Sleep(2000);
 
-        ToastHelper.AssertNoErrorToast(Driver);
+        ToastHelper.AssertNoErrorToast(fixture.Driver);
 
-        Assert.That(_profile.IsSignInRowVisible(), Is.True,
+        Assert.True(_profile.IsSignInRowVisible(),
             "After sign-out, Sign In row should be visible on Profile page");
     }
 }

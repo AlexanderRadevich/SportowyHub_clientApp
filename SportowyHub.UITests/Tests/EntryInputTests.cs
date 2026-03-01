@@ -1,68 +1,49 @@
-using NUnit.Framework;
 using SportowyHub.UITests.Helpers;
 using SportowyHub.UITests.Pages;
 
 namespace SportowyHub.UITests.Tests;
 
-[TestFixture]
-public class EntryInputTests : AppiumSetup
+[Collection(AppiumDriverCollection.Name)]
+public class EntryInputTests(AppiumDriverFixture fixture)
 {
-    private AppShellPage _shell = null!;
-    private SearchPage _search = null!;
-    private ProfilePage _profile = null!;
-    private LoginPage _login = null!;
-    private RegisterPage _register = null!;
+    private readonly AppShellPage _shell = new(fixture.Driver);
+    private readonly SearchPage _search = new(fixture.Driver);
+    private readonly ProfilePage _profile = new(fixture.Driver);
+    private readonly LoginPage _login = new(fixture.Driver);
+    private readonly RegisterPage _register = new(fixture.Driver);
 
-    [OneTimeSetUp]
-    public void SetUpPages()
-    {
-        _shell = new AppShellPage(Driver);
-        _search = new SearchPage(Driver);
-        _profile = new ProfilePage(Driver);
-        _login = new LoginPage(Driver);
-        _register = new RegisterPage(Driver);
-    }
-
-    // --- Search screen ---
-
-    [Test, Order(1)]
+    [Fact, TestPriority(1)]
     public void SearchEntry_AcceptsTypedText()
     {
         _shell.NavigateToSearch();
 
         _search.TypeSearch("running shoes");
-        Assert.That(_search.GetSearchText(), Is.EqualTo("running shoes"),
-            "SearchEntry should contain the typed text");
+        Assert.Equal("running shoes", _search.GetSearchText());
 
         _search.ClearSearch();
         _shell.NavigateToHome();
     }
 
-    // --- Login screen ---
-
-    [Test, Order(2)]
+    [Fact, TestPriority(2)]
     public void LoginEmailEntry_AcceptsTypedText()
     {
         _shell.NavigateToProfile();
         _profile.TapSignIn();
 
         _login.TypeEmail("test@example.com");
-        Assert.That(_login.GetEmailText(), Is.EqualTo("test@example.com"),
-            "LoginEmailEntry should contain the typed text");
+        Assert.Equal("test@example.com", _login.GetEmailText());
 
         _login.ClearEmail();
     }
 
-    [Test, Order(3)]
+    [Fact, TestPriority(3)]
     public void LoginPasswordEntry_AcceptsTypedText()
     {
         try
         {
             _login.TypePassword("Password123!");
-            // Password fields are masked on Android; verify text was entered by checking length
             var passwordText = _login.GetPasswordText();
-            Assert.That(passwordText, Has.Length.EqualTo("Password123!".Length),
-                $"LoginPasswordEntry should accept typed text (masked: '{passwordText}')");
+            Assert.Equal("Password123!".Length, passwordText.Length);
 
             _login.ClearPassword();
         }
@@ -70,64 +51,57 @@ public class EntryInputTests : AppiumSetup
         {
             try
             {
-                if (Driver.IsKeyboardShown())
-                    Driver.HideKeyboard();
+                if (fixture.Driver.IsKeyboardShown())
+                {
+                    fixture.Driver.HideKeyboard();
+                }
             }
             catch { }
-            Driver.Navigate().Back();
+            fixture.Driver.Navigate().Back();
         }
     }
 
-    // --- Register screen ---
-
-    [Test, Order(4)]
+    [Fact, TestPriority(4)]
     public void RegisterEmailEntry_AcceptsTypedText()
     {
         _shell.NavigateToProfile();
         _profile.TapCreateAccount();
 
         _register.TypeEmail("new@example.com");
-        Assert.That(_register.GetEmailText(), Is.EqualTo("new@example.com"),
-            "RegisterEmailEntry should contain the typed text");
+        Assert.Equal("new@example.com", _register.GetEmailText());
 
         _register.ClearEmail();
     }
 
-    [Test, Order(5)]
+    [Fact, TestPriority(5)]
     public void RegisterPhoneEntry_AcceptsTypedText()
     {
         _register.TypePhone("123456789");
-        Assert.That(_register.GetPhoneText(), Is.EqualTo("123456789"),
-            "RegisterPhoneEntry should contain the typed text");
+        Assert.Equal("123456789", _register.GetPhoneText());
 
         _register.ClearPhone();
     }
 
-    [Test, Order(6)]
+    [Fact, TestPriority(6)]
     public void RegisterPasswordEntry_AcceptsTypedText()
     {
         _register.TypePassword("StrongPass1!");
-        // Password fields are masked on Android; verify text was entered by checking length
         var passwordText = _register.GetPasswordText();
-        Assert.That(passwordText, Has.Length.EqualTo("StrongPass1!".Length),
-            $"RegisterPasswordEntry should accept typed text (masked: '{passwordText}')");
+        Assert.Equal("StrongPass1!".Length, passwordText.Length);
 
         _register.ClearPassword();
     }
 
-    [Test, Order(7)]
+    [Fact, TestPriority(7)]
     public void RegisterConfirmPasswordEntry_AcceptsTypedText()
     {
         try
         {
-            // Dismiss keyboard from previous test so ConfirmPassword entry is accessible
-            try { if (Driver.IsKeyboardShown()) Driver.HideKeyboard(); } catch { }
+            try { if (fixture.Driver.IsKeyboardShown()) { fixture.Driver.HideKeyboard(); } } catch { }
 
             _register.TypeConfirmPassword("StrongPass1!");
-            // Password fields are masked on Android; verify text was entered by checking length
             var confirmText = _register.GetConfirmPasswordText();
-            Assert.That(confirmText, Has.Length.EqualTo("StrongPass1!".Length),
-                $"RegisterConfirmPasswordEntry should accept typed text (masked: '{confirmText}')");
+            Assert.Equal("StrongPass1!".Length, confirmText.Length);
 
             _register.ClearConfirmPassword();
         }
@@ -135,11 +109,13 @@ public class EntryInputTests : AppiumSetup
         {
             try
             {
-                if (Driver.IsKeyboardShown())
-                    Driver.HideKeyboard();
+                if (fixture.Driver.IsKeyboardShown())
+                {
+                    fixture.Driver.HideKeyboard();
+                }
             }
             catch { }
-            Driver.Navigate().Back();
+            fixture.Driver.Navigate().Back();
         }
     }
 }

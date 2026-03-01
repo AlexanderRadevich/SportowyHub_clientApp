@@ -1,16 +1,10 @@
-using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Android;
-using OpenQA.Selenium.Support.UI;
 
 namespace SportowyHub.UITests.Helpers;
 
 public static class ToastHelper
 {
-    /// <summary>
-    /// Asserts that no error toast (Snackbar) is currently visible.
-    /// Uses a short wait to allow any recently triggered toast to appear.
-    /// </summary>
     public static void AssertNoErrorToast(AndroidDriver driver)
     {
         Thread.Sleep(1000);
