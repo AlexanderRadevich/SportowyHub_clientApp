@@ -71,7 +71,8 @@
       "Bash(node:*)",
       "Bash(dotnet:*)",
       "Bash(do mkdir:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(rm:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

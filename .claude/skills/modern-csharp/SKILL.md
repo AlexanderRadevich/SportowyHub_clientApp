@@ -82,17 +82,20 @@ public class Product
 
 ### Extension Members (C# 14)
 
-Extension members replace static extension method classes with a cleaner syntax.
+Extension members allow extension properties and group related extensions by receiver type.
 
 ```csharp
 // GOOD — extension members (C# 14)
-public extension OrderExtensions for Order
+public static class OrderExtensions
 {
-    public decimal TotalWithTax => Total * 1.2m;
+    extension(Order order)
+    {
+        public decimal TotalWithTax => order.Total * 1.2m;
 
-    public bool IsHighValue => Total > 1000m;
+        public bool IsHighValue => order.Total > 1000m;
 
-    public string ToSummary() => $"Order #{Id}: {Total:C} ({Items.Count} items)";
+        public string ToSummary() => $"Order #{order.Id}: {order.Total:C} ({order.Items.Count} items)";
+    }
 }
 ```
 

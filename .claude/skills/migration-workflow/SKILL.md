@@ -28,8 +28,8 @@ Step-by-step workflow for creating and applying database migrations safely.
 # List all migrations and their status
 dotnet ef migrations list --project src/Infrastructure --startup-project src/Api
 
-# Verify the database is at the expected migration
-dotnet ef database update --project src/Infrastructure --startup-project src/Api -- --dry-run
+# Generate SQL script to verify what will be applied
+dotnet ef migrations script --idempotent --project src/Infrastructure --startup-project src/Api
 ```
 
 **Step 2: Create Migration**

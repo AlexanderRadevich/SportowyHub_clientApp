@@ -123,16 +123,14 @@ builder.Services.AddHttpClient("api")
 ### DelegatingHandler for Correlation ID Propagation
 
 ```csharp
-public sealed class CorrelationIdHandler(IHttpContextAccessor httpContextAccessor)
-    : DelegatingHandler
+public sealed class CorrelationIdHandler : DelegatingHandler
 {
     protected override Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (httpContextAccessor.HttpContext?.Request.Headers
-                .TryGetValue("X-Correlation-Id", out var correlationId) is true)
+        if (!request.Headers.Contains("X-Correlation-Id"))
         {
-            request.Headers.Add("X-Correlation-Id", correlationId.ToString());
+            request.Headers.Add("X-Correlation-Id", Guid.NewGuid().ToString("N"));
         }
         return base.SendAsync(request, cancellationToken);
     }
