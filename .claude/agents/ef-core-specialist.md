@@ -1,3 +1,8 @@
+---
+name: ef-core-specialist
+description: DbContext configuration, LINQ queries, migrations, interceptors, and database optimization
+---
+
 # EF Core Specialist Agent
 
 ## Role Definition

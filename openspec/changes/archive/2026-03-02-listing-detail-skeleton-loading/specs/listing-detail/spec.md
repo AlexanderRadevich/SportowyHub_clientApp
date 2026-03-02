@@ -1,8 +1,4 @@
-## Purpose
-
-Defines the layout, loading behavior, and navigation contract for the listing detail page.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Listing detail page layout
 The listing detail page SHALL display the listing title, price with currency, location (city + region), description, and published date. It SHALL also display a favorite toggle heart button in the toolbar area allowing the user to add or remove the listing from favorites. The page SHALL accept preview data (title, price, currency, city) via navigation parameters and display these fields immediately on arrival, before the full API response is available.
@@ -25,6 +21,8 @@ The listing detail page SHALL display the listing title, price with currency, lo
 #### Scenario: Error state
 - **WHEN** the listing fails to load
 - **THEN** a generic error message SHALL be displayed
+
+## ADDED Requirements
 
 ### Requirement: Navigation parameters for preview data
 Source screens (Home feed, Search results, Favorites) SHALL pass `title`, `price`, `currency`, and `city` as navigation query parameters alongside `id` when navigating to the listing detail page. The `SearchViewModel` SHALL convert `SearchResultItem.Price` from `float?` to string before passing.

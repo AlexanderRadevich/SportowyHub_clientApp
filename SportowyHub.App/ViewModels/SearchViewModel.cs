@@ -157,7 +157,13 @@ public partial class SearchViewModel(
     [RelayCommand]
     private async Task GoToListingDetail(SearchResultItem item)
     {
-        await nav.GoToAsync($"listing-detail?id={Uri.EscapeDataString(item.Id)}");
+        var priceStr = item.Price?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
+        var query = $"listing-detail?id={Uri.EscapeDataString(item.Id)}" +
+                    $"&title={Uri.EscapeDataString(item.Title)}" +
+                    $"&price={Uri.EscapeDataString(priceStr)}" +
+                    $"&currency={Uri.EscapeDataString(item.Currency ?? string.Empty)}" +
+                    $"&city={Uri.EscapeDataString(item.City ?? string.Empty)}";
+        await nav.GoToAsync(query);
     }
 
     [RelayCommand]

@@ -155,7 +155,12 @@ public partial class FavoritesViewModel(
     [RelayCommand]
     private async Task GoToListingDetail(FavoriteItem item)
     {
-        await nav.GoToAsync($"listing-detail?id={Uri.EscapeDataString(item.Id)}");
+        var query = $"listing-detail?id={Uri.EscapeDataString(item.Id)}" +
+                    $"&title={Uri.EscapeDataString(item.Title)}" +
+                    $"&price={Uri.EscapeDataString(item.Price ?? string.Empty)}" +
+                    $"&currency={Uri.EscapeDataString(item.Currency ?? string.Empty)}" +
+                    $"&city={Uri.EscapeDataString(item.City ?? string.Empty)}";
+        await nav.GoToAsync(query);
     }
 
     [RelayCommand]

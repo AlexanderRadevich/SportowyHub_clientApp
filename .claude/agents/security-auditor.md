@@ -1,3 +1,8 @@
+---
+name: security-auditor
+description: Security vulnerability review, authentication/authorization design, secrets management, and OWASP compliance
+---
+
 # Security Auditor Agent
 
 ## Role Definition

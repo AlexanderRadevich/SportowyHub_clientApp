@@ -1,3 +1,8 @@
+---
+name: test-engineer
+description: Test strategy, xUnit v3 unit and integration tests, WebApplicationFactory, Testcontainers setup
+---
+
 # Test Engineer Agent
 
 ## Role Definition

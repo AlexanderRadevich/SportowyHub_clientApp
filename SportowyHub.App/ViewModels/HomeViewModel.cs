@@ -130,7 +130,12 @@ public partial class HomeViewModel(
     [RelayCommand]
     private async Task GoToListingDetail(ListingSummary listing)
     {
-        await nav.GoToAsync($"listing-detail?id={Uri.EscapeDataString(listing.Id)}");
+        var query = $"listing-detail?id={Uri.EscapeDataString(listing.Id)}" +
+                    $"&title={Uri.EscapeDataString(listing.Title)}" +
+                    $"&price={Uri.EscapeDataString(listing.Price ?? string.Empty)}" +
+                    $"&currency={Uri.EscapeDataString(listing.Currency ?? string.Empty)}" +
+                    $"&city={Uri.EscapeDataString(listing.City ?? string.Empty)}";
+        await nav.GoToAsync(query);
     }
 
     [RelayCommand]

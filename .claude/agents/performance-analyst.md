@@ -1,3 +1,8 @@
+---
+name: performance-analyst
+description: Performance profiling, caching strategies, allocation optimization, and async pattern analysis
+---
+
 # Performance Analyst Agent
 
 ## Role Definition

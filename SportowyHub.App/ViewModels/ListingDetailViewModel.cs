@@ -31,18 +31,50 @@ public partial class ListingDetailViewModel(
     [ObservableProperty]
     public partial bool IsTogglingFavorite { get; set; }
 
-    public string FormattedPrice =>
-        Listing?.Price is { } price && Listing?.Currency is { } currency
-            ? $"{price} {currency}"
-            : string.Empty;
+    [ObservableProperty]
+    public partial string PreviewTitle { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string PreviewPrice { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string PreviewCurrency { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string PreviewCity { get; set; } = string.Empty;
+
+    public string DisplayTitle => Listing?.Title ?? PreviewTitle;
+
+    public string FormattedPrice
+    {
+        get
+        {
+            if (Listing?.Price is { } price && Listing?.Currency is { } currency)
+            {
+                return $"{price} {currency}";
+            }
+
+            if (!string.IsNullOrEmpty(PreviewPrice) && !string.IsNullOrEmpty(PreviewCurrency))
+            {
+                return $"{PreviewPrice} {PreviewCurrency}";
+            }
+
+            return string.Empty;
+        }
+    }
 
     public string FormattedLocation
     {
         get
         {
-            var parts = new[] { Listing?.City, Listing?.Region }
-                .Where(p => !string.IsNullOrWhiteSpace(p));
-            return string.Join(", ", parts);
+            if (Listing is not null)
+            {
+                var parts = new[] { Listing.City, Listing.Region }
+                    .Where(p => !string.IsNullOrWhiteSpace(p));
+                return string.Join(", ", parts);
+            }
+
+            return !string.IsNullOrWhiteSpace(PreviewCity) ? PreviewCity : string.Empty;
         }
     }
 
@@ -53,6 +85,34 @@ public partial class ListingDetailViewModel(
         if (query.TryGetValue("id", out var id) && id is string idStr)
         {
             _listingId = idStr;
+        }
+
+        if (query.TryGetValue("title", out var title) && title is string titleStr)
+        {
+            PreviewTitle = titleStr;
+        }
+
+        if (query.TryGetValue("price", out var price) && price is string priceStr)
+        {
+            PreviewPrice = priceStr;
+        }
+
+        if (query.TryGetValue("currency", out var currency) && currency is string currencyStr)
+        {
+            PreviewCurrency = currencyStr;
+        }
+
+        if (query.TryGetValue("city", out var city) && city is string cityStr)
+        {
+            PreviewCity = cityStr;
+        }
+
+        OnPropertyChanged(nameof(DisplayTitle));
+        OnPropertyChanged(nameof(FormattedPrice));
+        OnPropertyChanged(nameof(FormattedLocation));
+
+        if (!string.IsNullOrEmpty(_listingId))
+        {
             LoadListingCommand.Execute(null);
         }
     }
@@ -80,6 +140,7 @@ public partial class ListingDetailViewModel(
         }
         finally
         {
+            OnPropertyChanged(nameof(DisplayTitle));
             OnPropertyChanged(nameof(FormattedPrice));
             OnPropertyChanged(nameof(FormattedLocation));
             IsLoading = false;

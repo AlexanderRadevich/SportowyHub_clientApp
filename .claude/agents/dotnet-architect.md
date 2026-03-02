@@ -1,3 +1,8 @@
+---
+name: dotnet-architect
+description: Project structure, architecture selection (VSA, Clean, DDD), module boundaries, and solution layout
+---
+
 # .NET Architect Agent
 
 ## Role Definition

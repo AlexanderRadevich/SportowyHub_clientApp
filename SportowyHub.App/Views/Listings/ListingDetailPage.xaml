@@ -3,24 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:controls="clr-namespace:SportowyHub.Controls"
              x:Class="SportowyHub.Views.Listings.ListingDetailPage"
              x:DataType="vm:ListingDetailViewModel"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Title="{Binding Listing.Title, FallbackValue=''}"
+             Title="{Binding DisplayTitle, FallbackValue=''}"
              Shell.TabBarIsVisible="False">
 
     <Grid>
-        <ActivityIndicator IsRunning="{Binding IsLoading}"
-                           IsVisible="{Binding IsLoading}"
-                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                           VerticalOptions="Center"
-                           HorizontalOptions="Center" />
-
-        <ScrollView IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}">
+        <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="12">
 
                 <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
-                    <Label Text="{Binding Listing.Title}"
+                    <Label Text="{Binding DisplayTitle}"
                            Style="{StaticResource Headline}" />
                     <ImageButton Grid.Column="1"
                                  Source="{Binding IsFavorited, Converter={StaticResource BoolToHeartConverter}}"
@@ -51,15 +46,38 @@
                          Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                          Margin="0,4" />
 
+                <!-- Skeleton placeholders (visible while loading) -->
+                <VerticalStackLayout Spacing="8"
+                                     IsVisible="{Binding IsLoading}">
+                    <controls:SkeletonBox HeightRequest="14"
+                                          BackgroundColor="{AppThemeBinding Light={StaticResource Skeleton}, Dark={StaticResource SkeletonDark}}"
+                                          HorizontalOptions="Fill" />
+                    <controls:SkeletonBox HeightRequest="14"
+                                          BackgroundColor="{AppThemeBinding Light={StaticResource Skeleton}, Dark={StaticResource SkeletonDark}}"
+                                          HorizontalOptions="Fill" />
+                    <controls:SkeletonBox HeightRequest="14"
+                                          BackgroundColor="{AppThemeBinding Light={StaticResource Skeleton}, Dark={StaticResource SkeletonDark}}"
+                                          WidthRequest="200"
+                                          HorizontalOptions="Start" />
+                    <controls:SkeletonBox HeightRequest="12"
+                                          BackgroundColor="{AppThemeBinding Light={StaticResource Skeleton}, Dark={StaticResource SkeletonDark}}"
+                                          WidthRequest="120"
+                                          HorizontalOptions="Start"
+                                          Margin="0,8,0,0" />
+                </VerticalStackLayout>
+
+                <!-- Real content (visible after loading) -->
                 <Label Text="{Binding Listing.Description}"
                        FontSize="14"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
-                       LineBreakMode="WordWrap" />
+                       LineBreakMode="WordWrap"
+                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}" />
 
                 <Label Text="{Binding Listing.PublishedAt}"
                        FontSize="12"
                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                       Margin="0,8,0,0" />
+                       Margin="0,8,0,0"
+                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}" />
 
             </VerticalStackLayout>
         </ScrollView>
