@@ -1,5 +1,11 @@
 # Shell Navigation
 
+## Purpose
+
+Defines the bottom tab bar structure, active tab indicators, tab icons, and navigation behavior for the app shell.
+
+## Requirements
+
 ### Requirement: Bottom tab bar with four tabs
 The app SHALL display a fixed bottom tab bar with exactly four tabs: Home, Search, Favorites, and Profile. The tab bar SHALL be implemented using MAUI Shell `<TabBar>` in `AppShell.xaml`. Each tab SHALL display an icon and a localized text label. Tab titles SHALL be sourced from `AppResources` localized resources (`TabHome`, `TabSearch`, `TabFavorites`, `TabProfile`). Each `ShellContent` item SHALL have an `AutomationId` attribute: `TabHome`, `TabSearch`, `TabFavorites`, and `TabProfile` respectively.
 

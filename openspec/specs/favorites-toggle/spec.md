@@ -1,4 +1,10 @@
-## ADDED Requirements
+# Favorites Toggle
+
+## Purpose
+
+Defines the behavior of the favorite heart button on the listing detail page, including optimistic UI updates and auth-gating.
+
+## Requirements
 
 ### Requirement: Favorite toggle on listing detail
 

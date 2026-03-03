@@ -1,4 +1,5 @@
 using SportowyHub.Views.Auth;
+using SportowyHub.Views.MyListings;
 
 namespace SportowyHub;
 
@@ -14,5 +15,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("account-profile", typeof(Views.Profile.AccountProfilePage));
         Routing.RegisterRoute("edit-profile", typeof(Views.Profile.EditProfilePage));
         Routing.RegisterRoute("listing-detail", typeof(Views.Listings.ListingDetailPage));
+        Routing.RegisterRoute("my-listings", typeof(MyListingsPage));
+        Routing.RegisterRoute("create-edit-listing", typeof(CreateEditListingPage));
     }
 }

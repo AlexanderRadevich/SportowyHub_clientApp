@@ -99,6 +99,7 @@ public partial class EditProfileViewModel(
         {
             var request = new UpdateProfileRequest(
                 Phone: string.IsNullOrWhiteSpace(Phone) ? null : Phone,
+                Locale: null,
                 Account: new UpdateProfileAccountRequest(
                     FirstName: string.IsNullOrWhiteSpace(FirstName) ? null : FirstName,
                     LastName: string.IsNullOrWhiteSpace(LastName) ? null : LastName,

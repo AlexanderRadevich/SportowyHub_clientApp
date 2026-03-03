@@ -334,4 +334,123 @@
   <data name="EditProfileInvalidTime" xml:space="preserve">
     <value>Nieprawidłowy format czasu (HH:mm)</value>
   </data>
+  <!-- My Listings -->
+  <data name="ProfileMyListings" xml:space="preserve">
+    <value>Moje ogłoszenia</value>
+  </data>
+  <data name="MyListingsTitle" xml:space="preserve">
+    <value>Moje ogłoszenia</value>
+  </data>
+  <data name="MyListingsFilterAll" xml:space="preserve">
+    <value>Wszystkie</value>
+  </data>
+  <data name="MyListingsFilterDraft" xml:space="preserve">
+    <value>Szkice</value>
+  </data>
+  <data name="MyListingsFilterPublished" xml:space="preserve">
+    <value>Opublikowane</value>
+  </data>
+  <data name="MyListingsFilterPending" xml:space="preserve">
+    <value>Oczekujące</value>
+  </data>
+  <data name="MyListingsFilterRejected" xml:space="preserve">
+    <value>Odrzucone</value>
+  </data>
+  <data name="MyListingsFilterHidden" xml:space="preserve">
+    <value>Ukryte</value>
+  </data>
+  <data name="MyListingsEmpty" xml:space="preserve">
+    <value>Brak ogłoszeń</value>
+  </data>
+  <data name="MyListingsEmptyCreate" xml:space="preserve">
+    <value>Utwórz swoje pierwsze ogłoszenie</value>
+  </data>
+  <data name="MyListingsPublish" xml:space="preserve">
+    <value>Opublikuj</value>
+  </data>
+  <data name="MyListingsHide" xml:space="preserve">
+    <value>Ukryj</value>
+  </data>
+  <data name="MyListingsResubmit" xml:space="preserve">
+    <value>Prześlij ponownie</value>
+  </data>
+  <data name="MyListingsDelete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="MyListingsDeleteConfirmTitle" xml:space="preserve">
+    <value>Usunąć ogłoszenie?</value>
+  </data>
+  <data name="MyListingsDeleteConfirmMessage" xml:space="preserve">
+    <value>Tej operacji nie można cofnąć.</value>
+  </data>
+  <data name="MyListingsStatusDraft" xml:space="preserve">
+    <value>Szkic</value>
+  </data>
+  <data name="MyListingsStatusPublished" xml:space="preserve">
+    <value>Opublikowane</value>
+  </data>
+  <data name="MyListingsStatusPending" xml:space="preserve">
+    <value>Oczekujące</value>
+  </data>
+  <data name="MyListingsStatusRejected" xml:space="preserve">
+    <value>Odrzucone</value>
+  </data>
+  <data name="MyListingsStatusHidden" xml:space="preserve">
+    <value>Ukryte</value>
+  </data>
+  <!-- Create/Edit Listing -->
+  <data name="CreateListingTitle" xml:space="preserve">
+    <value>Nowe ogłoszenie</value>
+  </data>
+  <data name="EditListingTitle" xml:space="preserve">
+    <value>Edytuj ogłoszenie</value>
+  </data>
+  <data name="ListingFieldCategory" xml:space="preserve">
+    <value>Kategoria</value>
+  </data>
+  <data name="ListingFieldSection" xml:space="preserve">
+    <value>Sekcja</value>
+  </data>
+  <data name="ListingFieldTitle" xml:space="preserve">
+    <value>Tytuł</value>
+  </data>
+  <data name="ListingFieldDescription" xml:space="preserve">
+    <value>Opis</value>
+  </data>
+  <data name="ListingFieldPrice" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="ListingFieldCurrency" xml:space="preserve">
+    <value>Waluta</value>
+  </data>
+  <data name="ListingFieldCityId" xml:space="preserve">
+    <value>ID miasta</value>
+  </data>
+  <data name="ListingFieldVoivodeshipId" xml:space="preserve">
+    <value>ID województwa</value>
+  </data>
+  <data name="ListingFieldLocale" xml:space="preserve">
+    <value>Język treści</value>
+  </data>
+  <data name="ListingPhotosTitle" xml:space="preserve">
+    <value>Zdjęcia</value>
+  </data>
+  <data name="ListingAddPhoto" xml:space="preserve">
+    <value>Dodaj zdjęcie</value>
+  </data>
+  <data name="ListingSave" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="ListingCreateSuccess" xml:space="preserve">
+    <value>Ogłoszenie zostało utworzone</value>
+  </data>
+  <data name="ListingEditSuccess" xml:space="preserve">
+    <value>Ogłoszenie zostało zaktualizowane</value>
+  </data>
+  <data name="ListingTitleRequired" xml:space="preserve">
+    <value>Tytuł jest wymagany</value>
+  </data>
+  <data name="ListingCategoryRequired" xml:space="preserve">
+    <value>Kategoria jest wymagana</value>
+  </data>
 </root>

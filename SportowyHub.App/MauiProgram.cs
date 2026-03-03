@@ -6,6 +6,7 @@ using SportowyHub.Views.Favorites;
 using SportowyHub.Views.Profile;
 using SportowyHub.Views.Auth;
 using SportowyHub.Views.Listings;
+using SportowyHub.Views.MyListings;
 using SportowyHub.ViewModels;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
@@ -13,6 +14,15 @@ using SportowyHub.Services.Favorites;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.RecentSearches;
+using SportowyHub.Services.Dsar;
+using SportowyHub.Services.Locale;
+using SportowyHub.Services.ListingManagement;
+using SportowyHub.Services.Media;
+using SportowyHub.Services.Messaging;
+using SportowyHub.Services.Moderation;
+using SportowyHub.Services.PhoneVerification;
+using SportowyHub.Services.Sections;
+using SportowyHub.Services.ThemeSync;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub;
@@ -57,6 +67,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<IToastService, ToastService>();
         builder.Services.AddSingleton<IRecentSearchesService, RecentSearchesService>();
         builder.Services.AddSingleton<IFavoritesService, FavoritesService>();
+        builder.Services.AddSingleton<ISectionsService, SectionsService>();
+        builder.Services.AddSingleton<ILocaleService, LocaleService>();
+        builder.Services.AddSingleton<IPhoneVerificationService, PhoneVerificationService>();
+        builder.Services.AddSingleton<IThemeSyncService, ThemeSyncService>();
+        builder.Services.AddSingleton<IListingManagementService, ListingManagementService>();
+        builder.Services.AddSingleton<IMediaService, MediaService>();
+        builder.Services.AddSingleton<IMessagingService, MessagingService>();
+        builder.Services.AddSingleton<IModerationService, ModerationService>();
+        builder.Services.AddSingleton<IDsarService, DsarService>();
 
         // Pages
         builder.Services.AddTransient<HomePage>();
@@ -69,6 +88,8 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<EmailVerificationPage>();
         builder.Services.AddTransient<ListingDetailPage>();
+        builder.Services.AddTransient<MyListingsPage>();
+        builder.Services.AddTransient<CreateEditListingPage>();
 
         // ViewModels
         builder.Services.AddTransient<SearchViewModel>();
@@ -81,6 +102,8 @@ public static class MauiProgram
         builder.Services.AddTransient<FavoritesViewModel>();
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<ListingDetailViewModel>();
+        builder.Services.AddTransient<MyListingsViewModel>();
+        builder.Services.AddTransient<CreateEditListingViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

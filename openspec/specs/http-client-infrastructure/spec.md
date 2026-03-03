@@ -1,4 +1,10 @@
-## ADDED Requirements
+# HTTP Client Infrastructure
+
+## Purpose
+
+Defines the generic HTTP request provider interface, centralized error handling, source-generated JSON serialization, API base URL configuration, and DI registration for all HTTP communication in the app.
+
+## Requirements
 
 ### Requirement: Generic HTTP request provider interface
 The app SHALL contain an `IRequestProvider` interface exposing generic HTTP methods: `GetAsync<TResult>(uri, token)`, `PostAsync<TRequest, TResponse>(uri, data, token)`, `PutAsync<TResult>(uri, data, token)`, and `DeleteAsync(uri, token)`. The `token` parameter SHALL be optional and default to empty string. When a non-empty token is provided, the request SHALL include an `Authorization: Bearer {token}` header.

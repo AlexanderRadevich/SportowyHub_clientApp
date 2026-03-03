@@ -157,7 +157,7 @@ public partial class FavoritesViewModel(
     {
         var query = $"listing-detail?id={Uri.EscapeDataString(item.Id)}" +
                     $"&title={Uri.EscapeDataString(item.Title)}" +
-                    $"&price={Uri.EscapeDataString(item.Price ?? string.Empty)}" +
+                    $"&price={Uri.EscapeDataString(item.Price?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty)}" +
                     $"&currency={Uri.EscapeDataString(item.Currency ?? string.Empty)}" +
                     $"&city={Uri.EscapeDataString(item.City ?? string.Empty)}";
         await nav.GoToAsync(query);

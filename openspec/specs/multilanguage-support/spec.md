@@ -1,5 +1,11 @@
 # Multilanguage Support
 
+## Purpose
+
+Defines the resource-based localization system, language detection, culture switching, and resource key naming conventions.
+
+## Requirements
+
 ### Requirement: Resource-based localization infrastructure
 The app SHALL use `.resx` resource files for all user-facing strings. A base resource file (`AppResources.resx`) SHALL contain Polish translations as the neutral/fallback language. Satellite resource files SHALL exist for English (`AppResources.en.resx`), Ukrainian (`AppResources.uk.resx`), and Russian (`AppResources.ru.resx`). All resource files SHALL be located in `Resources/Strings/`.
 

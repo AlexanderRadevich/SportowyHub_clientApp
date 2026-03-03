@@ -1,3 +1,11 @@
+# Appium Test Infrastructure
+
+## Purpose
+
+Defines the Appium UI test project structure, driver lifecycle, page object model, test ordering, and screenshot utilities.
+
+## Requirements
+
 ### Requirement: Appium test project structure
 The solution SHALL contain a separate test project `SportowyHub.UITests/SportowyHub.UITests.csproj` targeting `net10.0`. The project SHALL reference `Appium.WebDriver` (8.x), `xunit` (v3), `xunit.runner.visualstudio`, `xunit.analyzers`, and `Microsoft.NET.Test.Sdk`. The project SHALL NOT reference or depend on the main MAUI app project.
 

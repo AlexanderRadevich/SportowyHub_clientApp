@@ -8,11 +8,11 @@ The app SHALL contain a `LoginRequest` record with `Email` (string) and `Passwor
 - **THEN** the JSON output SHALL be `{"email":"user@example.com","password":"secret123"}`
 
 ### Requirement: LoginResponse model
-The app SHALL contain a `LoginResponse` record with `AccessToken` (string), `ExpiresIn` (int), `TokenType` (string), `RefreshToken` (string, nullable), and `Locale` (string, nullable) properties. It SHALL deserialize from the API response: `{"locale": "pl", "access_token": "...", "expires_in": 3600, "token_type": "Bearer", "refresh_token": "..."}`. The `RefreshToken` field is optional and only present when the request includes `X-Include-Refresh-Token: true` header.
+The app SHALL contain a `LoginResponse` record with `AccessToken` (string), `ExpiresIn` (int), `TokenType` (string), `RefreshToken` (string, nullable), `Locale` (string, nullable), and `User` (LoginUser, nullable) properties. It SHALL deserialize from the API response: `{"locale": "pl", "access_token": "...", "expires_in": 3600, "token_type": "Bearer", "refresh_token": "...", "user": {"id": 1, "email": "...", "trust_level": "TL1"}}`. The `RefreshToken` field is optional and only present when the request includes `X-Include-Refresh-Token: true` header. The `User` field is optional.
 
 #### Scenario: LoginResponse deserializes from API format
-- **WHEN** the API returns `{"locale":"pl","access_token":"jwt.token.here","expires_in":3600,"token_type":"Bearer","refresh_token":"rt.token"}`
-- **THEN** it SHALL deserialize to a `LoginResponse` with AccessToken="jwt.token.here", ExpiresIn=3600, TokenType="Bearer", RefreshToken="rt.token", and Locale="pl"
+- **WHEN** the API returns `{"locale":"pl","access_token":"jwt.token.here","expires_in":3600,"token_type":"Bearer","refresh_token":"rt.token","user":{"id":1,"email":"user@example.com","trust_level":"TL1"}}`
+- **THEN** it SHALL deserialize to a `LoginResponse` with AccessToken="jwt.token.here", ExpiresIn=3600, TokenType="Bearer", RefreshToken="rt.token", Locale="pl", and User with Id=1, Email="user@example.com", TrustLevel="TL1"
 
 #### Scenario: LoginResponse deserializes without refresh token
 - **WHEN** the API returns `{"locale":"pl","access_token":"jwt.token.here","expires_in":3600,"token_type":"Bearer"}`
@@ -21,6 +21,10 @@ The app SHALL contain a `LoginResponse` record with `AccessToken` (string), `Exp
 #### Scenario: LoginResponse deserializes without locale
 - **WHEN** the API returns a response without the `locale` field
 - **THEN** `Locale` SHALL be null, and `AccessToken`, `ExpiresIn`, `TokenType` SHALL deserialize normally
+
+#### Scenario: LoginResponse deserializes without user object
+- **WHEN** the API returns a response without the `user` field
+- **THEN** `User` SHALL be null
 
 ### Requirement: RegisterRequest model
 The app SHALL contain a `RegisterRequest` record with `Email` (string), `Password` (string), `PasswordConfirm` (string), and `Phone` (string, nullable) properties. It SHALL serialize to JSON matching the API schema: `{"email": "...", "password": "...", "password_confirm": "...", "phone": "..."}`.
@@ -34,11 +38,15 @@ The app SHALL contain a `RegisterRequest` record with `Email` (string), `Passwor
 - **THEN** the JSON output SHALL include `email`, `password`, and `password_confirm` fields, and `phone` SHALL be null or omitted
 
 ### Requirement: RegisterResponse model
-The app SHALL contain a `RegisterResponse` record with `Id` (int), `Email` (string), `TrustLevel` (string), and `Locale` (string, nullable) properties. It SHALL deserialize from the API 201 response.
+The app SHALL contain a `RegisterResponse` record with `Id` (int), `Email` (string), `TrustLevel` (string), `Locale` (string, nullable), and `VerificationUrl` (string, nullable) properties. It SHALL deserialize from the API 201 response.
 
 #### Scenario: RegisterResponse deserializes from API format
 - **WHEN** the API returns `{"locale":"en","id":42,"email":"user@example.com","trust_level":"TL0"}`
 - **THEN** it SHALL deserialize to a `RegisterResponse` with Id=42, TrustLevel="TL0", and Locale="en"
+
+#### Scenario: RegisterResponse deserializes with verification URL
+- **WHEN** the API returns `{"id":42,"email":"user@example.com","trust_level":"TL0","verification_url":"https://example.com/verify?token=abc"}`
+- **THEN** it SHALL deserialize to a `RegisterResponse` with VerificationUrl="https://example.com/verify?token=abc"
 
 ### Requirement: ApiError model
 The app SHALL contain an `ApiError` record with a `Locale` (string, nullable) property and a nested `Error` object (`ErrorDetail`). `ErrorDetail` SHALL have `Code` (string), `Message` (string), and `Violations` (Dictionary<string, string>, nullable) properties. It SHALL deserialize from both simple error responses and validation error responses.
@@ -135,23 +143,46 @@ The app SHALL define an `OauthLinked` record with property `Google` (bool). The 
 - **WHEN** `UserAccount` or `OauthLinked` is deserialized via the source-generated JSON context
 - **THEN** the operation SHALL succeed without runtime reflection
 
+### Requirement: UserProfile model
+The app SHALL define a `UserProfile` record with properties: `Id` (int), `Email` (string), `EmailVerified` (bool), `EmailVerifiedAt` (string?), `Phone` (string?), `PhoneVerified` (bool), `PhoneVerifiedAt` (string?), `TrustLevel` (string), `ReputationScore` (decimal, with `[JsonConverter(typeof(FlexibleDecimalConverter))]`), `OauthLinked` (OauthLinked?), `LastLoginAt` (string?), `LastActivityAt` (string?), `Account` (UserAccount?). The type SHALL NOT have a top-level `Locale` property — locale is accessible only via `Account.Locale`. The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+
+#### Scenario: UserProfile deserializes from GET /api/private/profile
+- **WHEN** the API returns a profile response with `"reputation_score": 4.75`
+- **THEN** `UserProfile.ReputationScore` SHALL be `4.75m`
+
+#### Scenario: UserProfile deserializes integer reputation score
+- **WHEN** the API returns a profile response with `"reputation_score": 5`
+- **THEN** `UserProfile.ReputationScore` SHALL be `5m`
+
+#### Scenario: UserProfile has no top-level Locale property
+- **WHEN** the API returns a profile response with `"account": {"locale": "pl"}`
+- **THEN** locale SHALL be accessible only via `UserProfile.Account.Locale`, and no top-level `Locale` property SHALL exist
+
+#### Scenario: Nullable nested objects handled correctly
+- **WHEN** the API returns `"account": null` or `"oauth_linked": null`
+- **THEN** `Account` SHALL be null and `OauthLinked` SHALL be null respectively
+
 ### Requirement: UpdateProfileRequest model
-The app SHALL define an `UpdateProfileRequest` record with properties: `Phone` (string?) and `Account` (UpdateProfileAccountRequest?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+The app SHALL define an `UpdateProfileRequest` record with properties: `Phone` (string?), `Locale` (string?), and `Account` (UpdateProfileAccountRequest?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
 
 #### Scenario: UpdateProfileRequest serializes to API format
-- **WHEN** an `UpdateProfileRequest` with Phone="123456789" and Account with FirstName="John" is serialized
-- **THEN** the JSON output SHALL be `{"phone":"123456789","account":{"first_name":"John",...}}`
+- **WHEN** an `UpdateProfileRequest` with Phone="123456789", Locale="en", and Account with FirstName="John" is serialized
+- **THEN** the JSON output SHALL include `"phone":"123456789"`, `"locale":"en"`, and nested account object
 
 #### Scenario: UpdateProfileRequest with null optional fields
-- **WHEN** an `UpdateProfileRequest` with Phone=null is serialized
-- **THEN** `phone` SHALL be null in the JSON output
+- **WHEN** an `UpdateProfileRequest` with Phone=null and Locale=null is serialized
+- **THEN** `phone` and `locale` SHALL be null in the JSON output
 
 ### Requirement: UpdateProfileAccountRequest model
-The app SHALL define an `UpdateProfileAccountRequest` record with properties: `FirstName` (string?), `LastName` (string?), `NotificationsEnabled` (bool), `QuietHoursStart` (string?), `QuietHoursEnd` (string?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+The app SHALL define an `UpdateProfileAccountRequest` record with properties: `FirstName` (string?), `LastName` (string?), `NotificationsEnabled` (bool?), `QuietHoursStart` (string?), `QuietHoursEnd` (string?). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy. When `NotificationsEnabled` is `null`, the field SHALL serialize as `null` in JSON, which the backend treats as no-op.
 
 #### Scenario: UpdateProfileAccountRequest serializes nested fields
 - **WHEN** an `UpdateProfileAccountRequest` with FirstName="John", LastName="Doe", NotificationsEnabled=true is serialized
 - **THEN** the JSON output SHALL include `"first_name":"John"`, `"last_name":"Doe"`, `"notifications_enabled":true`
+
+#### Scenario: UpdateProfileAccountRequest omits notifications when null
+- **WHEN** an `UpdateProfileAccountRequest` with NotificationsEnabled=null is serialized
+- **THEN** the JSON output SHALL include `"notifications_enabled":null`, and the backend SHALL treat this as no change
 
 ### Requirement: PutAsync with separate request and response types
 `IRequestProvider` SHALL expose a `PutAsync<TRequest, TResponse>` method that accepts a request body of type `TRequest` and returns a response of type `TResponse`. The implementation SHALL follow the same pattern as `PostAsync<TRequest, TResponse>`.
@@ -159,3 +190,35 @@ The app SHALL define an `UpdateProfileAccountRequest` record with properties: `F
 #### Scenario: PutAsync sends request type and deserializes response type
 - **WHEN** `PutAsync<UpdateProfileRequest, UserProfile>` is called
 - **THEN** the request SHALL be serialized as `UpdateProfileRequest` and the response SHALL be deserialized as `UserProfile`
+
+### Requirement: PatchAsync with separate request and response types
+`IRequestProvider` SHALL expose a `PatchAsync<TRequest, TResponse>` method that accepts a URI, request body of type `TRequest`, and an optional auth token, then returns a response of type `TResponse`. The implementation SHALL follow the same pattern as `PostAsync<TRequest, TResponse>` but use `HttpMethod.Patch`.
+
+#### Scenario: PatchAsync sends PATCH request and deserializes response
+- **WHEN** `PatchAsync<UpdateProfileRequest, UserProfile>` is called with a URI and body
+- **THEN** the request SHALL use HTTP PATCH method, serialize the body as JSON, and deserialize the response as the target type
+
+### Requirement: LoginUser nested model
+The app SHALL define a `LoginUser` record with properties: `Id` (int), `Email` (string), `TrustLevel` (string). The type SHALL be registered in `SportowyHubJsonContext` for source-generated serialization with `SnakeCaseLower` naming policy.
+
+#### Scenario: LoginUser deserializes from nested user object
+- **WHEN** the API returns a login response with `"user": {"id": 1, "email": "user@example.com", "trust_level": "TL1"}`
+- **THEN** the `LoginUser` record SHALL contain Id=1, Email="user@example.com", TrustLevel="TL1"
+
+### Requirement: JSON context registrations for LoginUser
+`SportowyHubJsonContext` SHALL include a `[JsonSerializable]` attribute for `LoginUser`.
+
+#### Scenario: LoginUser is deserializable via source generation
+- **WHEN** `LoginUser` is deserialized via the source-generated JSON context
+- **THEN** the operation SHALL succeed without runtime reflection
+
+### Requirement: UpdateProfileResponse model
+The app SHALL define an `UpdateProfileResponse` record with a single property: `Account` (`UserAccount?`). This record SHALL match the actual PATCH `/api/private/profile` response shape, which returns only the `account` object. The type SHALL be registered in `SportowyHubJsonContext`.
+
+#### Scenario: Deserialize PATCH profile response
+- **WHEN** the backend returns `{"account": {"first_name": "John", "last_name": "Doe", "notifications_enabled": true, ...}}`
+- **THEN** `UpdateProfileResponse.Account` SHALL contain the deserialized `UserAccount` with all fields populated
+
+#### Scenario: UpdateProfileAsync returns UpdateProfileResponse
+- **WHEN** `AuthService.UpdateProfileAsync` is called
+- **THEN** the PATCH response SHALL be deserialized as `UpdateProfileResponse` instead of `UserProfile`

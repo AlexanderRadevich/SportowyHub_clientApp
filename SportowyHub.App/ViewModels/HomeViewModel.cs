@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Models.Api;
@@ -132,7 +133,7 @@ public partial class HomeViewModel(
     {
         var query = $"listing-detail?id={Uri.EscapeDataString(listing.Id)}" +
                     $"&title={Uri.EscapeDataString(listing.Title)}" +
-                    $"&price={Uri.EscapeDataString(listing.Price ?? string.Empty)}" +
+                    $"&price={Uri.EscapeDataString(listing.Price?.ToString(CultureInfo.InvariantCulture) ?? string.Empty)}" +
                     $"&currency={Uri.EscapeDataString(listing.Currency ?? string.Empty)}" +
                     $"&city={Uri.EscapeDataString(listing.City ?? string.Empty)}";
         await nav.GoToAsync(query);

@@ -1,5 +1,11 @@
 # App Branding
 
+## Purpose
+
+Defines the branded visual assets for the app icon, splash screen, in-app logos, and removal of template placeholder assets.
+
+## Requirements
+
 ### Requirement: Branded app icon
 The app SHALL use MAUI's two-layer icon system for the app icon. The background layer (`appicon.png`, 1024x1024, solid white background) SHALL be the `MauiIcon` Include source. The foreground layer (`appiconfg.png`, S logo with safe-zone padding) SHALL be specified via the `ForegroundFile` attribute. No `Color` attribute SHALL be used since the background color is baked into `appicon.png`. Both files SHALL be located in `Resources/AppIcon/`.
 

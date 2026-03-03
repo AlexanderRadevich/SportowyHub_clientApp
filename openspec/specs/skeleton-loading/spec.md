@@ -1,3 +1,5 @@
+# Skeleton Loading
+
 ## Purpose
 
 Defines the reusable skeleton placeholder control and the visibility pattern for showing loading state across pages.

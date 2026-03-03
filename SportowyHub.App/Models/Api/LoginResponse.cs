@@ -5,6 +5,9 @@ public record LoginResponse(
     int ExpiresIn,
     string TokenType,
     string? RefreshToken = null,
-    string? Locale = null);
+    string? Locale = null,
+    LoginUser? User = null);
+
+public record LoginUser(int Id, string Email, string TrustLevel);
 
 public record UserInfo(int Id, string Email, string TrustLevel);

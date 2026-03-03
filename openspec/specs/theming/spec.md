@@ -1,5 +1,11 @@
 # Theming
 
+## Purpose
+
+Defines the brand color palette, light/dark theme switching, control styles, spacing system, and dark mode guidelines.
+
+## Requirements
+
 ### Requirement: Brand color palette in Colors.xaml
 `Resources/Styles/Colors.xaml` SHALL define the SportowyHub brand palette replacing all default template colors. The following semantic color keys SHALL be defined:
 

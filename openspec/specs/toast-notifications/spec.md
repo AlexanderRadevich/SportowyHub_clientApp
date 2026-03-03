@@ -1,4 +1,10 @@
-## ADDED Requirements
+# Toast Notifications
+
+## Purpose
+
+Defines the `IToastService` interface for displaying error notifications and the integration points in ViewModels that use it.
+
+## Requirements
 
 ### Requirement: Toast notification service
 The app SHALL provide an `IToastService` interface with a `ShowError(string message)` method. The implementation SHALL be registered as a singleton in the DI container. The method SHALL display the message using `CommunityToolkit.Maui` Snackbar with a 6-second auto-dismiss duration and no action button. The method SHALL dispatch to the main thread to ensure it works from background async contexts.

@@ -22,7 +22,8 @@ public class ListingsService(IRequestProvider requestProvider) : IListingsServic
         string? query = null,
         int? categoryId = null,
         string? sport = null,
-        string? city = null,
+        int? cityId = null,
+        int? voivodeshipId = null,
         float? priceMin = null,
         float? priceMax = null,
         string? sort = null,
@@ -51,9 +52,14 @@ public class ListingsService(IRequestProvider requestProvider) : IListingsServic
             parameters.Add($"sport={Uri.EscapeDataString(sport)}");
         }
 
-        if (!string.IsNullOrWhiteSpace(city))
+        if (cityId.HasValue)
         {
-            parameters.Add($"city={Uri.EscapeDataString(city)}");
+            parameters.Add($"city_id={cityId.Value}");
+        }
+
+        if (voivodeshipId.HasValue)
+        {
+            parameters.Add($"voivodeship_id={voivodeshipId.Value}");
         }
 
         if (priceMin.HasValue)

@@ -1,3 +1,11 @@
+# Settings E2E Test
+
+## Purpose
+
+Defines the E2E tests that verify the language picker and theme picker settings using xUnit, Appium, and visual screenshot verification.
+
+## Requirements
+
 ### Requirement: E2E test launches app and navigates to settings
 The test SHALL launch the SportowyHub app on an Android emulator, wait for the home screen to load, and navigate to the Profile tab by tapping the tab bar item identified by `AutomationId` `TabProfile`.
 

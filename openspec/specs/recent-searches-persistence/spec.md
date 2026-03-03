@@ -1,3 +1,11 @@
+# Recent Searches Persistence
+
+## Purpose
+
+Defines the `IRecentSearchesService` for persisting, retrieving, and managing recent search queries.
+
+## Requirements
+
 ### Requirement: Recent searches persistence service
 
 The app SHALL provide an `IRecentSearchesService` registered as a singleton in DI, backed by `Preferences` storage under the key `"recent_searches"`. The stored format SHALL be a JSON array of strings serialized with `System.Text.Json`.

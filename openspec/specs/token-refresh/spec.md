@@ -1,5 +1,11 @@
 # Token Refresh
 
+## Purpose
+
+Defines the refresh token lifecycle: storage on login, clearing on logout, and the `RefreshTokenAsync` method for obtaining new access tokens.
+
+## Requirements
+
 ### Requirement: Refresh token storage
 When `LoginAsync` receives a successful response containing a `refresh_token` field, the refresh token SHALL be stored in `SecureStorage` under key `auth_refresh_token`. The `expires_in` value SHALL be stored under key `auth_token_expiry` as the absolute expiry timestamp (current UTC + expires_in seconds).
 

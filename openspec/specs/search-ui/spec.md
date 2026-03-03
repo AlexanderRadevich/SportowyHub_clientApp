@@ -1,5 +1,44 @@
+# Search UI
+
+## Purpose
+
+Defines the Search page and search bar behavior, including the search bar on the Home screen, the editable search page, suggestions, search results, incremental loading, and recent searches.
+
+## Requirements
+
+### Requirement: Search bar on Home screen
+The Home screen SHALL display a search bar at the top of the page. The search bar SHALL be a styled container (`Border` with `RoundRectangle`) containing a magnifying glass icon on the left and localized placeholder text (`SearchPlaceholder`). It SHALL NOT be an editable input on the Home screen — tapping it navigates to the Search page. The magnifying glass icon SHALL use a theme-aware tint color: `Secondary` (#39485F) in light theme and `White` (#FFFFFF) in dark theme.
+
+#### Scenario: Search bar is visible on Home screen
+- **WHEN** the Home screen is displayed
+- **THEN** a search bar SHALL be visible at the top with a magnifying glass icon and localized placeholder text
+
+#### Scenario: Search bar light theme styling
+- **WHEN** the Home screen is in light theme
+- **THEN** the search bar background SHALL be `#F1F3F6`, the icon tint color SHALL be `#39485F`, and the text color SHALL be `#39485F`
+
+#### Scenario: Search bar dark theme styling
+- **WHEN** the Home screen is in dark theme
+- **THEN** the search bar background SHALL be `#1E1E1E` with a subtle border, the icon tint color SHALL be `#FFFFFF`, and the text color SHALL be `#FFFFFF`
+
+#### Scenario: Tapping the search bar navigates to Search page
+- **WHEN** the user taps the search bar on the Home screen
+- **THEN** the app SHALL navigate to the dedicated Search page
+
 ### Requirement: Search page with autofocus
-The Search page SHALL have a full editable search input that auto-focuses on appearance. It SHALL include a localized placeholder, clear button (visible when text entered), back button, and AutomationId="SearchEntry". **When the user types text, the page SHALL switch from suggestions view to search results view. When text is cleared, it SHALL return to suggestions view.**
+The Search page SHALL have a full editable search input that auto-focuses on appearance. It SHALL include a localized placeholder, clear button (visible when text entered), back button, and AutomationId="SearchEntry". Both the back and clear icons SHALL use a theme-aware tint color: `Secondary` (#39485F) in light theme and `White` (#FFFFFF) in dark theme. **When the user types text, the page SHALL switch from suggestions view to search results view. When text is cleared, it SHALL return to suggestions view.**
+
+#### Scenario: Search Entry is locatable by AutomationId
+- **WHEN** the Search page is displayed
+- **THEN** the Search Entry SHALL have `AutomationId="SearchEntry"`
+
+#### Scenario: Search page icons adapt to dark theme
+- **WHEN** the Search page is in dark theme
+- **THEN** the back and clear icons SHALL be tinted `#FFFFFF` (White) and be clearly visible against the dark search bar background
+
+#### Scenario: Search page icons adapt to light theme
+- **WHEN** the Search page is in light theme
+- **THEN** the back and clear icons SHALL be tinted `#39485F` (Secondary)
 
 #### Scenario: Empty search shows suggestions
 - **WHEN** the search text is empty
@@ -11,7 +50,15 @@ The Search page SHALL have a full editable search input that auto-focuses on app
 - **WHEN** the user types text into the search entry
 - **THEN** the suggestions SHALL be hidden
 - **THEN** the search results CollectionView SHALL be visible
-- **THEN** after a 400ms debounce, the app SHALL call `/api/v1/search?q={text}&limit=30&offset=0` via `IListingsService.SearchAsync`
+- **THEN** after a 400ms debounce, the app SHALL call `IListingsService.SearchAsync` with `cityId` and `voivodeshipId` integer parameters instead of a `city` string parameter
+
+#### Scenario: Search with city filter uses city ID
+- **WHEN** the user selects a city filter and types a search query
+- **THEN** the `SearchAsync` call SHALL pass the selected city's integer ID as `cityId` parameter and the voivodeship's integer ID as `voivodeshipId`, not a city name string
+
+#### Scenario: Search without city filter omits location parameters
+- **WHEN** the user searches without selecting a city filter
+- **THEN** the `SearchAsync` call SHALL pass `cityId: null` and `voivodeshipId: null`
 
 #### Scenario: Debounce cancels previous request
 - **WHEN** the user types additional characters before the 400ms debounce completes

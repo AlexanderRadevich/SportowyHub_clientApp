@@ -1,4 +1,10 @@
-## ADDED Requirements
+# Login Signout E2E Test
+
+## Purpose
+
+Defines the E2E tests that verify the full login and sign-out flows using xUnit, Appium, and the Page Object Model.
+
+## Requirements
 
 ### Requirement: Configurable test credentials
 `TestConfig` SHALL expose `TestEmail` and `TestPassword` string constants for login E2E tests. The default values SHALL be `"alex10@gmail.com"` and `"qwerty12345"` respectively.

@@ -1,5 +1,11 @@
 # Entry Input E2E Test
 
+## Purpose
+
+Defines the E2E tests that verify text entry fields on Search, Login, and Register screens using xUnit and Appium.
+
+## Requirements
+
 ### Requirement: Entry input E2E tests verify text input on all fields
 The `EntryInputTests` class SHALL implement `IClassFixture<AppiumDriverFixture>` and contain ordered tests that navigate to each screen, type a known string into each Entry field, read the value back, and assert equality using xUnit `Assert.Equal()`. After each assertion the field SHALL be cleared. Tests SHALL use `[TestPriority]` for ordering: Search screen entries first, then Login screen entries, then Register screen entries.
 

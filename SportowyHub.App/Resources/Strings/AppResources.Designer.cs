@@ -144,4 +144,47 @@ public static class AppResources
 
     // Search Results
     public static string SearchNoResults => ResourceManager.GetString("SearchNoResults", Culture)!;
+
+    // My Listings
+    public static string ProfileMyListings => ResourceManager.GetString("ProfileMyListings", Culture)!;
+    public static string MyListingsTitle => ResourceManager.GetString("MyListingsTitle", Culture)!;
+    public static string MyListingsFilterAll => ResourceManager.GetString("MyListingsFilterAll", Culture)!;
+    public static string MyListingsFilterDraft => ResourceManager.GetString("MyListingsFilterDraft", Culture)!;
+    public static string MyListingsFilterPublished => ResourceManager.GetString("MyListingsFilterPublished", Culture)!;
+    public static string MyListingsFilterPending => ResourceManager.GetString("MyListingsFilterPending", Culture)!;
+    public static string MyListingsFilterRejected => ResourceManager.GetString("MyListingsFilterRejected", Culture)!;
+    public static string MyListingsFilterHidden => ResourceManager.GetString("MyListingsFilterHidden", Culture)!;
+    public static string MyListingsEmpty => ResourceManager.GetString("MyListingsEmpty", Culture)!;
+    public static string MyListingsEmptyCreate => ResourceManager.GetString("MyListingsEmptyCreate", Culture)!;
+    public static string MyListingsPublish => ResourceManager.GetString("MyListingsPublish", Culture)!;
+    public static string MyListingsHide => ResourceManager.GetString("MyListingsHide", Culture)!;
+    public static string MyListingsResubmit => ResourceManager.GetString("MyListingsResubmit", Culture)!;
+    public static string MyListingsDelete => ResourceManager.GetString("MyListingsDelete", Culture)!;
+    public static string MyListingsDeleteConfirmTitle => ResourceManager.GetString("MyListingsDeleteConfirmTitle", Culture)!;
+    public static string MyListingsDeleteConfirmMessage => ResourceManager.GetString("MyListingsDeleteConfirmMessage", Culture)!;
+    public static string MyListingsStatusDraft => ResourceManager.GetString("MyListingsStatusDraft", Culture)!;
+    public static string MyListingsStatusPublished => ResourceManager.GetString("MyListingsStatusPublished", Culture)!;
+    public static string MyListingsStatusPending => ResourceManager.GetString("MyListingsStatusPending", Culture)!;
+    public static string MyListingsStatusRejected => ResourceManager.GetString("MyListingsStatusRejected", Culture)!;
+    public static string MyListingsStatusHidden => ResourceManager.GetString("MyListingsStatusHidden", Culture)!;
+
+    // Create/Edit Listing
+    public static string CreateListingTitle => ResourceManager.GetString("CreateListingTitle", Culture)!;
+    public static string EditListingTitle => ResourceManager.GetString("EditListingTitle", Culture)!;
+    public static string ListingFieldCategory => ResourceManager.GetString("ListingFieldCategory", Culture)!;
+    public static string ListingFieldSection => ResourceManager.GetString("ListingFieldSection", Culture)!;
+    public static string ListingFieldTitle => ResourceManager.GetString("ListingFieldTitle", Culture)!;
+    public static string ListingFieldDescription => ResourceManager.GetString("ListingFieldDescription", Culture)!;
+    public static string ListingFieldPrice => ResourceManager.GetString("ListingFieldPrice", Culture)!;
+    public static string ListingFieldCurrency => ResourceManager.GetString("ListingFieldCurrency", Culture)!;
+    public static string ListingFieldCityId => ResourceManager.GetString("ListingFieldCityId", Culture)!;
+    public static string ListingFieldVoivodeshipId => ResourceManager.GetString("ListingFieldVoivodeshipId", Culture)!;
+    public static string ListingFieldLocale => ResourceManager.GetString("ListingFieldLocale", Culture)!;
+    public static string ListingPhotosTitle => ResourceManager.GetString("ListingPhotosTitle", Culture)!;
+    public static string ListingAddPhoto => ResourceManager.GetString("ListingAddPhoto", Culture)!;
+    public static string ListingSave => ResourceManager.GetString("ListingSave", Culture)!;
+    public static string ListingCreateSuccess => ResourceManager.GetString("ListingCreateSuccess", Culture)!;
+    public static string ListingEditSuccess => ResourceManager.GetString("ListingEditSuccess", Culture)!;
+    public static string ListingTitleRequired => ResourceManager.GetString("ListingTitleRequired", Culture)!;
+    public static string ListingCategoryRequired => ResourceManager.GetString("ListingCategoryRequired", Culture)!;
 }

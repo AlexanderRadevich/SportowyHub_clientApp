@@ -1,4 +1,10 @@
-## ADDED Requirements
+# Favorites Page
+
+## Purpose
+
+Defines the layout, behavior, and navigation contract for the Favorites tab page, which displays the authenticated user's favorited listings.
+
+## Requirements
 
 ### Requirement: Favorites page shows paginated list
 

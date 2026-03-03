@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:models="clr-namespace:SportowyHub.Models.Api"
+             x:Class="SportowyHub.Views.MyListings.MyListingsPage"
+             x:DataType="vm:MyListingsViewModel"
+             Shell.TabBarIsVisible="False"
+             Title="{x:Static res:AppResources.MyListingsTitle}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Status Filter Tabs -->
+        <ScrollView Orientation="Horizontal"
+                    HorizontalScrollBarVisibility="Never"
+                    Padding="8,8,8,0">
+            <HorizontalStackLayout Spacing="8">
+                <Button Text="{x:Static res:AppResources.MyListingsFilterAll}"
+                        Command="{Binding FilterByStatusCommand}"
+                        CommandParameter="{x:Null}"
+                        Style="{StaticResource FilterChip}" />
+                <Button Text="{x:Static res:AppResources.MyListingsFilterDraft}"
+                        Command="{Binding FilterByStatusCommand}"
+                        CommandParameter="draft"
+                        Style="{StaticResource FilterChip}" />
+                <Button Text="{x:Static res:AppResources.MyListingsFilterPublished}"
+                        Command="{Binding FilterByStatusCommand}"
+                        CommandParameter="published"
+                        Style="{StaticResource FilterChip}" />
+                <Button Text="{x:Static res:AppResources.MyListingsFilterPending}"
+                        Command="{Binding FilterByStatusCommand}"
+                        CommandParameter="pending_review"
+                        Style="{StaticResource FilterChip}" />
+                <Button Text="{x:Static res:AppResources.MyListingsFilterRejected}"
+                        Command="{Binding FilterByStatusCommand}"
+                        CommandParameter="rejected"
+                        Style="{StaticResource FilterChip}" />
+                <Button Text="{x:Static res:AppResources.MyListingsFilterHidden}"
+                        Command="{Binding FilterByStatusCommand}"
+                        CommandParameter="hidden"
+                        Style="{StaticResource FilterChip}" />
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+
+            <!-- Loading -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+
+            <!-- Empty State -->
+            <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="8"
+                                 Padding="32">
+                <Label Text="{x:Static res:AppResources.MyListingsEmpty}"
+                       FontSize="16"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                <Label Text="{x:Static res:AppResources.MyListingsEmptyCreate}"
+                       FontSize="14"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+            </VerticalStackLayout>
+
+            <!-- Listings -->
+            <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshListingsCommand}">
+                <CollectionView ItemsSource="{Binding Listings}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:MyListingSummary">
+                            <Border Margin="16,8"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                                <VerticalStackLayout Spacing="8">
+
+                                    <!-- Title + Status -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="{Binding Title}"
+                                               FontSize="16"
+                                               FontFamily="OpenSansSemibold"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2" />
+                                        <Border Grid.Column="1"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 8"
+                                                Stroke="Transparent"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+                                            <Label Text="{Binding Status}"
+                                                   FontSize="12"
+                                                   FontFamily="OpenSansSemibold" />
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Price -->
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label FontSize="15"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="Price" />
+                                                    <Binding Path="Currency" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                    </HorizontalStackLayout>
+
+                                    <!-- Created Date -->
+                                    <Label Text="{Binding CreatedAt}"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+
+                                    <!-- Action Buttons -->
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Button Text="{x:Static res:AppResources.MyListingsPublish}"
+                                                FontSize="12"
+                                                Padding="12,4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=PublishListingCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="False" />
+                                        <Button Text="{x:Static res:AppResources.MyListingsHide}"
+                                                FontSize="12"
+                                                Padding="12,4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=HideListingCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="False" />
+                                        <Button Text="{x:Static res:AppResources.MyListingsResubmit}"
+                                                FontSize="12"
+                                                Padding="12,4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=ResubmitListingCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="False" />
+                                        <Button Text="{x:Static res:AppResources.MyListingsDelete}"
+                                                FontSize="12"
+                                                Padding="12,4"
+                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=DeleteListingCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="False" />
+                                    </HorizontalStackLayout>
+
+                                </VerticalStackLayout>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=GoToEditListingCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+        </Grid>
+
+        <!-- FAB: Create Listing -->
+        <Button Grid.Row="1"
+                Text="+"
+                FontSize="24"
+                WidthRequest="56"
+                HeightRequest="56"
+                CornerRadius="28"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,16,16"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="White"
+                Command="{Binding GoToCreateListingCommand}" />
+
+    </Grid>
+
+</ContentPage>

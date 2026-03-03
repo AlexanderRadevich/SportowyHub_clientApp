@@ -75,6 +75,46 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         return (TResponse)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default)!;
     }
 
+    public async Task<TResponse> PatchAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", CancellationToken ct = default)
+    {
+        var client = httpClientFactory.CreateClient("Api");
+        var request = new HttpRequestMessage(HttpMethod.Patch, uri);
+        SetAuthHeader(request, token);
+
+        var json = JsonSerializer.Serialize(data, typeof(TRequest), SportowyHubJsonContext.Default);
+        request.Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await client.SendAsync(request, ct);
+        await HandleResponse(response, ct);
+
+        var content = await response.Content.ReadAsStringAsync(ct);
+        return (TResponse)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default)!;
+    }
+
+    public async Task<TResponse> PostMultipartAsync<TResponse>(string uri, MultipartFormDataContent content, string token = "", CancellationToken ct = default)
+    {
+        var client = httpClientFactory.CreateClient("Api");
+        var request = new HttpRequestMessage(HttpMethod.Post, uri);
+        SetAuthHeader(request, token);
+        request.Content = content;
+
+        var response = await client.SendAsync(request, ct);
+        await HandleResponse(response, ct);
+
+        var responseContent = await response.Content.ReadAsStringAsync(ct);
+        return (TResponse)JsonSerializer.Deserialize(responseContent, typeof(TResponse), SportowyHubJsonContext.Default)!;
+    }
+
+    public async Task PostAsync(string uri, string token = "", CancellationToken ct = default)
+    {
+        var client = httpClientFactory.CreateClient("Api");
+        var request = new HttpRequestMessage(HttpMethod.Post, uri);
+        SetAuthHeader(request, token);
+
+        var response = await client.SendAsync(request, ct);
+        await HandleResponse(response, ct);
+    }
+
     public async Task DeleteAsync(string uri, string token = "", CancellationToken ct = default)
     {
         var client = httpClientFactory.CreateClient("Api");

@@ -1,5 +1,11 @@
 # Account Profile Placeholder
 
+## Purpose
+
+Defines the Account Profile page, its layout, sign-out flow, profile data display, and the `AccountProfileViewModel`.
+
+## Requirements
+
 ### Requirement: Account Profile placeholder page
 The app SHALL have an `AccountProfilePage` registered as shell route `account-profile`. The page SHALL hide the tab bar (`Shell.TabBarIsVisible="False"`). The page SHALL use `AccountProfileViewModel` as its `BindingContext`, injected via constructor. The page SHALL display the user's profile data fetched from `GET /api/private/profile` in a scrollable grouped layout. The page SHALL display a "Sign Out" button at the bottom of the content. The page title SHALL be the localized `ProfileAccountProfile` resource.
 

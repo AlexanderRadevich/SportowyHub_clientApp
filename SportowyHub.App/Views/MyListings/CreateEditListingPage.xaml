@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+             xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+             xmlns:models="clr-namespace:SportowyHub.Models.Api"
+             x:Class="SportowyHub.Views.MyListings.CreateEditListingPage"
+             x:DataType="vm:CreateEditListingViewModel"
+             Shell.TabBarIsVisible="False"
+             Title="{Binding PageTitle}">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <ScrollView>
+            <VerticalStackLayout Spacing="16" Padding="16">
+
+                <!-- Loading -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   HorizontalOptions="Center"
+                                   Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+
+                <!-- Section Picker -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldSection}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Picker ItemsSource="{Binding Sections}"
+                            SelectedItem="{Binding SelectedSection}"
+                            ItemDisplayBinding="{Binding Name}"
+                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                </VerticalStackLayout>
+
+                <!-- Category Picker -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldCategory}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Picker ItemsSource="{Binding Categories}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            ItemDisplayBinding="{Binding Name}"
+                            TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                </VerticalStackLayout>
+
+                <!-- Title -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldTitle}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Entry Text="{Binding Title}"
+                           Placeholder="{x:Static res:AppResources.ListingFieldTitle}" />
+                </VerticalStackLayout>
+
+                <!-- Description -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldDescription}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Editor Text="{Binding Description}"
+                            Placeholder="{x:Static res:AppResources.ListingFieldDescription}"
+                            HeightRequest="120"
+                            AutoSize="TextChanges" />
+                </VerticalStackLayout>
+
+                <!-- Price + Currency -->
+                <Grid ColumnDefinitions="*,120" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{x:Static res:AppResources.ListingFieldPrice}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Entry Text="{Binding PriceText}"
+                               Keyboard="Numeric"
+                               Placeholder="0.00" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label Text="{x:Static res:AppResources.ListingFieldCurrency}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Entry Text="{Binding Currency}"
+                               Placeholder="PLN" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- City ID -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldCityId}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Entry Text="{Binding CityId}"
+                           Keyboard="Numeric"
+                           Placeholder="{x:Static res:AppResources.ListingFieldCityId}" />
+                </VerticalStackLayout>
+
+                <!-- Voivodeship ID -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldVoivodeshipId}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Entry Text="{Binding VoivodeshipId}"
+                           Keyboard="Numeric"
+                           Placeholder="{x:Static res:AppResources.ListingFieldVoivodeshipId}" />
+                </VerticalStackLayout>
+
+                <!-- Content Locale -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.ListingFieldLocale}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Entry Text="{Binding ContentLocale}"
+                           Placeholder="pl" />
+                </VerticalStackLayout>
+
+                <!-- Photos Section (edit mode only) -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding IsEditMode}">
+                    <Label Text="{x:Static res:AppResources.ListingPhotosTitle}"
+                           FontSize="15"
+                           FontFamily="OpenSansSemibold" />
+
+                    <ScrollView Orientation="Horizontal"
+                                HorizontalScrollBarVisibility="Never">
+                        <HorizontalStackLayout Spacing="8"
+                                               BindableLayout.ItemsSource="{Binding Photos}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:MediaItem">
+                                    <Grid WidthRequest="100" HeightRequest="100">
+                                        <Image Source="{Binding Urls.Thumb160}"
+                                               Aspect="AspectFill"
+                                               WidthRequest="100"
+                                               HeightRequest="100" />
+                                        <Button Text="X"
+                                                FontSize="10"
+                                                WidthRequest="24"
+                                                HeightRequest="24"
+                                                CornerRadius="12"
+                                                Padding="0"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Start"
+                                                BackgroundColor="{StaticResource Error}"
+                                                TextColor="{StaticResource White}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CreateEditListingViewModel}}, Path=DeletePhotoCommand}"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+
+                    <Button Text="{x:Static res:AppResources.ListingAddPhoto}"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding AddPhotoCommand}" />
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Save Button -->
+        <Button Grid.Row="1"
+                Text="{x:Static res:AppResources.ListingSave}"
+                Style="{StaticResource PrimaryButton}"
+                Margin="16"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InvertBoolConverter}}" />
+
+    </Grid>
+
+</ContentPage>

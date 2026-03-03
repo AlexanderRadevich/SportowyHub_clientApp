@@ -1,3 +1,11 @@
+# Settings Theme Picker
+
+## Purpose
+
+Defines the theme picker control in the Settings section, immediate theme application, and preference persistence.
+
+## Requirements
+
 ### Requirement: Theme picker with three options
 The Theme row in the Settings section SHALL contain a `Picker` control offering three options: Light (`SettingsThemeLight`), Dark (`SettingsThemeDark`), and System (`SettingsThemeSystem`). All option labels SHALL be sourced from `AppResources` localized resources. The default selection SHALL be "System".
 

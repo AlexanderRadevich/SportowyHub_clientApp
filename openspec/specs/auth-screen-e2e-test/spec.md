@@ -1,3 +1,11 @@
+# Auth Screen E2E Test
+
+## Purpose
+
+Defines the E2E tests that verify navigation to the Login and Registration screens from the Profile tab using the Appium test infrastructure.
+
+## Requirements
+
 ### Requirement: E2E test navigates to Login screen from Profile
 The test SHALL navigate to the Profile tab, tap the "Sign In" row (located by `AutomationId` `SignInRow`), and verify that the Login page opens by asserting the headline label (`AutomationId` `LoginHeadline`) is visible. After verification the test SHALL navigate back to the Profile tab using the Android back button.
 

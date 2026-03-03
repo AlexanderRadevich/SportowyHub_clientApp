@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using SportowyHub.Services.Api;
+
 namespace SportowyHub.Models.Api;
 
 public record ListingDetail(
@@ -5,7 +8,7 @@ public record ListingDetail(
     string? Slug,
     string Title,
     string? Description,
-    string? Price,
+    [property: JsonConverter(typeof(FlexibleDecimalConverter))] decimal? Price,
     string? Currency,
     string? City,
     string? Region,

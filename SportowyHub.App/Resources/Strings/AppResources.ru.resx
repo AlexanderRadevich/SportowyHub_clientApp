@@ -334,4 +334,123 @@
   <data name="EditProfileInvalidTime" xml:space="preserve">
     <value>Неверный формат времени (HH:mm)</value>
   </data>
+  <!-- My Listings -->
+  <data name="ProfileMyListings" xml:space="preserve">
+    <value>Мои объявления</value>
+  </data>
+  <data name="MyListingsTitle" xml:space="preserve">
+    <value>Мои объявления</value>
+  </data>
+  <data name="MyListingsFilterAll" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="MyListingsFilterDraft" xml:space="preserve">
+    <value>Черновики</value>
+  </data>
+  <data name="MyListingsFilterPublished" xml:space="preserve">
+    <value>Опубликованные</value>
+  </data>
+  <data name="MyListingsFilterPending" xml:space="preserve">
+    <value>На проверке</value>
+  </data>
+  <data name="MyListingsFilterRejected" xml:space="preserve">
+    <value>Отклонённые</value>
+  </data>
+  <data name="MyListingsFilterHidden" xml:space="preserve">
+    <value>Скрытые</value>
+  </data>
+  <data name="MyListingsEmpty" xml:space="preserve">
+    <value>Нет объявлений</value>
+  </data>
+  <data name="MyListingsEmptyCreate" xml:space="preserve">
+    <value>Создайте своё первое объявление</value>
+  </data>
+  <data name="MyListingsPublish" xml:space="preserve">
+    <value>Опубликовать</value>
+  </data>
+  <data name="MyListingsHide" xml:space="preserve">
+    <value>Скрыть</value>
+  </data>
+  <data name="MyListingsResubmit" xml:space="preserve">
+    <value>Отправить повторно</value>
+  </data>
+  <data name="MyListingsDelete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="MyListingsDeleteConfirmTitle" xml:space="preserve">
+    <value>Удалить объявление?</value>
+  </data>
+  <data name="MyListingsDeleteConfirmMessage" xml:space="preserve">
+    <value>Это действие нельзя отменить.</value>
+  </data>
+  <data name="MyListingsStatusDraft" xml:space="preserve">
+    <value>Черновик</value>
+  </data>
+  <data name="MyListingsStatusPublished" xml:space="preserve">
+    <value>Опубликовано</value>
+  </data>
+  <data name="MyListingsStatusPending" xml:space="preserve">
+    <value>На проверке</value>
+  </data>
+  <data name="MyListingsStatusRejected" xml:space="preserve">
+    <value>Отклонено</value>
+  </data>
+  <data name="MyListingsStatusHidden" xml:space="preserve">
+    <value>Скрыто</value>
+  </data>
+  <!-- Create/Edit Listing -->
+  <data name="CreateListingTitle" xml:space="preserve">
+    <value>Новое объявление</value>
+  </data>
+  <data name="EditListingTitle" xml:space="preserve">
+    <value>Редактировать объявление</value>
+  </data>
+  <data name="ListingFieldCategory" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="ListingFieldSection" xml:space="preserve">
+    <value>Раздел</value>
+  </data>
+  <data name="ListingFieldTitle" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="ListingFieldDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="ListingFieldPrice" xml:space="preserve">
+    <value>Цена</value>
+  </data>
+  <data name="ListingFieldCurrency" xml:space="preserve">
+    <value>Валюта</value>
+  </data>
+  <data name="ListingFieldCityId" xml:space="preserve">
+    <value>ID города</value>
+  </data>
+  <data name="ListingFieldVoivodeshipId" xml:space="preserve">
+    <value>ID воеводства</value>
+  </data>
+  <data name="ListingFieldLocale" xml:space="preserve">
+    <value>Язык содержания</value>
+  </data>
+  <data name="ListingPhotosTitle" xml:space="preserve">
+    <value>Фотографии</value>
+  </data>
+  <data name="ListingAddPhoto" xml:space="preserve">
+    <value>Добавить фото</value>
+  </data>
+  <data name="ListingSave" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="ListingCreateSuccess" xml:space="preserve">
+    <value>Объявление создано</value>
+  </data>
+  <data name="ListingEditSuccess" xml:space="preserve">
+    <value>Объявление обновлено</value>
+  </data>
+  <data name="ListingTitleRequired" xml:space="preserve">
+    <value>Название обязательно</value>
+  </data>
+  <data name="ListingCategoryRequired" xml:space="preserve">
+    <value>Категория обязательна</value>
+  </data>
 </root>

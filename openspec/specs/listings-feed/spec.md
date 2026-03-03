@@ -1,4 +1,10 @@
-## ADDED Requirements
+# Listings Feed
+
+## Purpose
+
+Defines the Home page listings feed, including data loading, display, navigation, and error handling.
+
+## Requirements
 
 ### Requirement: HomeViewModel with listings feed
 The system SHALL create a `HomeViewModel` with an `ObservableCollection<ListingSummary>` bound to the Home page. It SHALL inject `IListingsService` and `INavigationService` via primary constructor.

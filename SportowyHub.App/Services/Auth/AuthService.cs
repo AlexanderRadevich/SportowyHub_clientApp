@@ -56,6 +56,13 @@ public class AuthService(IRequestProvider requestProvider) : IAuthService
             await SecureStorage.SetAsync(RefreshTokenKey, response.RefreshToken);
         }
 
+        if (response.User is not null)
+        {
+            var userInfo = new UserInfo(response.User.Id, response.User.Email, response.User.TrustLevel);
+            var userJson = JsonSerializer.Serialize(userInfo, SportowyHubJsonContext.Default.UserInfo);
+            await SecureStorage.SetAsync(UserKey, userJson);
+        }
+
         var expiry = DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn).ToString("O");
         await SecureStorage.SetAsync(TokenExpiryKey, expiry);
     }
@@ -156,8 +163,21 @@ public class AuthService(IRequestProvider requestProvider) : IAuthService
 
     public async Task LogoutAsync()
     {
-        await SecureStorage.GetAsync(RefreshTokenKey);
-        await ClearAuthAsync();
+        try
+        {
+            var token = await SecureStorage.GetAsync(TokenKey);
+            if (!string.IsNullOrEmpty(token))
+            {
+                await requestProvider.PostAsync("/api/v1/logout", token);
+            }
+        }
+        catch
+        {
+        }
+        finally
+        {
+            await ClearAuthAsync();
+        }
     }
 
     public async Task<UserProfile?> GetProfileAsync(CancellationToken ct = default)
@@ -171,7 +191,7 @@ public class AuthService(IRequestProvider requestProvider) : IAuthService
         return await requestProvider.GetAsync<UserProfile>("/api/private/profile", token, ct);
     }
 
-    public async Task<UserProfile?> UpdateProfileAsync(UpdateProfileRequest request, CancellationToken ct = default)
+    public async Task<UpdateProfileResponse?> UpdateProfileAsync(UpdateProfileRequest request, CancellationToken ct = default)
     {
         var token = await SecureStorage.GetAsync(TokenKey);
         if (string.IsNullOrEmpty(token))
@@ -179,7 +199,63 @@ public class AuthService(IRequestProvider requestProvider) : IAuthService
             return null;
         }
 
-        return await requestProvider.PutAsync<UpdateProfileRequest, UserProfile>("/api/private/profile", request, token, ct);
+        return await requestProvider.PatchAsync<UpdateProfileRequest, UpdateProfileResponse>("/api/private/profile", request, token, ct);
+    }
+
+    public async Task<AuthResult<LoginResponse>> OAuthLoginAsync(string provider, string? idToken, string? accessToken, CancellationToken ct = default)
+    {
+        try
+        {
+            var response = await requestProvider.PostAsync<OAuthLoginRequest, LoginResponse>(
+                $"/api/v1/auth/oauth/{Uri.EscapeDataString(provider)}",
+                new OAuthLoginRequest(idToken, accessToken),
+                headers: _refreshTokenHeader,
+                ct: ct);
+
+            await StoreTokens(response);
+
+            return AuthResult<LoginResponse>.Success(response);
+        }
+        catch (ServiceAuthenticationException ex)
+        {
+            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Content, "OAuth login failed. Please try again.");
+            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
+        }
+        catch (HttpRequestException ex)
+        {
+            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Message, "OAuth login failed. Please try again.");
+            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
+        }
+        catch (Exception)
+        {
+            return AuthResult<LoginResponse>.Failure("Connection error. Please check your internet connection and try again.");
+        }
+    }
+
+    public async Task<AvatarResponse?> UploadAvatarAsync(Stream imageStream, string fileName, CancellationToken ct = default)
+    {
+        var token = await SecureStorage.GetAsync(TokenKey);
+        if (string.IsNullOrEmpty(token))
+        {
+            return null;
+        }
+
+        using var content = new MultipartFormDataContent();
+        using var streamContent = new StreamContent(imageStream);
+        content.Add(streamContent, "file", fileName);
+
+        return await requestProvider.PostMultipartAsync<AvatarResponse>("/api/private/profile/avatar", content, token, ct);
+    }
+
+    public async Task DeleteAvatarAsync(CancellationToken ct = default)
+    {
+        var token = await SecureStorage.GetAsync(TokenKey);
+        if (string.IsNullOrEmpty(token))
+        {
+            return;
+        }
+
+        await requestProvider.DeleteAsync("/api/private/profile/avatar", token, ct);
     }
 
     public Task ClearAuthAsync()

@@ -1,3 +1,11 @@
+# Settings Language Picker
+
+## Purpose
+
+Defines the language picker control in the Settings section, selection behavior, immediate application, and preference persistence.
+
+## Requirements
+
 ### Requirement: Language picker with five options
 The Language row in the Settings section SHALL contain a `Picker` control offering five options: System (`SettingsLanguageSystem`), Polski (`SettingsLanguagePl`), English (`SettingsLanguageEn`), Українська (`SettingsLanguageUk`), and Русский (`SettingsLanguageRu`). All option labels SHALL be sourced from `AppResources` localized resources. The default selection SHALL be "System".
 

@@ -166,4 +166,10 @@ public partial class ProfileViewModel : ObservableObject
     {
         await _nav.GoToAsync("account-profile");
     }
+
+    [RelayCommand]
+    private async Task GoToMyListings()
+    {
+        await _nav.GoToAsync("my-listings");
+    }
 }

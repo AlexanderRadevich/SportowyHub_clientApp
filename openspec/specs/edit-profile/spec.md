@@ -49,7 +49,7 @@ The ViewModel SHALL validate quiet hours fields against HH:mm format (00:00-23:5
 - **THEN** no validation error SHALL be displayed (quiet hours are optional)
 
 ### Requirement: Edit Profile save command
-The `EditProfileViewModel` SHALL expose a `SaveCommand` that calls `IAuthService.UpdateProfileAsync()` with the form data. The command SHALL be disabled while `IsLoading` is true. On success, a localized success toast SHALL be shown and the page SHALL navigate back. On failure, field-level errors SHALL be displayed below the corresponding fields and a general error SHALL be shown for non-field errors.
+The `EditProfileViewModel` SHALL expose a `SaveCommand` that calls `IAuthService.UpdateProfileAsync()` with the form data. The command SHALL be disabled while `IsLoading` is true. On success, a localized success toast SHALL be shown and the page SHALL navigate back. On failure, field-level errors SHALL be displayed below the corresponding fields and a general error SHALL be shown for non-field errors. The `UpdateProfileAsync` return type SHALL be `AuthResult<UpdateProfileResponse>`.
 
 #### Scenario: Successful save navigates back with toast
 - **WHEN** the user taps Save and the API returns success
