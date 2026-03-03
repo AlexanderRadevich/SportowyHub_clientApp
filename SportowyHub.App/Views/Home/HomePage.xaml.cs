@@ -17,6 +17,8 @@ public partial class HomePage : ContentPage
     {
         base.OnAppearing();
 
+        _viewModel.CheckAuthCommand.Execute(null);
+
         if (_viewModel.Listings.Count == 0)
         {
             _viewModel.LoadListingsCommand.Execute(null);

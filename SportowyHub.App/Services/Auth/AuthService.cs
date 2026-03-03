@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Api;
@@ -5,7 +7,7 @@ using SportowyHub.Services.Exceptions;
 
 namespace SportowyHub.Services.Auth;
 
-public class AuthService(IRequestProvider requestProvider) : IAuthService
+public class AuthService(IRequestProvider requestProvider, IHttpClientFactory httpClientFactory) : IAuthService
 {
     private const string TokenKey = "auth_token";
     private const string UserKey = "auth_user";
@@ -265,5 +267,75 @@ public class AuthService(IRequestProvider requestProvider) : IAuthService
         SecureStorage.Remove(RefreshTokenKey);
         SecureStorage.Remove(TokenExpiryKey);
         return Task.CompletedTask;
+    }
+
+    public async Task<string?> AcquireGoogleIdTokenAsync(CancellationToken ct = default)
+    {
+        var codeVerifier = GeneratePkceCodeVerifier();
+        var codeChallenge = GeneratePkceCodeChallenge(codeVerifier);
+        var redirectUri = ApiConfig.OAuthRedirectUri;
+
+        var authUrl = new Uri(
+            $"{ApiConfig.GoogleAuthUrl}" +
+            $"?client_id={Uri.EscapeDataString(ApiConfig.GoogleClientId)}" +
+            $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
+            "&response_type=code" +
+            "&scope=openid%20email%20profile" +
+            $"&code_challenge={codeChallenge}" +
+            "&code_challenge_method=S256");
+
+        var authResult = await WebAuthenticator.Default.AuthenticateAsync(authUrl, new Uri(redirectUri));
+
+        authResult.Properties.TryGetValue("code", out var code);
+        if (string.IsNullOrEmpty(code))
+        {
+            return null;
+        }
+
+        return await ExchangeCodeForIdTokenAsync(code, codeVerifier, redirectUri, ct);
+    }
+
+    private async Task<string?> ExchangeCodeForIdTokenAsync(string code, string codeVerifier, string redirectUri, CancellationToken ct)
+    {
+        using var client = httpClientFactory.CreateClient();
+        using var content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["code"] = code,
+            ["client_id"] = ApiConfig.GoogleClientId,
+            ["redirect_uri"] = redirectUri,
+            ["grant_type"] = "authorization_code",
+            ["code_verifier"] = codeVerifier
+        });
+
+        var response = await client.PostAsync(ApiConfig.GoogleTokenUrl, content, ct);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        using var json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
+        return json.RootElement.TryGetProperty("id_token", out var tokenElement)
+            ? tokenElement.GetString()
+            : null;
+    }
+
+    private static string GeneratePkceCodeVerifier()
+    {
+        var bytes = RandomNumberGenerator.GetBytes(32);
+        return Base64UrlEncode(bytes);
+    }
+
+    private static string GeneratePkceCodeChallenge(string codeVerifier)
+    {
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(codeVerifier));
+        return Base64UrlEncode(hash);
+    }
+
+    private static string Base64UrlEncode(byte[] bytes)
+    {
+        return Convert.ToBase64String(bytes)
+            .TrimEnd('=')
+            .Replace('+', '-')
+            .Replace('/', '_');
     }
 }

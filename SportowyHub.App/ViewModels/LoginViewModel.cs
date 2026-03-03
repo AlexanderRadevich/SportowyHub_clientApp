@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
-using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
@@ -120,20 +119,7 @@ public partial class LoginViewModel(
 
         try
         {
-            var authUrl = new Uri(
-                "https://accounts.google.com/o/oauth2/v2/auth" +
-                $"?client_id={Uri.EscapeDataString(ApiConfig.GoogleClientId)}" +
-                $"&redirect_uri={Uri.EscapeDataString($"{ApiConfig.OAuthCallbackScheme}:/")}" +
-                "&response_type=id_token" +
-                "&scope=openid%20email%20profile" +
-                $"&nonce={Guid.NewGuid():N}");
-
-            var callbackUrl = new Uri($"{ApiConfig.OAuthCallbackScheme}:/");
-
-            var authResult = await WebAuthenticator.Default.AuthenticateAsync(authUrl, callbackUrl);
-
-            var idToken = authResult.IdToken
-                          ?? (authResult.Properties.TryGetValue("id_token", out var token) ? token : null);
+            var idToken = await authService.AcquireGoogleIdTokenAsync(ct);
 
             if (string.IsNullOrEmpty(idToken))
             {

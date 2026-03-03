@@ -3,6 +3,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Models.Api;
+using SportowyHub.Services.Auth;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
@@ -12,7 +13,8 @@ namespace SportowyHub.ViewModels;
 public partial class HomeViewModel(
     IListingsService listingsService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject
+    IToastService toastService,
+    IAuthService authService) : ObservableObject
 {
     private const int PageSize = 20;
     private int _offset;
@@ -28,6 +30,28 @@ public partial class HomeViewModel(
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsLoggedIn { get; set; }
+
+    [RelayCommand]
+    private async Task CheckAuth()
+    {
+        IsLoggedIn = await authService.IsLoggedInAsync();
+    }
+
+    [RelayCommand]
+    private async Task GoToCreateListing()
+    {
+        var user = await authService.GetCurrentUserAsync();
+        if (user is null || user.TrustLevel == Models.TrustLevels.Unverified)
+        {
+            await toastService.ShowError(Resources.Strings.AppResources.CreateListingPhoneRequired);
+            return;
+        }
+
+        await nav.GoToAsync("create-edit-listing");
+    }
 
     [RelayCommand]
     private async Task LoadListings(CancellationToken ct)

@@ -7,7 +7,7 @@ Defines the Home page listings feed, including data loading, display, navigation
 ## Requirements
 
 ### Requirement: HomeViewModel with listings feed
-The system SHALL create a `HomeViewModel` with an `ObservableCollection<ListingSummary>` bound to the Home page. It SHALL inject `IListingsService` and `INavigationService` via primary constructor.
+The system SHALL create a `HomeViewModel` with an `ObservableCollection<ListingSummary>` bound to the Home page. It SHALL inject `IListingsService`, `INavigationService`, `IToastService`, and `IAuthService` via primary constructor.
 
 #### Scenario: Initial load on appearing
 - **WHEN** the Home page appears
@@ -37,7 +37,7 @@ The `HomeViewModel` SHALL expose a `LoadMoreListingsCommand` bound to `Collectio
 - **THEN** a second invocation SHALL not start (guard via `IsLoading` check)
 
 ### Requirement: Home page CollectionView layout
-The Home page SHALL replace the placeholder "Coming Soon" content with a `RefreshView` containing a `CollectionView`. Each listing item SHALL display title, price with currency, and city in a card-style layout.
+The Home page SHALL use a `Grid` layout with the `RefreshView`/`CollectionView` for the listings feed and a FAB overlay. The outer `Grid` on the page SHALL use two rows: the search bar (Auto) and a content area (*) containing the feed grid and the FAB.
 
 #### Scenario: Display listing card
 - **WHEN** a `ListingSummary` is in the collection

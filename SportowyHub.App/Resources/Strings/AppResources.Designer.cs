@@ -138,6 +138,7 @@ public static class AppResources
 
     // Home Feed
     public static string HomeEmptyListings => ResourceManager.GetString("HomeEmptyListings", Culture)!;
+    public static string CreateListingPhoneRequired => ResourceManager.GetString("CreateListingPhoneRequired", Culture)!;
 
     // Errors
     public static string ErrorGeneric => ResourceManager.GetString("ErrorGeneric", Culture)!;

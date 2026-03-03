@@ -188,7 +188,7 @@ public partial class RegisterViewModel(
                 return;
             }
 
-            if (registerResult.Data!.TrustLevel == "TL0")
+            if (registerResult.Data!.TrustLevel == Models.TrustLevels.Unverified)
             {
                 await nav.DisplayAlertAsync(
                     AppResources.AuthRegistrationSuccess,

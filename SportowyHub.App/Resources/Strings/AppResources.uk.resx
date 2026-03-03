@@ -136,6 +136,9 @@
   <data name="HomeEmptyListings" xml:space="preserve">
     <value>Немає оголошень для відображення</value>
   </data>
+  <data name="CreateListingPhoneRequired" xml:space="preserve">
+    <value>Щоб створити оголошення, потрібно підтвердити номер телефону</value>
+  </data>
   <data name="ErrorGeneric" xml:space="preserve">
     <value>Щось пішло не так. Спробуйте ще раз.</value>
   </data>

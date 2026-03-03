@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Models.Api;
 using SportowyHub.Resources.Strings;
+using SportowyHub.Services.Auth;
 using SportowyHub.Services.ListingManagement;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
@@ -12,7 +13,8 @@ namespace SportowyHub.ViewModels;
 public partial class MyListingsViewModel(
     IListingManagementService listingManagementService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject
+    IToastService toastService,
+    IAuthService authService) : ObservableObject
 {
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -172,6 +174,13 @@ public partial class MyListingsViewModel(
     [RelayCommand]
     private async Task GoToCreateListing()
     {
+        var user = await authService.GetCurrentUserAsync();
+        if (user is null || user.TrustLevel == Models.TrustLevels.Unverified)
+        {
+            await toastService.ShowError(Resources.Strings.AppResources.CreateListingPhoneRequired);
+            return;
+        }
+
         await nav.GoToAsync("create-edit-listing");
     }
 }

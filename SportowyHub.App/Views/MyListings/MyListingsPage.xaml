@@ -164,18 +164,8 @@
 
         </Grid>
 
-        <!-- FAB: Create Listing -->
         <Button Grid.Row="1"
-                Text="+"
-                FontSize="24"
-                WidthRequest="56"
-                HeightRequest="56"
-                CornerRadius="28"
-                HorizontalOptions="End"
-                VerticalOptions="End"
-                Margin="0,0,16,16"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                TextColor="White"
+                Style="{StaticResource FloatingActionButton}"
                 Command="{Binding GoToCreateListingCommand}" />
 
     </Grid>

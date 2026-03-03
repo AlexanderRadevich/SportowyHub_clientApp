@@ -136,6 +136,9 @@
   <data name="HomeEmptyListings" xml:space="preserve">
     <value>No listings to display</value>
   </data>
+  <data name="CreateListingPhoneRequired" xml:space="preserve">
+    <value>To create a listing, you need to verify your phone number</value>
+  </data>
   <data name="ErrorGeneric" xml:space="preserve">
     <value>Something went wrong. Please try again.</value>
   </data>

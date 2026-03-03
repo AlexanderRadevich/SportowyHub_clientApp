@@ -230,6 +230,20 @@
         <Setter Property="StrokeThickness" Value="1"/>
     </Style>
 
+    <!-- Floating Action Button -->
+    <Style TargetType="Button" x:Key="FloatingActionButton">
+        <Setter Property="Text" Value="+" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="WidthRequest" Value="56" />
+        <Setter Property="HeightRequest" Value="56" />
+        <Setter Property="CornerRadius" Value="28" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="Margin" Value="0,0,16,16" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        <Setter Property="TextColor" Value="White" />
+    </Style>
+
     <!-- NavigationPage -->
     <Style TargetType="NavigationPage">
         <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgroundDark}}" />
