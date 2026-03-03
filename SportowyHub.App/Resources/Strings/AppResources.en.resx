@@ -453,4 +453,16 @@
   <data name="ListingCategoryRequired" xml:space="preserve">
     <value>Category is required</value>
   </data>
+  <data name="OAuthOrSeparator" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="OAuthSignInGoogle" xml:space="preserve">
+    <value>Sign in with Google</value>
+  </data>
+  <data name="OAuthErrorCancelled" xml:space="preserve">
+    <value>Sign-in was cancelled</value>
+  </data>
+  <data name="OAuthErrorFailed" xml:space="preserve">
+    <value>Google sign-in failed</value>
+  </data>
 </root>

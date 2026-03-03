@@ -453,4 +453,16 @@
   <data name="ListingCategoryRequired" xml:space="preserve">
     <value>Категорія є обов'язковою</value>
   </data>
+  <data name="OAuthOrSeparator" xml:space="preserve">
+    <value>або</value>
+  </data>
+  <data name="OAuthSignInGoogle" xml:space="preserve">
+    <value>Увійти через Google</value>
+  </data>
+  <data name="OAuthErrorCancelled" xml:space="preserve">
+    <value>Вхід скасовано</value>
+  </data>
+  <data name="OAuthErrorFailed" xml:space="preserve">
+    <value>Вхід через Google не вдався</value>
+  </data>
 </root>

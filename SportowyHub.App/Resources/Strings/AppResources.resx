@@ -453,4 +453,16 @@
   <data name="ListingCategoryRequired" xml:space="preserve">
     <value>Kategoria jest wymagana</value>
   </data>
+  <data name="OAuthOrSeparator" xml:space="preserve">
+    <value>lub</value>
+  </data>
+  <data name="OAuthSignInGoogle" xml:space="preserve">
+    <value>Zaloguj przez Google</value>
+  </data>
+  <data name="OAuthErrorCancelled" xml:space="preserve">
+    <value>Logowanie zostało anulowane</value>
+  </data>
+  <data name="OAuthErrorFailed" xml:space="preserve">
+    <value>Logowanie przez Google nie powiodło się</value>
+  </data>
 </root>

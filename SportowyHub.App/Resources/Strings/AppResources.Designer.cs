@@ -187,4 +187,10 @@ public static class AppResources
     public static string ListingEditSuccess => ResourceManager.GetString("ListingEditSuccess", Culture)!;
     public static string ListingTitleRequired => ResourceManager.GetString("ListingTitleRequired", Culture)!;
     public static string ListingCategoryRequired => ResourceManager.GetString("ListingCategoryRequired", Culture)!;
+
+    // OAuth
+    public static string OAuthOrSeparator => ResourceManager.GetString("OAuthOrSeparator", Culture)!;
+    public static string OAuthSignInGoogle => ResourceManager.GetString("OAuthSignInGoogle", Culture)!;
+    public static string OAuthErrorCancelled => ResourceManager.GetString("OAuthErrorCancelled", Culture)!;
+    public static string OAuthErrorFailed => ResourceManager.GetString("OAuthErrorFailed", Culture)!;
 }

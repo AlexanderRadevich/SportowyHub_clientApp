@@ -79,7 +79,7 @@
 - [x] 12.1 Create `OAuthLoginRequest` record (`IdToken`, `AccessToken`) and register in `SportowyHubJsonContext`
 - [x] 12.2 Add `OAuthLoginAsync(string provider, string? idToken, string? accessToken)` to `IAuthService`
 - [x] 12.3 Implement `OAuthLoginAsync` in `AuthService`: POST to `/api/v1/auth/oauth/{provider}`, store tokens and user info on success
-- [ ] 12.4 Implement `WebAuthenticator` integration for Google provider (platform URL scheme config, token extraction)
+- [x] 12.4 Implement `WebAuthenticator` integration for Google provider (platform URL scheme config, token extraction)
 
 ## 13. Listing Management Service
 

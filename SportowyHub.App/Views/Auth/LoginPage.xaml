@@ -91,6 +91,37 @@
                     HorizontalOptions="Fill"
                     Margin="0,8,0,0" />
 
+            <!-- OR Separator -->
+            <Grid ColumnDefinitions="*,Auto,*" Margin="0,16,0,0">
+                <BoxView Grid.Column="0"
+                         HeightRequest="1"
+                         VerticalOptions="Center"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}" />
+                <Label Grid.Column="1"
+                       Text="{x:Static res:AppResources.OAuthOrSeparator}"
+                       FontSize="13"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       Margin="12,0" />
+                <BoxView Grid.Column="2"
+                         HeightRequest="1"
+                         VerticalOptions="Center"
+                         Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}" />
+            </Grid>
+
+            <!-- Google Sign-In -->
+            <Button AutomationId="GoogleSignInButton"
+                    Text="{x:Static res:AppResources.OAuthSignInGoogle}"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding OAuthLoginWithGoogleCommand}"
+                    IsEnabled="{Binding IsGoogleLoading, Converter={StaticResource InvertBoolConverter}}"
+                    HorizontalOptions="Fill"
+                    Margin="0,8,0,0" />
+
+            <ActivityIndicator IsRunning="{Binding IsGoogleLoading}"
+                               IsVisible="{Binding IsGoogleLoading}"
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                               HeightRequest="20" />
+
             <!-- Create Account Link -->
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="4" Margin="0,16,0,0">
                 <Label Text="{x:Static res:AppResources.AuthNoAccount}"

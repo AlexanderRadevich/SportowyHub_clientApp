@@ -72,7 +72,9 @@
       "Bash(dotnet:*)",
       "Bash(do mkdir:*)",
       "Bash(mkdir:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "mcp__cwm-roslyn-navigator__find_symbol",
+      "mcp__cwm-roslyn-navigator__find_references"
     ]
   },
   "enableAllProjectMcpServers": true,

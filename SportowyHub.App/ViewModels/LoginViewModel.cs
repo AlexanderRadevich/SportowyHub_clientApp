@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SportowyHub.Resources.Strings;
+using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
@@ -33,6 +34,9 @@ public partial class LoginViewModel(
 
     [ObservableProperty]
     public partial string EmailError { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial bool IsGoogleLoading { get; set; }
 
     partial void OnEmailChanged(string value)
     {
@@ -106,6 +110,60 @@ public partial class LoginViewModel(
     private void TogglePasswordVisibility()
     {
         IsPasswordVisible = !IsPasswordVisible;
+    }
+
+    [RelayCommand]
+    private async Task OAuthLoginWithGoogle(CancellationToken ct)
+    {
+        IsGoogleLoading = true;
+        LoginError = string.Empty;
+
+        try
+        {
+            var authUrl = new Uri(
+                "https://accounts.google.com/o/oauth2/v2/auth" +
+                $"?client_id={Uri.EscapeDataString(ApiConfig.GoogleClientId)}" +
+                $"&redirect_uri={Uri.EscapeDataString($"{ApiConfig.OAuthCallbackScheme}:/")}" +
+                "&response_type=id_token" +
+                "&scope=openid%20email%20profile" +
+                $"&nonce={Guid.NewGuid():N}");
+
+            var callbackUrl = new Uri($"{ApiConfig.OAuthCallbackScheme}:/");
+
+            var authResult = await WebAuthenticator.Default.AuthenticateAsync(authUrl, callbackUrl);
+
+            var idToken = authResult.IdToken
+                          ?? (authResult.Properties.TryGetValue("id_token", out var token) ? token : null);
+
+            if (string.IsNullOrEmpty(idToken))
+            {
+                await toastService.ShowError(AppResources.OAuthErrorFailed);
+                return;
+            }
+
+            var result = await authService.OAuthLoginAsync("google", idToken, null, ct);
+
+            if (result.IsSuccess)
+            {
+                await nav.GoToAsync("..");
+                await nav.GoToAsync("//home");
+                return;
+            }
+
+            LoginError = result.ErrorMessage ?? AppResources.OAuthErrorFailed;
+            await toastService.ShowError(LoginError);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+        catch (Exception ex)
+        {
+            await toastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsGoogleLoading = false;
+        }
     }
 
     [RelayCommand]
