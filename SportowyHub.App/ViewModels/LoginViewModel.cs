@@ -91,12 +91,12 @@ public partial class LoginViewModel(
                 EmailError = emailErr;
             }
 
-            LoginError = result.ErrorMessage ?? "Login failed.";
+            LoginError = result.ErrorMessage ?? AppResources.AuthLoginFailed;
             await toastService.ShowError(LoginError);
         }
         catch (Exception ex)
         {
-            LoginError = "Connection error. Please try again.";
+            LoginError = AppResources.AuthConnectionError;
             await toastService.ShowError(ex.Message);
         }
         finally

@@ -468,4 +468,10 @@
   <data name="OAuthErrorFailed" xml:space="preserve">
     <value>Logowanie przez Google nie powiodło się</value>
   </data>
+  <data name="AuthConnectionError" xml:space="preserve">
+    <value>Błąd połączenia. Spróbuj ponownie.</value>
+  </data>
+  <data name="AuthLoginFailed" xml:space="preserve">
+    <value>Logowanie nie powiodło się.</value>
+  </data>
 </root>

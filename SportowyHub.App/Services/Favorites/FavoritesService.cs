@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Api;
@@ -7,26 +8,25 @@ namespace SportowyHub.Services.Favorites;
 
 internal class FavoritesService(IRequestProvider requestProvider, IAuthService authService) : IFavoritesService
 {
-    private readonly HashSet<string> _favoriteIds = [];
+    private ConcurrentDictionary<string, byte> _favoriteIds = new();
 
     public async Task LoadFavoriteIdsAsync(CancellationToken ct = default)
     {
         var token = await authService.GetTokenAsync();
         if (string.IsNullOrEmpty(token))
         {
-            _favoriteIds.Clear();
+            _favoriteIds = new();
             return;
         }
 
         var response = await requestProvider.GetAsync<FavoritesIdsResponse>("/api/private/favorites/ids", token, ct);
-        _favoriteIds.Clear();
-        foreach (var id in response.Ids)
-        {
-            _favoriteIds.Add(id);
-        }
+        _favoriteIds = new(response.Ids.Select(id => new KeyValuePair<string, byte>(id, 0)));
     }
 
-    public bool IsFavorite(string listingId) => _favoriteIds.Contains(listingId);
+    public bool IsFavorite(string listingId)
+    {
+        return _favoriteIds.ContainsKey(listingId);
+    }
 
     public async Task<FavoritesListResponse> GetFavoritesAsync(int page = 1, int perPage = 20, CancellationToken ct = default)
     {
@@ -47,7 +47,7 @@ internal class FavoritesService(IRequestProvider requestProvider, IAuthService a
         {
         }
 
-        _favoriteIds.Add(listingId);
+        _favoriteIds.TryAdd(listingId, 0);
     }
 
     public async Task RemoveAsync(string listingId, CancellationToken ct = default)
@@ -55,8 +55,11 @@ internal class FavoritesService(IRequestProvider requestProvider, IAuthService a
         var token = await authService.GetTokenAsync();
         await requestProvider.DeleteAsync(
             $"/api/private/favorites/{Uri.EscapeDataString(listingId)}", token ?? "", ct);
-        _favoriteIds.Remove(listingId);
+        _favoriteIds.TryRemove(listingId, out _);
     }
 
-    public void ClearCache() => _favoriteIds.Clear();
+    public void ClearCache()
+    {
+        _favoriteIds = new();
+    }
 }

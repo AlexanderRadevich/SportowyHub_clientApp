@@ -73,7 +73,7 @@ public partial class HomeViewModel(
                 Listings.Add(listing);
             }
 
-            _offset = response.Listings.Count;
+            _offset = PageSize;
             _hasMoreItems = response.Listings.Count >= PageSize;
             IsEmpty = Listings.Count == 0;
         }
@@ -103,7 +103,7 @@ public partial class HomeViewModel(
                 Listings.Add(listing);
             }
 
-            _offset = response.Listings.Count;
+            _offset = PageSize;
             _hasMoreItems = response.Listings.Count >= PageSize;
             IsEmpty = Listings.Count == 0;
         }
@@ -136,7 +136,7 @@ public partial class HomeViewModel(
                 Listings.Add(listing);
             }
 
-            _offset += response.Listings.Count;
+            _offset += PageSize;
             _hasMoreItems = response.Listings.Count >= PageSize;
         }
         catch (Exception ex)

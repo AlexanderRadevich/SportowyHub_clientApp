@@ -2,6 +2,30 @@
 
 Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
 
+# MAUI Agent Teams - Project Context
+
+## CRITICAL: Agent Team Behavior
+When asked to create an agent team:
+- Do NOT explore the codebase first. This CLAUDE.md contains all the context you need.
+- Do NOT run sequentially. Create the team and spawn ALL teammates immediately.
+- Use delegate mode. The lead MUST NOT do implementation work.
+- Create the team within the FIRST response. No planning phase needed.
+- Spawn teammates in PARALLEL, not sequentially. Use task dependencies
+  to control execution order — not sequential spawning.
+
+## Module Ownership (STRICTLY ENFORCED)
+- spec-agent:   ONLY openspec/
+- maui-dev:     ONLY SportowyHub_clientApp/
+- test-agent:   ONLY SportowyHub_clientApp.Tests/
+- review-agent: READ-ONLY. Writes ONLY to REVIEW.md in the change folder
+NEVER have two teammates edit the same file.
+
+## OpenSpec Lifecycle
+1. openspec propose {name}  -> generates proposal.md, specs/, design.md, tasks.md
+2. openspec validate {name} -> checks spec formatting
+3. Implement tasks from openspec/changes/{name}/tasks.md
+4. openspec archive {name}  -> merges delta specs into main specs/
+
 ## Coding Style & Naming Conventions
 - C#: governed by root `.editorconfig` — 4-space indent, CRLF line endings, `var` preferred, PascalCase for types/members, private fields `_camelCase`, interfaces prefixed `I`.
 - Braces: always use `{}` for `if`, `else`, `for`, `while`, and `foreach` bodies—even single statements. Example: `if (isValid) { Save(); }` (not `if (isValid) Save();`).
@@ -11,10 +35,9 @@ Always use Context7 MCP when I need library/API documentation, code generation, 
 - Line breaks: use `Environment.NewLine` instead of `"\n"` for newline characters in strings. Example: `$"Line 1{Environment.NewLine}Line 2"` (not `"Line 1\nLine 2"`).
 - **Important**: do not add ***any*** comments unless asked.
 
-
 ## Project Context
 
-This is a .NET 10 MAUI application targeting [Android / iOS / Windows / macOS / all platforms]. The app uses the MVVM pattern with CommunityToolkit.Mvvm for data binding, commands, and messaging. Navigation is handled via Shell routing. [Brief description of what the app does].
+This is a .NET 10 MAUI application targeting Android, iOS, Windows, and macOS. The app uses the MVVM pattern with CommunityToolkit.Mvvm for data binding, commands, and messaging. Navigation is handled via Shell routing. SportowyHub is a sports community platform for browsing and managing sports facility listings, user favorites, and authentication.
 
 ## Tech Stack
 
