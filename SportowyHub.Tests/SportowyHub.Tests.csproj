@@ -14,6 +14,14 @@
     <MauiEnableResizetizer>false</MauiEnableResizetizer>
   </PropertyGroup>
 
+  <Target Name="_RemoveLeakedMauiAssets" BeforeTargets="ResizetizeImages">
+    <ItemGroup>
+      <MauiImage Remove="@(MauiImage)" />
+      <MauiIcon Remove="@(MauiIcon)" />
+      <MauiSplashScreen Remove="@(MauiSplashScreen)" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="FluentAssertions" Version="8.3.0" />

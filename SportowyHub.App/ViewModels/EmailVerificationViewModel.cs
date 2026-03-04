@@ -101,6 +101,8 @@ public partial class EmailVerificationViewModel(
             }
         };
         _cooldownTimer.Start();
+    }
+
     public void StopCooldownTimer()
     {
         _cooldownTimer?.Stop();

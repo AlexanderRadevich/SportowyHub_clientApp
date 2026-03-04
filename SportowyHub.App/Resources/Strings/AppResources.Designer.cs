@@ -47,6 +47,8 @@ public static class AppResources
     public static string AuthPasswordsDoNotMatch => ResourceManager.GetString("AuthPasswordsDoNotMatch", Culture)!;
     public static string AuthPhone => ResourceManager.GetString("AuthPhone", Culture)!;
     public static string AuthEnterPhone => ResourceManager.GetString("AuthEnterPhone", Culture)!;
+    public static string AuthLoginFailed => ResourceManager.GetString("AuthLoginFailed", Culture)!;
+    public static string AuthConnectionError => ResourceManager.GetString("AuthConnectionError", Culture)!;
 
     // Registration Success
     public static string AuthRegistrationSuccess => ResourceManager.GetString("AuthRegistrationSuccess", Culture)!;
