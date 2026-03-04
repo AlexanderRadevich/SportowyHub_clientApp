@@ -269,6 +269,17 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
         return Task.CompletedTask;
     }
 
+    public async Task<AuthResult<LoginResponse>> GoogleSignInAsync(CancellationToken ct = default)
+    {
+        var idToken = await AcquireGoogleIdTokenAsync(ct);
+        if (string.IsNullOrEmpty(idToken))
+        {
+            return AuthResult<LoginResponse>.Failure("Google sign-in failed.");
+        }
+
+        return await OAuthLoginAsync("google", idToken, null, ct);
+    }
+
     public async Task<string?> AcquireGoogleIdTokenAsync(CancellationToken ct = default)
     {
         var codeVerifier = GeneratePkceCodeVerifier();

@@ -57,6 +57,9 @@ public partial class RegisterViewModel(
     [ObservableProperty]
     public partial string RegisterError { get; set; } = string.Empty;
 
+    [ObservableProperty]
+    public partial bool IsGoogleLoading { get; set; }
+
     partial void OnEmailChanged(string value)
     {
         ValidateEmail();
@@ -209,6 +212,39 @@ public partial class RegisterViewModel(
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task OAuthLoginWithGoogle(CancellationToken ct)
+    {
+        IsGoogleLoading = true;
+        RegisterError = string.Empty;
+
+        try
+        {
+            var result = await authService.GoogleSignInAsync(ct);
+
+            if (result.IsSuccess)
+            {
+                await nav.GoToAsync("..");
+                await nav.GoToAsync("//home");
+                return;
+            }
+
+            RegisterError = result.ErrorMessage ?? AppResources.OAuthErrorFailed;
+            await toastService.ShowError(RegisterError);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+        catch (Exception ex)
+        {
+            await toastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsGoogleLoading = false;
         }
     }
 

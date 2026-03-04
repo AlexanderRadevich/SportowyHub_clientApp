@@ -8,6 +8,7 @@ public interface IAuthService
     Task<AuthResult<RegisterResponse>> RegisterAsync(string email, string password, string passwordConfirm, string? phone = null, CancellationToken ct = default);
     Task<AuthResult<LoginResponse>> OAuthLoginAsync(string provider, string? idToken, string? accessToken, CancellationToken ct = default);
     Task<string?> AcquireGoogleIdTokenAsync(CancellationToken ct = default);
+    Task<AuthResult<LoginResponse>> GoogleSignInAsync(CancellationToken ct = default);
     Task<AuthResult<ResendVerificationResponse>> ResendVerificationAsync(string email, CancellationToken ct = default);
     Task<AuthResult<LoginResponse>> RefreshTokenAsync(CancellationToken ct = default);
     Task<string?> GetTokenAsync();

@@ -28,11 +28,11 @@ When the user is not logged in, the Profile tab SHALL display a grouped-list hub
 - **THEN** the Create Account row Grid SHALL have `AutomationId="CreateAccountRow"`
 
 ### Requirement: Registration screen with three fields
-The Registration page SHALL display a vertical form with four labeled input fields: Email, Phone, Password, and Confirm Password. The Phone field SHALL use `Keyboard="Telephone"` and display a localized label (`AuthPhone`) and placeholder (`AuthEnterPhone`). The phone field SHALL appear between Email and Password. Each field label, placeholder, and the page title SHALL be sourced from `AppResources` localized resources. A primary "Create Account" button (`AuthCreateAccount`) SHALL be at the bottom. The Registration page SHALL display a general error message area above the Create Account button for server-side errors (email taken, validation failures). The headline Label SHALL have `AutomationId="RegisterHeadline"`. The Email Entry SHALL have `AutomationId="RegisterEmailEntry"`. The Phone Entry SHALL have `AutomationId="RegisterPhoneEntry"`. The Password Entry SHALL have `AutomationId="RegisterPasswordEntry"`. The Confirm Password Entry SHALL have `AutomationId="RegisterConfirmPasswordEntry"`.
+The Registration page SHALL display a vertical form with four labeled input fields: Email, Phone, Password, and Confirm Password. The Phone field SHALL use `Keyboard="Telephone"` and display a localized label (`AuthPhone`) and placeholder (`AuthEnterPhone`). The phone field SHALL appear between Email and Password. Each field label, placeholder, and the page title SHALL be sourced from `AppResources` localized resources. A primary "Create Account" button (`AuthCreateAccount`) SHALL be at the bottom of the form fields. Below the Create Account button, an "OR" separator and a "Sign in with Google" button SHALL be displayed, matching the Login page layout pattern. The OR separator SHALL use the existing `OAuthOrSeparator` localized string. The Google button SHALL use the `SecondaryButton` style, the `OAuthSignInGoogle` localized string, and `AutomationId="RegisterGoogleSignInButton"`. The Registration page SHALL display a general error message area above the Create Account button for server-side errors (email taken, validation failures). The headline Label SHALL have `AutomationId="RegisterHeadline"`. The Email Entry SHALL have `AutomationId="RegisterEmailEntry"`. The Phone Entry SHALL have `AutomationId="RegisterPhoneEntry"`. The Password Entry SHALL have `AutomationId="RegisterPasswordEntry"`. The Confirm Password Entry SHALL have `AutomationId="RegisterConfirmPasswordEntry"`.
 
 #### Scenario: Registration form layout
 - **WHEN** the Registration page is displayed
-- **THEN** it SHALL show localized Email, Phone, Password, and Confirm Password fields in a vertical layout with a localized "Create Account" button at the bottom
+- **THEN** it SHALL show localized Email, Phone, Password, and Confirm Password fields in a vertical layout with a localized "Create Account" button, an "OR" separator, and a "Sign in with Google" button below
 
 #### Scenario: Phone field is required
 - **WHEN** the user leaves the Phone field empty
@@ -98,6 +98,18 @@ The Registration page SHALL display a vertical form with four labeled input fiel
 #### Scenario: Register Confirm Password Entry is locatable by AutomationId
 - **WHEN** the Registration page is displayed
 - **THEN** the Confirm Password Entry SHALL have `AutomationId="RegisterConfirmPasswordEntry"`
+
+#### Scenario: Google sign-in button visible on registration page
+- **WHEN** the Registration page is displayed
+- **THEN** an "OR" separator and a "Sign in with Google" button SHALL be visible below the "Create Account" button
+
+#### Scenario: Google sign-in button uses SecondaryButton style
+- **WHEN** the Registration page is displayed
+- **THEN** the Google sign-in button SHALL use the `SecondaryButton` style and the `OAuthSignInGoogle` localized text
+
+#### Scenario: Register Google sign-in button is locatable by AutomationId
+- **WHEN** the Registration page is displayed
+- **THEN** the Google sign-in button SHALL have `AutomationId="RegisterGoogleSignInButton"`
 
 ### Requirement: Email validation on Registration
 The email field SHALL validate the input in real-time as the user types. A localized error message (`AuthInvalidEmail`) SHALL appear below the field when the email format is invalid.
@@ -265,7 +277,7 @@ The `LoginViewModel` SHALL inject `IAuthService` via constructor. The `LoginComm
 - **THEN** `LoginError` SHALL display the server's error message
 
 ### Requirement: RegisterViewModel API integration
-The `RegisterViewModel` SHALL inject `IAuthService` via constructor. The `CreateAccountCommand` SHALL call `IAuthService.RegisterAsync(Email, Password, ConfirmPassword, Phone)`, passing the confirm password and required phone values. On success with `TrustLevel` other than `"TL0"`, it SHALL navigate to the email verification page with the registered email. On success with `TrustLevel == "TL0"`, it SHALL show a localized success alert and navigate back to the login page. The ViewModel SHALL expose `Phone` (string) as an observable property. The ViewModel SHALL expose an `IsLoading` observable property that is true during API calls. The ViewModel SHALL expose a `RegisterError` observable property for displaying server error messages. The `CreateAccountCommand` SHALL be disabled when `IsLoading` is true. The `CreateAccountCommand` SHALL require the password to be at least 8 characters (matching the API's minimum password length).
+The `RegisterViewModel` SHALL inject `IAuthService` via constructor. The `CreateAccountCommand` SHALL call `IAuthService.RegisterAsync(Email, Password, ConfirmPassword, Phone)`, passing the confirm password and required phone values. On success with `TrustLevel` other than `"TL0"`, it SHALL navigate to the email verification page with the registered email. On success with `TrustLevel == "TL0"`, it SHALL show a localized success alert and navigate back to the login page. The ViewModel SHALL expose `Phone` (string) as an observable property. The ViewModel SHALL expose an `IsLoading` observable property that is true during API calls. The ViewModel SHALL expose a `RegisterError` observable property for displaying server error messages. The `CreateAccountCommand` SHALL be disabled when `IsLoading` is true. The `CreateAccountCommand` SHALL require the password to be at least 8 characters (matching the API's minimum password length). The ViewModel SHALL expose an `OAuthLoginWithGoogleCommand` that calls `IAuthService.AcquireGoogleIdTokenAsync` followed by `IAuthService.OAuthLoginAsync("google", idToken, null)`. The ViewModel SHALL expose an `IsGoogleLoading` observable property that is true during the Google OAuth flow. On successful OAuth login, the ViewModel SHALL navigate to `//home`. On `TaskCanceledException` (user cancelled browser), the command SHALL silently return. On other exceptions, the ViewModel SHALL show an error toast.
 
 #### Scenario: RegisterViewModel receives IAuthService via DI
 - **WHEN** the `RegisterViewModel` is constructed
@@ -295,6 +307,31 @@ The `RegisterViewModel` SHALL inject `IAuthService` via constructor. The `Create
 - **WHEN** `RegisterAsync` returns a successful `AuthResult` with `TrustLevel == "TL0"`
 - **THEN** the ViewModel SHALL display a `DisplayAlert` with localized title `AuthRegistrationSuccess` and message `AuthRegistrationSuccessMessage`
 - **AND** after dismissal, SHALL navigate to the login page via `Shell.Current.GoToAsync("..")`
+
+#### Scenario: Google OAuth command triggers PKCE flow
+- **WHEN** the user taps the "Sign in with Google" button on the Registration page
+- **THEN** the `OAuthLoginWithGoogleCommand` SHALL call `IAuthService.AcquireGoogleIdTokenAsync` to obtain an ID token via the PKCE flow
+
+#### Scenario: Google OAuth loading state on registration
+- **WHEN** the Google OAuth flow is in progress on the Registration page
+- **THEN** `IsGoogleLoading` SHALL be true, the Google button SHALL be disabled, and an `ActivityIndicator` SHALL be visible
+- **AND** the registration form fields and "Create Account" button SHALL remain interactive
+
+#### Scenario: Google OAuth success navigates to home from registration
+- **WHEN** `OAuthLoginAsync` returns a successful result after Google sign-in on the Registration page
+- **THEN** the ViewModel SHALL navigate to `//home`
+
+#### Scenario: Google OAuth user cancellation on registration
+- **WHEN** the user cancels the Google OAuth browser flow on the Registration page (throws `TaskCanceledException`)
+- **THEN** the command SHALL silently return without showing an error
+
+#### Scenario: Google OAuth failure on registration shows toast
+- **WHEN** `AcquireGoogleIdTokenAsync` returns null or `OAuthLoginAsync` fails on the Registration page
+- **THEN** the ViewModel SHALL show an error toast with `OAuthErrorFailed`
+
+#### Scenario: Google OAuth clears RegisterError
+- **WHEN** the user taps the "Sign in with Google" button on the Registration page
+- **THEN** `RegisterError` SHALL be cleared before the OAuth flow begins
 
 ### Requirement: LogoutAsync in auth service
 `IAuthService` SHALL expose a `LogoutAsync()` method returning `Task`. `AuthService` SHALL implement it as follows: read the refresh token from SecureStorage; if a refresh token exists, attempt `POST /api/v1/logout` with the refresh token as Bearer authorization; always call `ClearAuthAsync()` regardless of the API call result. The method SHALL NOT throw exceptions — all errors from the server call SHALL be silently caught.

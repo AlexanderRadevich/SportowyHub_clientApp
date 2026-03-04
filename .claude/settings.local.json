@@ -74,7 +74,13 @@
       "Bash(mkdir:*)",
       "Bash(rm:*)",
       "mcp__cwm-roslyn-navigator__find_symbol",
-      "mcp__cwm-roslyn-navigator__find_references"
+      "mcp__cwm-roslyn-navigator__find_references",
+      "mcp__cwm-roslyn-navigator__get_public_api",
+      "Bash(keytool:*)",
+      "Bash(\"/c/Program Files/Android/openjdk/jdk-21.0.8/bin/keytool.exe\":*)",
+      "mcp__cwm-roslyn-navigator__get_dependency_graph",
+      "mcp__cwm-roslyn-navigator__find_implementations",
+      "mcp__cwm-roslyn-navigator__find_callers"
     ]
   },
   "enableAllProjectMcpServers": true,

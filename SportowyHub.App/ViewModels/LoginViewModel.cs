@@ -119,15 +119,7 @@ public partial class LoginViewModel(
 
         try
         {
-            var idToken = await authService.AcquireGoogleIdTokenAsync(ct);
-
-            if (string.IsNullOrEmpty(idToken))
-            {
-                await toastService.ShowError(AppResources.OAuthErrorFailed);
-                return;
-            }
-
-            var result = await authService.OAuthLoginAsync("google", idToken, null, ct);
+            var result = await authService.GoogleSignInAsync(ct);
 
             if (result.IsSuccess)
             {
