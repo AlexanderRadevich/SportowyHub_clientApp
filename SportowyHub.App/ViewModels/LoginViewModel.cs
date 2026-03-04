@@ -76,9 +76,7 @@ public partial class LoginViewModel(
 
             if (result.IsSuccess)
             {
-                var returnUrl = returnUrlService.ConsumeReturnUrl();
-                await nav.GoToAsync("..");
-                await nav.GoToAsync(returnUrl ?? "//home");
+                await NavigateAfterLoginAsync();
                 return;
             }
 
@@ -125,9 +123,7 @@ public partial class LoginViewModel(
 
             if (result.IsSuccess)
             {
-                var returnUrl = returnUrlService.ConsumeReturnUrl();
-                await nav.GoToAsync("..");
-                await nav.GoToAsync(returnUrl ?? "//home");
+                await NavigateAfterLoginAsync();
                 return;
             }
 
@@ -151,6 +147,13 @@ public partial class LoginViewModel(
     private async Task NavigateToRegister()
     {
         await nav.GoToAsync("../register");
+    }
+
+    private async Task NavigateAfterLoginAsync()
+    {
+        var returnUrl = returnUrlService.ConsumeReturnUrl();
+        await nav.GoToAsync("..");
+        await nav.GoToAsync(returnUrl ?? "//home");
     }
 
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]

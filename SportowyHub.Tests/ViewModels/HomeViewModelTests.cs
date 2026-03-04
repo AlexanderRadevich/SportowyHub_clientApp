@@ -24,9 +24,9 @@ public class HomeViewModelTests
     }
 
     [Fact]
-    public async Task GoToCreateListing_WhenNotLoggedIn_NavigatesToLoginWithReturnUrl()
+    public async Task GoToCreateListing_WhenUserNull_NavigatesToLoginWithReturnUrl()
     {
-        _authService.IsLoggedInAsync().Returns(false);
+        _authService.GetCurrentUserAsync().Returns((UserInfo?)null);
 
         await _sut.GoToCreateListingCommand.ExecuteAsync(null);
 
@@ -37,7 +37,6 @@ public class HomeViewModelTests
     [Fact]
     public async Task GoToCreateListing_WhenLoggedInAndVerified_NavigatesToCreateEditListing()
     {
-        _authService.IsLoggedInAsync().Returns(true);
         _authService.GetCurrentUserAsync().Returns(new UserInfo(1, "test@test.com", TrustLevels.PhoneVerified));
 
         await _sut.GoToCreateListingCommand.ExecuteAsync(null);
@@ -48,23 +47,11 @@ public class HomeViewModelTests
     [Fact]
     public async Task GoToCreateListing_WhenLoggedInButUnverified_ShowsToastError()
     {
-        _authService.IsLoggedInAsync().Returns(true);
         _authService.GetCurrentUserAsync().Returns(new UserInfo(1, "test@test.com", TrustLevels.Unverified));
 
         await _sut.GoToCreateListingCommand.ExecuteAsync(null);
 
         await _toastService.Received(1).ShowError(Arg.Any<string>());
         await _nav.DidNotReceive().GoToAsync(Arg.Any<string>());
-    }
-
-    [Fact]
-    public async Task GoToCreateListing_WhenLoggedInButUserNull_ShowsToastError()
-    {
-        _authService.IsLoggedInAsync().Returns(true);
-        _authService.GetCurrentUserAsync().Returns((UserInfo?)null);
-
-        await _sut.GoToCreateListingCommand.ExecuteAsync(null);
-
-        await _toastService.Received(1).ShowError(Arg.Any<string>());
     }
 }

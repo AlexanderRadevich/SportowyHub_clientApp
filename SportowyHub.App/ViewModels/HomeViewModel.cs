@@ -31,26 +31,17 @@ public partial class HomeViewModel(
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
-    [ObservableProperty]
-    public partial bool IsLoggedIn { get; set; }
-
-    [RelayCommand]
-    private async Task CheckAuth()
-    {
-        IsLoggedIn = await authService.IsLoggedInAsync();
-    }
-
     [RelayCommand]
     private async Task GoToCreateListing()
     {
-        if (!await authService.IsLoggedInAsync())
+        var user = await authService.GetCurrentUserAsync();
+        if (user is null)
         {
             await nav.NavigateToLoginWithReturnUrlAsync("//home");
             return;
         }
 
-        var user = await authService.GetCurrentUserAsync();
-        if (user is null || user.TrustLevel == Models.TrustLevels.Unverified)
+        if (user.TrustLevel == Models.TrustLevels.Unverified)
         {
             await toastService.ShowError(Resources.Strings.AppResources.CreateListingPhoneRequired);
             return;
