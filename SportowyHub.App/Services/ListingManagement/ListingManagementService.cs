@@ -19,7 +19,7 @@ internal class ListingManagementService(IRequestProvider requestProvider, IAuthS
     {
         var token = await authService.GetTokenAsync() ?? "";
         return await requestProvider.PostAsync<CreateListingRequest, ListingDetail>(
-            "/api/private/listings/", request, token, ct: ct);
+            "/api/private/listings", request, token, ct: ct);
     }
 
     public async Task<UpdateListingResponse> UpdateListingAsync(string id, UpdateListingRequest request, CancellationToken ct = default)

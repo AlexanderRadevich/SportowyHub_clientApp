@@ -10,7 +10,7 @@ internal class MessagingService(IRequestProvider requestProvider, IAuthService a
     {
         var token = await authService.GetTokenAsync() ?? "";
         return await requestProvider.PostAsync<CreateConversationRequest, Conversation>(
-            "/api/private/conversations/",
+            "/api/private/conversations",
             new CreateConversationRequest(listingId), token, ct: ct);
     }
 

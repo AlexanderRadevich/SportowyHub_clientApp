@@ -18,7 +18,7 @@ internal class MediaService(IRequestProvider requestProvider, IAuthService authS
             content.Add(new StringContent(sortOrder.Value.ToString()), "sort_order");
         }
 
-        return await requestProvider.PostMultipartAsync<MediaItem>("/api/private/media/", content, token, ct);
+        return await requestProvider.PostMultipartAsync<MediaItem>("/api/private/media", content, token, ct);
     }
 
     public async Task DeleteAsync(int mediaId, CancellationToken ct = default)

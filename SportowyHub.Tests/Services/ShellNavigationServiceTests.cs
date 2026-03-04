@@ -19,4 +19,18 @@ public class ShellNavigationServiceTests
     {
         _sut.Should().NotBeNull();
     }
+
+    [Fact]
+    public async Task NavigateToLoginWithReturnUrlAsync_SetsReturnUrlBeforeNavigating()
+    {
+        try
+        {
+            await _sut.NavigateToLoginWithReturnUrlAsync("//favorites");
+        }
+        catch (NullReferenceException)
+        {
+        }
+
+        _returnUrlService.Received(1).SetReturnUrl("//favorites");
+    }
 }
