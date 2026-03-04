@@ -102,15 +102,6 @@
                            Placeholder="{x:Static res:AppResources.ListingFieldVoivodeshipId}" />
                 </VerticalStackLayout>
 
-                <!-- Content Locale -->
-                <VerticalStackLayout Spacing="4">
-                    <Label Text="{x:Static res:AppResources.ListingFieldLocale}"
-                           FontSize="13"
-                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                    <Entry Text="{Binding ContentLocale}"
-                           Placeholder="pl" />
-                </VerticalStackLayout>
-
                 <!-- Photos Section (edit mode only) -->
                 <VerticalStackLayout Spacing="8" IsVisible="{Binding IsEditMode}">
                     <Label Text="{x:Static res:AppResources.ListingPhotosTitle}"

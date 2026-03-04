@@ -6,6 +6,7 @@ using SportowyHub.Models.Api;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.ListingManagement;
 using SportowyHub.Services.Media;
+using SportowyHub.Services.Locale;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Sections;
 using SportowyHub.Services.Toast;
@@ -16,6 +17,7 @@ public partial class CreateEditListingViewModel(
     IListingManagementService listingManagementService,
     ISectionsService sectionsService,
     IMediaService mediaService,
+    ILocaleService localeService,
     INavigationService nav,
     IToastService toastService) : ObservableObject, IQueryAttributable
 {
@@ -45,9 +47,6 @@ public partial class CreateEditListingViewModel(
 
     [ObservableProperty]
     public partial string VoivodeshipId { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    public partial string ContentLocale { get; set; } = "pl";
 
     [ObservableProperty]
     public partial Section? SelectedSection { get; set; }
@@ -154,7 +153,6 @@ public partial class CreateEditListingViewModel(
                 Title = match.Title;
                 PriceText = match.Price?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
                 Currency = match.Currency ?? "PLN";
-                ContentLocale = match.ContentLocale ?? "pl";
             }
         }
         catch (Exception ex)
@@ -193,6 +191,9 @@ public partial class CreateEditListingViewModel(
             int.TryParse(CityId, out var cityId);
             int.TryParse(VoivodeshipId, out var voivodeshipId);
 
+            var localeInfo = await localeService.GetLocaleInfoAsync(ct);
+            var contentLocale = localeInfo.Locale;
+
             if (IsEditMode && !string.IsNullOrEmpty(_listingId))
             {
                 var request = new UpdateListingRequest(
@@ -206,7 +207,7 @@ public partial class CreateEditListingViewModel(
                     null,
                     null,
                     null,
-                    ContentLocale);
+                    contentLocale);
 
                 await listingManagementService.UpdateListingAsync(_listingId, request, ct);
                 await toastService.ShowSuccess(AppResources.ListingEditSuccess);
@@ -224,7 +225,7 @@ public partial class CreateEditListingViewModel(
                     null,
                     null,
                     null,
-                    ContentLocale);
+                    contentLocale);
 
                 await listingManagementService.CreateListingAsync(request, ct);
                 await toastService.ShowSuccess(AppResources.ListingCreateSuccess);
