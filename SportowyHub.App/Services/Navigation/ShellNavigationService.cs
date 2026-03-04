@@ -1,6 +1,6 @@
 namespace SportowyHub.Services.Navigation;
 
-public class ShellNavigationService : INavigationService
+public class ShellNavigationService(IReturnUrlService returnUrlService) : INavigationService
 {
     public Task GoToAsync(string route)
     {
@@ -20,5 +20,11 @@ public class ShellNavigationService : INavigationService
     public Task DisplayAlertAsync(string title, string message, string cancel)
     {
         return Shell.Current.DisplayAlertAsync(title, message, cancel);
+    }
+
+    public Task NavigateToLoginWithReturnUrlAsync(string returnUrl)
+    {
+        returnUrlService.SetReturnUrl(returnUrl);
+        return Shell.Current.GoToAsync("login");
     }
 }

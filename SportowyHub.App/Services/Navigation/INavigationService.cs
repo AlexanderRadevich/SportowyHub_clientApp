@@ -6,4 +6,5 @@ public interface INavigationService
     Task GoBackAsync();
     Task<bool> DisplayAlertAsync(string title, string message, string accept, string cancel);
     Task DisplayAlertAsync(string title, string message, string cancel);
+    Task NavigateToLoginWithReturnUrlAsync(string returnUrl);
 }

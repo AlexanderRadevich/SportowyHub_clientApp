@@ -43,6 +43,12 @@ public partial class HomeViewModel(
     [RelayCommand]
     private async Task GoToCreateListing()
     {
+        if (!await authService.IsLoggedInAsync())
+        {
+            await nav.NavigateToLoginWithReturnUrlAsync("//home");
+            return;
+        }
+
         var user = await authService.GetCurrentUserAsync();
         if (user is null || user.TrustLevel == Models.TrustLevels.Unverified)
         {

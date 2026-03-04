@@ -107,7 +107,6 @@
             </RefreshView>
 
             <Button Style="{StaticResource FloatingActionButton}"
-                    IsVisible="{Binding IsLoggedIn}"
                     Command="{Binding GoToCreateListingCommand}" />
         </Grid>
 

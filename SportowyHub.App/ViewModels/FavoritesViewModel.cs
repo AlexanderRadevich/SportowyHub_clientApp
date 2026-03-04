@@ -166,6 +166,6 @@ public partial class FavoritesViewModel(
     [RelayCommand]
     private async Task SignIn()
     {
-        await nav.GoToAsync("login");
+        await nav.NavigateToLoginWithReturnUrlAsync("//favorites");
     }
 }

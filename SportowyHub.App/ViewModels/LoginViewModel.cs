@@ -11,7 +11,8 @@ namespace SportowyHub.ViewModels;
 public partial class LoginViewModel(
     IAuthService authService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject
+    IToastService toastService,
+    IReturnUrlService returnUrlService) : ObservableObject
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -75,8 +76,9 @@ public partial class LoginViewModel(
 
             if (result.IsSuccess)
             {
+                var returnUrl = returnUrlService.ConsumeReturnUrl();
                 await nav.GoToAsync("..");
-                await nav.GoToAsync("//home");
+                await nav.GoToAsync(returnUrl ?? "//home");
                 return;
             }
 
@@ -123,8 +125,9 @@ public partial class LoginViewModel(
 
             if (result.IsSuccess)
             {
+                var returnUrl = returnUrlService.ConsumeReturnUrl();
                 await nav.GoToAsync("..");
-                await nav.GoToAsync("//home");
+                await nav.GoToAsync(returnUrl ?? "//home");
                 return;
             }
 

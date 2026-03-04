@@ -152,7 +152,7 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task SignInAsync()
     {
-        await _nav.GoToAsync("login");
+        await _nav.NavigateToLoginWithReturnUrlAsync("//profile");
     }
 
     [RelayCommand]

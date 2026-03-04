@@ -61,6 +61,7 @@ public static class MauiProgram
             client.BaseAddress = new Uri(ApiConfig.BaseUrl);
         });
         builder.Services.AddSingleton<IRequestProvider, RequestProvider>();
+        builder.Services.AddSingleton<IReturnUrlService, ReturnUrlService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IListingsService, ListingsService>();
