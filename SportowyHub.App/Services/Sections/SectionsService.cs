@@ -8,16 +8,16 @@ internal class SectionsService(IRequestProvider requestProvider) : ISectionsServ
     public async Task<SectionsResponse> GetSectionsAsync(string? locale = null, CancellationToken ct = default)
     {
         var uri = string.IsNullOrWhiteSpace(locale)
-            ? "/api/v1/sections"
-            : $"/api/v1/sections?locale={Uri.EscapeDataString(locale)}";
+            ? "/api/v1/sports"
+            : $"/api/v1/sports?locale={Uri.EscapeDataString(locale)}";
         return await requestProvider.GetAsync<SectionsResponse>(uri, ct: ct);
     }
 
     public async Task<CategoriesResponse> GetCategoriesAsync(int sectionId, string? locale = null, CancellationToken ct = default)
     {
         var uri = string.IsNullOrWhiteSpace(locale)
-            ? $"/api/v1/sections/{sectionId}/categories"
-            : $"/api/v1/sections/{sectionId}/categories?locale={Uri.EscapeDataString(locale)}";
+            ? $"/api/v1/sports/{sectionId}/categories"
+            : $"/api/v1/sports/{sectionId}/categories?locale={Uri.EscapeDataString(locale)}";
         return await requestProvider.GetAsync<CategoriesResponse>(uri, ct: ct);
     }
 }

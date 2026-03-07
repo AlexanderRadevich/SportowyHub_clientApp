@@ -66,6 +66,12 @@ namespace SportowyHub.Services.Api;
 [JsonSerializable(typeof(DsarRequestItem))]
 [JsonSerializable(typeof(DsarListResponse))]
 [JsonSerializable(typeof(DsarRequestResponse))]
+[JsonSerializable(typeof(GeographyAutocompleteItem))]
+[JsonSerializable(typeof(List<GeographyAutocompleteItem>))]
+[JsonSerializable(typeof(VoivodeshipItem))]
+[JsonSerializable(typeof(List<VoivodeshipItem>))]
+[JsonSerializable(typeof(CityItem))]
+[JsonSerializable(typeof(List<CityItem>))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(List<string>))]
 public partial class SportowyHubJsonContext : JsonSerializerContext;

@@ -57,6 +57,39 @@
                    Style="{StaticResource ErrorLabel}"
                    IsVisible="{Binding PhoneError.Length, Converter={StaticResource IntToBoolConverter}}" />
 
+            <!-- Voivodeship -->
+            <Label Text="{x:Static res:AppResources.EditProfileVoivodeship}" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Picker ItemsSource="{Binding Voivodeships}"
+                        SelectedItem="{Binding SelectedVoivodeship}"
+                        ItemDisplayBinding="{Binding Name}"
+                        Title="{x:Static res:AppResources.EditProfileVoivodeship}"
+                        BackgroundColor="Transparent" />
+            </Border>
+
+            <!-- City -->
+            <Label Text="{x:Static res:AppResources.EditProfileCity}" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                    Padding="12,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Picker ItemsSource="{Binding Cities}"
+                        SelectedItem="{Binding SelectedCity}"
+                        ItemDisplayBinding="{Binding Name}"
+                        Title="{x:Static res:AppResources.EditProfileCity}"
+                        IsEnabled="{Binding SelectedVoivodeship, Converter={StaticResource IsNotNullConverter}}"
+                        BackgroundColor="Transparent" />
+            </Border>
+
             <!-- Notifications -->
             <Grid ColumnDefinitions="*,Auto" Margin="0,16,0,0">
                 <Label Text="{x:Static res:AppResources.EditProfileNotifications}"

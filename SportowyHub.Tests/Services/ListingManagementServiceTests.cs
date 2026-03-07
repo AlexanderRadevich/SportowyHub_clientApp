@@ -38,6 +38,7 @@ public class ListingManagementServiceTests
         Status: "draft",
         CategoryId: 1,
         ContentLocale: null,
+        Condition: null,
         CreatedAt: "2024-01-01",
         PublishedAt: null,
         LastModeratorComment: null);

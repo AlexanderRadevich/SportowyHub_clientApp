@@ -11,4 +11,6 @@ public record UserAccount(
     string? QuietHoursEnd,
     string? Locale,
     int BalanceGrosze,
-    string? BalanceUpdatedAt);
+    string? BalanceUpdatedAt,
+    int? VoivodeshipId = null,
+    int? CityId = null);

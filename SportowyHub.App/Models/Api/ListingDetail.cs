@@ -15,6 +15,7 @@ public record ListingDetail(
     string Status,
     int CategoryId,
     string? ContentLocale,
+    string? Condition,
     string CreatedAt,
     string? PublishedAt,
     string? LastModeratorComment);

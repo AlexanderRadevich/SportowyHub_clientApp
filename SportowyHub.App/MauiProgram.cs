@@ -21,6 +21,7 @@ using SportowyHub.Services.Media;
 using SportowyHub.Services.Messaging;
 using SportowyHub.Services.Moderation;
 using SportowyHub.Services.PhoneVerification;
+using SportowyHub.Services.Geography;
 using SportowyHub.Services.Sections;
 using SportowyHub.Services.ThemeSync;
 using SportowyHub.Services.Toast;
@@ -69,6 +70,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRecentSearchesService, RecentSearchesService>();
         builder.Services.AddSingleton<IFavoritesService, FavoritesService>();
         builder.Services.AddSingleton<ISectionsService, SectionsService>();
+        builder.Services.AddSingleton<IGeographyService, GeographyService>();
         builder.Services.AddSingleton<ILocaleService, LocaleService>();
         builder.Services.AddSingleton<IPhoneVerificationService, PhoneVerificationService>();
         builder.Services.AddSingleton<IThemeSyncService, ThemeSyncService>();

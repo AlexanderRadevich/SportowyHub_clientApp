@@ -337,6 +337,12 @@
   <data name="EditProfileInvalidTime" xml:space="preserve">
     <value>Неверный формат времени (HH:mm)</value>
   </data>
+  <data name="EditProfileVoivodeship" xml:space="preserve">
+    <value>Воеводство</value>
+  </data>
+  <data name="EditProfileCity" xml:space="preserve">
+    <value>Город</value>
+  </data>
   <!-- My Listings -->
   <data name="ProfileMyListings" xml:space="preserve">
     <value>Мои объявления</value>

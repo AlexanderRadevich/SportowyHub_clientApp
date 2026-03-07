@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -6,6 +7,7 @@ using SportowyHub.Models.Api;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
+using SportowyHub.Services.Geography;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Toast;
 
@@ -14,7 +16,8 @@ namespace SportowyHub.ViewModels;
 public partial class EditProfileViewModel(
     IAuthService authService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject, IQueryAttributable
+    IToastService toastService,
+    IGeographyService geographyService) : ObservableObject, IQueryAttributable
 {
     [ObservableProperty]
     public partial string FirstName { get; set; } = string.Empty;
@@ -50,6 +53,21 @@ public partial class EditProfileViewModel(
     [ObservableProperty]
     public partial string QuietHoursEndError { get; set; } = string.Empty;
 
+    [ObservableProperty]
+    public partial ObservableCollection<VoivodeshipItem> Voivodeships { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<CityItem> Cities { get; set; } = [];
+
+    [ObservableProperty]
+    public partial VoivodeshipItem? SelectedVoivodeship { get; set; }
+
+    [ObservableProperty]
+    public partial CityItem? SelectedCity { get; set; }
+
+    private int? _initialVoivodeshipId;
+    private int? _initialCityId;
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue("profile", out var profileObj) && profileObj is string json)
@@ -63,6 +81,10 @@ public partial class EditProfileViewModel(
             NotificationsEnabled = profile.Account?.NotificationsEnabled ?? false;
             QuietHoursStart = profile.Account?.QuietHoursStart ?? string.Empty;
             QuietHoursEnd = profile.Account?.QuietHoursEnd ?? string.Empty;
+            _initialVoivodeshipId = profile.Account?.VoivodeshipId;
+            _initialCityId = profile.Account?.CityId;
+
+            LoadVoivodeshipsCommand.Execute(null);
         }
     }
 
@@ -78,6 +100,56 @@ public partial class EditProfileViewModel(
         }
 
         setError(TimeRegex().IsMatch(value) ? string.Empty : AppResources.EditProfileInvalidTime);
+    }
+
+    partial void OnSelectedVoivodeshipChanged(VoivodeshipItem? value)
+    {
+        SelectedCity = null;
+        Cities = [];
+
+        if (value is not null)
+        {
+            LoadCitiesCommand.Execute(value.Id);
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadVoivodeships(CancellationToken ct)
+    {
+        try
+        {
+            var items = await geographyService.GetVoivodeshipsAsync(ct: ct);
+            Voivodeships = new ObservableCollection<VoivodeshipItem>(items);
+
+            if (_initialVoivodeshipId.HasValue)
+            {
+                SelectedVoivodeship = Voivodeships.FirstOrDefault(v => v.Id == _initialVoivodeshipId.Value);
+            }
+        }
+        catch
+        {
+            Voivodeships = [];
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadCities(int voivodeshipId, CancellationToken ct)
+    {
+        try
+        {
+            var items = await geographyService.GetCitiesAsync(voivodeshipId, ct: ct);
+            Cities = new ObservableCollection<CityItem>(items);
+
+            if (_initialCityId.HasValue)
+            {
+                SelectedCity = Cities.FirstOrDefault(c => c.Id == _initialCityId.Value);
+                _initialCityId = null;
+            }
+        }
+        catch
+        {
+            Cities = [];
+        }
     }
 
     private bool CanSave() => !IsLoading;
@@ -105,7 +177,9 @@ public partial class EditProfileViewModel(
                     LastName: string.IsNullOrWhiteSpace(LastName) ? null : LastName,
                     NotificationsEnabled: NotificationsEnabled,
                     QuietHoursStart: string.IsNullOrWhiteSpace(QuietHoursStart) ? null : QuietHoursStart,
-                    QuietHoursEnd: string.IsNullOrWhiteSpace(QuietHoursEnd) ? null : QuietHoursEnd));
+                    QuietHoursEnd: string.IsNullOrWhiteSpace(QuietHoursEnd) ? null : QuietHoursEnd,
+                    VoivodeshipId: SelectedVoivodeship?.Id,
+                    CityId: SelectedCity?.Id));
 
             await authService.UpdateProfileAsync(request, ct);
             await toastService.ShowSuccess(AppResources.EditProfileSuccess);

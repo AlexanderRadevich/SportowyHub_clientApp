@@ -29,7 +29,7 @@ The system SHALL define a `ListingsResponse` record with `Listings` (List&lt;Lis
 - **THEN** it SHALL deserialize into a `ListingsResponse` with the listings list and total count
 
 ### Requirement: ListingDetail record for detail endpoint
-The system SHALL define a `ListingDetail` record with all fields from `/api/v1/listings/{id}`: `Id` (string), `Slug` (string?), `Title` (string), `Description` (string?), `Price` (decimal?, with `[JsonConverter(typeof(FlexibleDecimalConverter))]`), `Currency` (string?), `City` (string?), `Region` (string?), `Status` (string), `CategoryId` (int), `ContentLocale` (string?), `CreatedAt` (string), `PublishedAt` (string?), `LastModeratorComment` (string?).
+The system SHALL define a `ListingDetail` record with all fields from `/api/v1/listings/{id}`: `Id` (string), `Slug` (string?), `Title` (string), `Description` (string?), `Price` (decimal?, with `[JsonConverter(typeof(FlexibleDecimalConverter))]`), `Currency` (string?), `City` (string?), `Region` (string?), `Status` (string), `CategoryId` (int), `ContentLocale` (string?), `Condition` (string?), `CreatedAt` (string), `PublishedAt` (string?), `LastModeratorComment` (string?).
 
 #### Scenario: Deserialize listing detail
 - **WHEN** the app receives a listing detail JSON from `/api/v1/listings/{id}`
@@ -42,6 +42,14 @@ The system SHALL define a `ListingDetail` record with all fields from `/api/v1/l
 #### Scenario: Deserialize listing detail with null price
 - **WHEN** the JSON response contains `"price": null`
 - **THEN** `ListingDetail.Price` SHALL be `null`
+
+#### Scenario: Deserialize listing detail with condition
+- **WHEN** the JSON response contains `"condition": "new"`
+- **THEN** `ListingDetail.Condition` SHALL be `"new"`
+
+#### Scenario: Deserialize listing detail without condition
+- **WHEN** the JSON response does not contain a `condition` field
+- **THEN** `ListingDetail.Condition` SHALL be `null`
 
 ### Requirement: SearchResultItem record for search endpoint
 The system SHALL define a `SearchResultItem` record with properties matching the `/api/v1/search` response item: `Id` (string), `Slug` (string), `SerialId` (int), `Title` (string), `Description` (string), `CategoryId` (string), `CategoryPath` (string), `Sport` (string), `Price` (float?), `Currency` (string?), `City` (string?), `Region` (string?), `Status` (string), `OwnerTrustLevel` (string), `CreatedAt` (string), `PublishedAt` (string?), `Location` (GeoLocation?), `Attributes` (List&lt;SearchAttribute&gt;?), `ContentLocale` (string?).

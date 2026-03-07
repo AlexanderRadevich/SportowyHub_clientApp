@@ -137,6 +137,8 @@ public static class AppResources
     public static string EditProfileSuccess => ResourceManager.GetString("EditProfileSuccess", Culture)!;
     public static string EditProfileError => ResourceManager.GetString("EditProfileError", Culture)!;
     public static string EditProfileInvalidTime => ResourceManager.GetString("EditProfileInvalidTime", Culture)!;
+    public static string EditProfileVoivodeship => ResourceManager.GetString("EditProfileVoivodeship", Culture)!;
+    public static string EditProfileCity => ResourceManager.GetString("EditProfileCity", Culture)!;
 
     // Home Feed
     public static string HomeEmptyListings => ResourceManager.GetString("HomeEmptyListings", Culture)!;

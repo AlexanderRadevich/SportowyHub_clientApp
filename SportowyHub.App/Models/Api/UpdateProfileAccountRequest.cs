@@ -5,4 +5,6 @@ public record UpdateProfileAccountRequest(
     string? LastName,
     bool? NotificationsEnabled,
     string? QuietHoursStart,
-    string? QuietHoursEnd);
+    string? QuietHoursEnd,
+    int? VoivodeshipId = null,
+    int? CityId = null);
