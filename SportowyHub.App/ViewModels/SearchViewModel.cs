@@ -69,6 +69,8 @@ public partial class SearchViewModel(
 
     public ObservableCollection<ActiveFilterChip> ActiveFilterChips { get; } = [];
 
+    public event Action? RequestUnfocus;
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue("sport", out var sportObj) && sportObj is string sportSlug && !string.IsNullOrWhiteSpace(sportSlug))
@@ -275,6 +277,7 @@ public partial class SearchViewModel(
             FilterState.CopyFrom(newState);
             UpdateFilterCount();
             await ExecuteSearch(SearchText, 0, CancellationToken.None);
+            RequestUnfocus?.Invoke();
         }
     }
 
@@ -314,6 +317,15 @@ public partial class SearchViewModel(
 
         UpdateFilterCount();
         await ExecuteSearch(SearchText, 0, CancellationToken.None);
+        RequestUnfocus?.Invoke();
+    }
+
+    public void ClearSearchResults()
+    {
+        SearchResults.Clear();
+        HasSearchResults = false;
+        ShowNoResults = false;
+        TotalResults = 0;
     }
 
     private void UpdateFilterCount()

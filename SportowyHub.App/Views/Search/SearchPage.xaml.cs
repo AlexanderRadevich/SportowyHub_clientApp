@@ -8,6 +8,8 @@ public partial class SearchPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+        viewModel.RequestUnfocus += () =>
+            MainThread.BeginInvokeOnMainThread(() => SearchEntry.Unfocus());
     }
 
     protected override void OnAppearing()
@@ -15,5 +17,14 @@ public partial class SearchPage : ContentPage
         base.OnAppearing();
         SearchEntry.Focus();
         ((SearchViewModel)BindingContext).AppearingCommand.Execute(null);
+    }
+
+    private void OnSearchEntryFocused(object? sender, FocusEventArgs e)
+    {
+        var vm = (SearchViewModel)BindingContext;
+        if (string.IsNullOrWhiteSpace(vm.SearchText) && !vm.HasActiveFilters && vm.HasSearchResults)
+        {
+            vm.ClearSearchResults();
+        }
     }
 }

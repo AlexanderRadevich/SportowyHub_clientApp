@@ -273,6 +273,8 @@ public partial class SearchFilterPopupViewModel : ObservableObject
         Condition = null;
         Sort = null;
         SelectedSortOption = null;
+
+        Applied?.Invoke(new SearchFilterState());
     }
 
     [RelayCommand]

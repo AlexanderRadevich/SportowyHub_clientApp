@@ -42,7 +42,8 @@
                        Placeholder="{x:Static res:AppResources.SearchPlaceholder}"
                        BackgroundColor="Transparent"
                        FontSize="14"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"
+                       Focused="OnSearchEntryFocused" />
                 <ImageButton Grid.Column="2"
                              Source="icon_clear.svg"
                              HeightRequest="20"
@@ -150,6 +151,11 @@
                              Value="True">
                     <Setter Property="IsVisible" Value="False" />
                 </DataTrigger>
+                <DataTrigger TargetType="ScrollView"
+                             Binding="{Binding HasSearchResults}"
+                             Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
             </ScrollView.Triggers>
             <VerticalStackLayout Spacing="24">
 
@@ -217,6 +223,7 @@
                     <MultiTrigger.Conditions>
                         <BindingCondition Binding="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}" Value="False" />
                         <BindingCondition Binding="{Binding HasActiveFilters}" Value="False" />
+                        <BindingCondition Binding="{Binding HasSearchResults}" Value="False" />
                     </MultiTrigger.Conditions>
                     <Setter Property="IsVisible" Value="False" />
                 </MultiTrigger>
