@@ -158,6 +158,58 @@
   <data name="SearchClearRecent" xml:space="preserve">
     <value>Очистить</value>
   </data>
+  <!-- Filters -->
+  <data name="FilterTitle" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="FilterSport" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="FilterCategory" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="FilterCategoryPlaceholder" xml:space="preserve">
+    <value>Сначала выберите спорт</value>
+  </data>
+  <data name="FilterLocation" xml:space="preserve">
+    <value>Местоположение</value>
+  </data>
+  <data name="FilterPriceFrom" xml:space="preserve">
+    <value>Цена от</value>
+  </data>
+  <data name="FilterPriceTo" xml:space="preserve">
+    <value>Цена до</value>
+  </data>
+  <data name="FilterCondition" xml:space="preserve">
+    <value>Состояние</value>
+  </data>
+  <data name="FilterConditionNew" xml:space="preserve">
+    <value>Новый</value>
+  </data>
+  <data name="FilterConditionUsed" xml:space="preserve">
+    <value>Б/у</value>
+  </data>
+  <data name="FilterSort" xml:space="preserve">
+    <value>Сортировка</value>
+  </data>
+  <data name="FilterSortNewest" xml:space="preserve">
+    <value>Новейшие</value>
+  </data>
+  <data name="FilterSortPriceAsc" xml:space="preserve">
+    <value>Цена: по возрастанию</value>
+  </data>
+  <data name="FilterSortPriceDesc" xml:space="preserve">
+    <value>Цена: по убыванию</value>
+  </data>
+  <data name="FilterApply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="FilterReset" xml:space="preserve">
+    <value>Сбросить фильтры</value>
+  </data>
+  <data name="BrowseByCategory" xml:space="preserve">
+    <value>Обзор категорий</value>
+  </data>
   <!-- Favorites -->
   <data name="FavoritesTitle" xml:space="preserve">
     <value>Избранное</value>

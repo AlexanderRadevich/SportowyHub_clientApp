@@ -26,6 +26,7 @@ public class ListingsService(IRequestProvider requestProvider) : IListingsServic
         int? voivodeshipId = null,
         float? priceMin = null,
         float? priceMax = null,
+        string? condition = null,
         string? sort = null,
         int limit = 30,
         int offset = 0,
@@ -70,6 +71,11 @@ public class ListingsService(IRequestProvider requestProvider) : IListingsServic
         if (priceMax.HasValue)
         {
             parameters.Add($"price_max={priceMax.Value.ToString(CultureInfo.InvariantCulture)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(condition))
+        {
+            parameters.Add($"condition={Uri.EscapeDataString(condition)}");
         }
 
         if (!string.IsNullOrWhiteSpace(sort))

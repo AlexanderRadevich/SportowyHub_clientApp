@@ -9,7 +9,7 @@
              x:DataType="vm:HomeViewModel"
              Title="{x:Static res:AppResources.HomeTitle}">
 
-    <Grid RowDefinitions="Auto,*" Padding="16">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
 
         <Border Grid.Row="0"
                 BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
@@ -39,7 +39,44 @@
             </HorizontalStackLayout>
         </Border>
 
-        <Grid Grid.Row="1">
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding HasSections}"
+                             Spacing="8"
+                             Margin="0,0,0,12">
+            <Label Text="{x:Static res:AppResources.BrowseByCategory}"
+                   Style="{StaticResource SectionHeader}" />
+            <CollectionView ItemsSource="{Binding Sections}"
+                            HeightRequest="60">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Section">
+                        <Border Padding="16,8"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                VerticalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToFilteredSearchCommand}"
+                                    CommandParameter="{Binding}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="{Binding Name}"
+                                   FontSize="14"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                   VerticalOptions="Center" />
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="2">
             <RefreshView IsRefreshing="{Binding IsRefreshing}"
                          Command="{Binding RefreshCommand}">
                 <Grid>

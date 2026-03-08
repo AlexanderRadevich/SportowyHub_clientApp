@@ -6,6 +6,7 @@ using SportowyHub.Models.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
+using SportowyHub.Services.Sections;
 using SportowyHub.Services.Toast;
 
 namespace SportowyHub.ViewModels;
@@ -14,13 +15,15 @@ public partial class HomeViewModel(
     IListingsService listingsService,
     INavigationService nav,
     IToastService toastService,
-    IAuthService authService) : ObservableObject
+    IAuthService authService,
+    ISectionsService sectionsService) : ObservableObject
 {
     private const int PageSize = 20;
     private int _offset;
     private bool _hasMoreItems = true;
 
     public ObservableCollection<ListingSummary> Listings { get; } = [];
+    public ObservableCollection<Section> Sections { get; } = [];
 
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -30,6 +33,9 @@ public partial class HomeViewModel(
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasSections { get; set; }
 
     [RelayCommand]
     private async Task GoToCreateListing()
@@ -84,6 +90,26 @@ public partial class HomeViewModel(
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadSections()
+    {
+        try
+        {
+            var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+            var response = await sectionsService.GetSectionsAsync(locale);
+            Sections.Clear();
+            foreach (var section in response.Sports)
+            {
+                Sections.Add(section);
+            }
+            HasSections = Sections.Count > 0;
+        }
+        catch
+        {
+            HasSections = false;
         }
     }
 
@@ -165,6 +191,16 @@ public partial class HomeViewModel(
     {
         if (Shell.Current is Shell shell)
         {
+            shell.CurrentItem = shell.Items[0].Items[1];
+        }
+    }
+
+    [RelayCommand]
+    private void GoToFilteredSearch(Section section)
+    {
+        if (Shell.Current is Shell shell)
+        {
+            SearchViewModel.PendingSportSection = section;
             shell.CurrentItem = shell.Items[0].Items[1];
         }
     }

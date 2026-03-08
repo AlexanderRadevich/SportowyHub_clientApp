@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:vm="clr-namespace:SportowyHub.ViewModels"
+               xmlns:models="clr-namespace:SportowyHub.Models.Api"
+               xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
+               x:Class="SportowyHub.Views.Search.SearchFilterPopup"
+               x:DataType="vm:SearchFilterPopupViewModel">
+
+    <VerticalStackLayout WidthRequest="360" Padding="20" Spacing="0"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}">
+
+        <Label Text="{x:Static res:AppResources.FilterTitle}"
+               FontSize="20"
+               FontFamily="OpenSansSemibold"
+               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+               Margin="0,0,0,16" />
+
+        <ScrollView HeightRequest="420">
+            <VerticalStackLayout Spacing="16">
+
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.FilterSport}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Picker ItemsSource="{Binding Sections}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedSection}"
+                            Title="{x:Static res:AppResources.FilterSport}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.FilterCategory}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Picker ItemsSource="{Binding Categories}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            IsEnabled="{Binding IsCategoryEnabled}"
+                            Title="{Binding CategoryPlaceholder}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.FilterLocation}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+
+                    <Grid IsVisible="{Binding HasSelectedLocation, Converter={StaticResource InvertBoolConverter}}">
+                        <Entry Text="{Binding LocationQuery}"
+                               Placeholder="{x:Static res:AppResources.FilterLocation}"
+                               FontSize="14" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto"
+                          IsVisible="{Binding HasSelectedLocation}">
+                        <Label Text="{Binding SelectedLocationLabel}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <ImageButton Grid.Column="1"
+                                     Source="icon_clear.svg"
+                                     HeightRequest="16"
+                                     WidthRequest="16"
+                                     BackgroundColor="Transparent"
+                                     Command="{Binding ClearLocationCommand}"
+                                     VerticalOptions="Center">
+                            <ImageButton.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
+                            </ImageButton.Behaviors>
+                        </ImageButton>
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding LocationResults}"
+                                    IsVisible="{Binding LocationResults.Count, Converter={StaticResource IntToBoolConverter}}"
+                                    MaximumHeightRequest="150">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:GeographyAutocompleteItem">
+                                <Grid Padding="4,8">
+                                    <Grid.Triggers>
+                                        <DataTrigger TargetType="Grid"
+                                                     Binding="{Binding Type}"
+                                                     Value="separator">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                            <Setter Property="HeightRequest" Value="1" />
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}" />
+                                        </DataTrigger>
+                                    </Grid.Triggers>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchFilterPopupViewModel}}, Path=SelectLocationCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                    <Label FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Type}"
+                                                         Value="separator">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0}{1}">
+                                                <Binding Path="Name" />
+                                                <Binding Path="Label" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                        <Label Text="{x:Static res:AppResources.FilterPriceFrom}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Entry Text="{Binding PriceMinText}"
+                               Keyboard="Numeric"
+                               Placeholder="0"
+                               FontSize="14" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                        <Label Text="{x:Static res:AppResources.FilterPriceTo}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Entry Text="{Binding PriceMaxText}"
+                               Keyboard="Numeric"
+                               Placeholder="∞"
+                               FontSize="14" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.FilterCondition}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <HorizontalStackLayout Spacing="8">
+                        <Button Text="{x:Static res:AppResources.FilterConditionNew}"
+                                Command="{Binding ToggleConditionCommand}"
+                                CommandParameter="new"
+                                FontSize="13"
+                                HeightRequest="36"
+                                Padding="16,0"
+                                CornerRadius="18"
+                                BackgroundColor="{Binding IsConditionNew, Converter={StaticResource BoolToChipColorConverter}}"
+                                TextColor="{Binding IsConditionNew, Converter={StaticResource BoolToChipColorConverter}, ConverterParameter=text}" />
+                        <Button Text="{x:Static res:AppResources.FilterConditionUsed}"
+                                Command="{Binding ToggleConditionCommand}"
+                                CommandParameter="used"
+                                FontSize="13"
+                                HeightRequest="36"
+                                Padding="16,0"
+                                CornerRadius="18"
+                                BackgroundColor="{Binding IsConditionUsed, Converter={StaticResource BoolToChipColorConverter}}"
+                                TextColor="{Binding IsConditionUsed, Converter={StaticResource BoolToChipColorConverter}, ConverterParameter=text}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static res:AppResources.FilterSort}"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                    <Picker ItemsSource="{Binding SortOptions}"
+                            ItemDisplayBinding="{Binding Label}"
+                            SelectedItem="{Binding SelectedSortOption}"
+                            Title="{x:Static res:AppResources.FilterSort}" />
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,16,0,0">
+            <Button Grid.Column="0"
+                    Text="{x:Static res:AppResources.FilterReset}"
+                    Command="{Binding ResetCommand}"
+                    FontSize="14"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                    CornerRadius="12" />
+            <Button Grid.Column="1"
+                    Text="{x:Static res:AppResources.FilterApply}"
+                    Command="{Binding ApplyCommand}"
+                    FontSize="14"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    TextColor="White"
+                    CornerRadius="12" />
+        </Grid>
+
+    </VerticalStackLayout>
+</toolkit:Popup>

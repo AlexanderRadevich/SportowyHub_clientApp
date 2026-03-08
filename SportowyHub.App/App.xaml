@@ -17,6 +17,7 @@
             <converters:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
             <converters:BoolToHeartConverter x:Key="BoolToHeartConverter" />
+            <converters:BoolToChipColorConverter x:Key="BoolToChipColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

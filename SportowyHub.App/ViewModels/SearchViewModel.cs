@@ -1,11 +1,18 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SportowyHub.Models;
 using SportowyHub.Models.Api;
+using SportowyHub.Services.Geography;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.RecentSearches;
+using SportowyHub.Services.Sections;
 using SportowyHub.Services.Toast;
+using SportowyHub.Views.Search;
 
 namespace SportowyHub.ViewModels;
 
@@ -13,12 +20,16 @@ public partial class SearchViewModel(
     IListingsService listingsService,
     INavigationService nav,
     IToastService toastService,
-    IRecentSearchesService recentSearchesService) : ObservableObject
+    IRecentSearchesService recentSearchesService,
+    ISectionsService sectionsService,
+    IGeographyService geographyService) : ObservableObject, IQueryAttributable
 {
     private const int PageSize = 30;
     private int _searchOffset;
     private int _searchTotal;
     private CancellationTokenSource? _debounceCts;
+
+    internal static Section? PendingSportSection { get; set; }
 
     [ObservableProperty]
     public partial string SearchText { get; set; } = string.Empty;
@@ -35,6 +46,14 @@ public partial class SearchViewModel(
     [ObservableProperty]
     public partial bool ShowNoResults { get; set; }
 
+    [ObservableProperty]
+    public partial int ActiveFilterCount { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasActiveFilters { get; set; }
+
+    public SearchFilterState FilterState { get; } = new();
+
     public ObservableCollection<string> RecentSearches { get; } = [];
 
     public ObservableCollection<string> PopularSearches { get; } =
@@ -48,19 +67,32 @@ public partial class SearchViewModel(
 
     public ObservableCollection<SearchResultItem> SearchResults { get; } = [];
 
+    public ObservableCollection<ActiveFilterChip> ActiveFilterChips { get; } = [];
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("sport", out var sportObj) && sportObj is string sportSlug && !string.IsNullOrWhiteSpace(sportSlug))
+        {
+            PendingSportSection = new Section(0, sportSlug, sportSlug);
+        }
+    }
+
     partial void OnSearchTextChanged(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(value) && !HasActiveFilters)
         {
             SearchResults.Clear();
             HasSearchResults = false;
             ShowNoResults = false;
             TotalResults = 0;
             _debounceCts?.Cancel();
+            _debounceCts?.Dispose();
+            _debounceCts = null;
             return;
         }
 
         _debounceCts?.Cancel();
+        _debounceCts?.Dispose();
         _debounceCts = new CancellationTokenSource();
         _ = PerformDebouncedSearch(value, _debounceCts.Token);
     }
@@ -85,7 +117,19 @@ public partial class SearchViewModel(
 
         try
         {
-            var response = await listingsService.SearchAsync(query: query, limit: PageSize, offset: offset, ct: ct);
+            var response = await listingsService.SearchAsync(
+                query: string.IsNullOrWhiteSpace(query) ? null : query,
+                categoryId: FilterState.SelectedCategoryId,
+                sport: FilterState.SelectedSection?.Slug,
+                cityId: FilterState.SelectedCityId,
+                voivodeshipId: FilterState.SelectedVoivodeshipId,
+                priceMin: FilterState.PriceMin,
+                priceMax: FilterState.PriceMax,
+                condition: FilterState.Condition,
+                sort: FilterState.Sort,
+                limit: PageSize,
+                offset: offset,
+                ct: ct);
 
             if (offset == 0)
             {
@@ -101,9 +145,9 @@ public partial class SearchViewModel(
             _searchTotal = response.Total;
             TotalResults = response.Total;
             HasSearchResults = SearchResults.Count > 0;
-            ShowNoResults = SearchResults.Count == 0 && !string.IsNullOrWhiteSpace(SearchText);
+            ShowNoResults = SearchResults.Count == 0 && (!string.IsNullOrWhiteSpace(SearchText) || HasActiveFilters);
 
-            if (offset == 0)
+            if (offset == 0 && !string.IsNullOrWhiteSpace(query))
             {
                 recentSearchesService.Add(query);
                 LoadRecentSearches();
@@ -125,7 +169,12 @@ public partial class SearchViewModel(
     [RelayCommand]
     private async Task LoadMoreSearchResults(CancellationToken ct)
     {
-        if (IsSearching || string.IsNullOrWhiteSpace(SearchText) || _searchOffset >= _searchTotal)
+        if (IsSearching || _searchOffset >= _searchTotal)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(SearchText) && !HasActiveFilters)
         {
             return;
         }
@@ -167,9 +216,154 @@ public partial class SearchViewModel(
     }
 
     [RelayCommand]
-    private void Appearing()
+    private async Task Appearing()
     {
         LoadRecentSearches();
+
+        if (PendingSportSection is not null)
+        {
+            var pending = PendingSportSection;
+            PendingSportSection = null;
+
+            if (pending.Id > 0)
+            {
+                FilterState.SelectedSection = pending;
+                UpdateFilterCount();
+                await ExecuteSearch(SearchText, 0, CancellationToken.None);
+            }
+            else
+            {
+                try
+                {
+                    var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+                    var response = await sectionsService.GetSectionsAsync(locale);
+                    var section = response.Sports.FirstOrDefault(s => s.Slug == pending.Slug);
+                    if (section is not null)
+                    {
+                        FilterState.SelectedSection = section;
+                        UpdateFilterCount();
+                        await ExecuteSearch(SearchText, 0, CancellationToken.None);
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenFilter()
+    {
+        var popupVm = new SearchFilterPopupViewModel(
+            sectionsService,
+            geographyService,
+            FilterState);
+
+        var popup = new SearchFilterPopup(popupVm);
+        var page = Shell.Current.CurrentPage;
+        if (page is null)
+        {
+            return;
+        }
+
+        _ = page.ShowPopupAsync(popup, PopupOptions.Empty);
+        var newState = await popup.GetResultAsync();
+
+        if (newState is not null)
+        {
+            FilterState.CopyFrom(newState);
+            UpdateFilterCount();
+            await ExecuteSearch(SearchText, 0, CancellationToken.None);
+        }
+    }
+
+    [RelayCommand]
+    private async Task RemoveFilter(string key)
+    {
+        switch (key)
+        {
+            case ActiveFilterChip.Keys.Sport:
+                FilterState.SelectedSection = null;
+                FilterState.SelectedCategoryId = null;
+                FilterState.SelectedCategoryName = null;
+                break;
+            case ActiveFilterChip.Keys.Category:
+                FilterState.SelectedCategoryId = null;
+                FilterState.SelectedCategoryName = null;
+                break;
+            case ActiveFilterChip.Keys.Location:
+                FilterState.SelectedVoivodeshipId = null;
+                FilterState.SelectedCityId = null;
+                FilterState.SelectedLocationLabel = null;
+                break;
+            case ActiveFilterChip.Keys.PriceMin:
+                FilterState.PriceMin = null;
+                break;
+            case ActiveFilterChip.Keys.PriceMax:
+                FilterState.PriceMax = null;
+                break;
+            case ActiveFilterChip.Keys.Condition:
+                FilterState.Condition = null;
+                break;
+            case ActiveFilterChip.Keys.Sort:
+                FilterState.Sort = null;
+                FilterState.SelectedSortLabel = null;
+                break;
+        }
+
+        UpdateFilterCount();
+        await ExecuteSearch(SearchText, 0, CancellationToken.None);
+    }
+
+    private void UpdateFilterCount()
+    {
+        ActiveFilterCount = FilterState.ActiveFilterCount;
+        HasActiveFilters = ActiveFilterCount > 0;
+        RebuildFilterChips();
+    }
+
+    private void RebuildFilterChips()
+    {
+        ActiveFilterChips.Clear();
+
+        if (FilterState.SelectedSection is not null)
+        {
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.Sport, FilterState.SelectedSection.Name));
+        }
+
+        if (FilterState.SelectedCategoryId.HasValue && FilterState.SelectedCategoryName is not null)
+        {
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.Category, FilterState.SelectedCategoryName));
+        }
+
+        if (FilterState.SelectedLocationLabel is not null)
+        {
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.Location, FilterState.SelectedLocationLabel));
+        }
+
+        if (FilterState.PriceMin.HasValue)
+        {
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.PriceMin, $"≥ {FilterState.PriceMin.Value:0.##}"));
+        }
+
+        if (FilterState.PriceMax.HasValue)
+        {
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.PriceMax, $"≤ {FilterState.PriceMax.Value:0.##}"));
+        }
+
+        if (FilterState.Condition is not null)
+        {
+            var label = FilterState.Condition == "new"
+                ? Resources.Strings.AppResources.FilterConditionNew
+                : Resources.Strings.AppResources.FilterConditionUsed;
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.Condition, label));
+        }
+
+        if (FilterState.Sort is not null && FilterState.SelectedSortLabel is not null)
+        {
+            ActiveFilterChips.Add(new ActiveFilterChip(ActiveFilterChip.Keys.Sort, FilterState.SelectedSortLabel));
+        }
     }
 
     [RelayCommand]

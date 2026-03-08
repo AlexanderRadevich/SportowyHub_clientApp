@@ -193,6 +193,25 @@ public static class AppResources
     public static string ListingTitleRequired => ResourceManager.GetString("ListingTitleRequired", Culture)!;
     public static string ListingCategoryRequired => ResourceManager.GetString("ListingCategoryRequired", Culture)!;
 
+    // Filters
+    public static string FilterTitle => ResourceManager.GetString("FilterTitle", Culture)!;
+    public static string FilterSport => ResourceManager.GetString("FilterSport", Culture)!;
+    public static string FilterCategory => ResourceManager.GetString("FilterCategory", Culture)!;
+    public static string FilterCategoryPlaceholder => ResourceManager.GetString("FilterCategoryPlaceholder", Culture)!;
+    public static string FilterLocation => ResourceManager.GetString("FilterLocation", Culture)!;
+    public static string FilterPriceFrom => ResourceManager.GetString("FilterPriceFrom", Culture)!;
+    public static string FilterPriceTo => ResourceManager.GetString("FilterPriceTo", Culture)!;
+    public static string FilterCondition => ResourceManager.GetString("FilterCondition", Culture)!;
+    public static string FilterConditionNew => ResourceManager.GetString("FilterConditionNew", Culture)!;
+    public static string FilterConditionUsed => ResourceManager.GetString("FilterConditionUsed", Culture)!;
+    public static string FilterSort => ResourceManager.GetString("FilterSort", Culture)!;
+    public static string FilterSortNewest => ResourceManager.GetString("FilterSortNewest", Culture)!;
+    public static string FilterSortPriceAsc => ResourceManager.GetString("FilterSortPriceAsc", Culture)!;
+    public static string FilterSortPriceDesc => ResourceManager.GetString("FilterSortPriceDesc", Culture)!;
+    public static string FilterApply => ResourceManager.GetString("FilterApply", Culture)!;
+    public static string FilterReset => ResourceManager.GetString("FilterReset", Culture)!;
+    public static string BrowseByCategory => ResourceManager.GetString("BrowseByCategory", Culture)!;
+
     // OAuth
     public static string OAuthOrSeparator => ResourceManager.GetString("OAuthOrSeparator", Culture)!;
     public static string OAuthSignInGoogle => ResourceManager.GetString("OAuthSignInGoogle", Culture)!;

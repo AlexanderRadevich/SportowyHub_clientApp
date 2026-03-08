@@ -158,6 +158,58 @@
   <data name="SearchClearRecent" xml:space="preserve">
     <value>Wyczyść</value>
   </data>
+  <!-- Filters -->
+  <data name="FilterTitle" xml:space="preserve">
+    <value>Filtry</value>
+  </data>
+  <data name="FilterSport" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="FilterCategory" xml:space="preserve">
+    <value>Kategoria</value>
+  </data>
+  <data name="FilterCategoryPlaceholder" xml:space="preserve">
+    <value>Najpierw wybierz sport</value>
+  </data>
+  <data name="FilterLocation" xml:space="preserve">
+    <value>Lokalizacja</value>
+  </data>
+  <data name="FilterPriceFrom" xml:space="preserve">
+    <value>Cena od</value>
+  </data>
+  <data name="FilterPriceTo" xml:space="preserve">
+    <value>Cena do</value>
+  </data>
+  <data name="FilterCondition" xml:space="preserve">
+    <value>Stan</value>
+  </data>
+  <data name="FilterConditionNew" xml:space="preserve">
+    <value>Nowy</value>
+  </data>
+  <data name="FilterConditionUsed" xml:space="preserve">
+    <value>Używany</value>
+  </data>
+  <data name="FilterSort" xml:space="preserve">
+    <value>Sortowanie</value>
+  </data>
+  <data name="FilterSortNewest" xml:space="preserve">
+    <value>Najnowsze</value>
+  </data>
+  <data name="FilterSortPriceAsc" xml:space="preserve">
+    <value>Cena: rosnąco</value>
+  </data>
+  <data name="FilterSortPriceDesc" xml:space="preserve">
+    <value>Cena: malejąco</value>
+  </data>
+  <data name="FilterApply" xml:space="preserve">
+    <value>Zastosuj</value>
+  </data>
+  <data name="FilterReset" xml:space="preserve">
+    <value>Wyczyść filtry</value>
+  </data>
+  <data name="BrowseByCategory" xml:space="preserve">
+    <value>Przeglądaj kategorie</value>
+  </data>
   <!-- Favorites -->
   <data name="FavoritesTitle" xml:space="preserve">
     <value>Ulubione</value>

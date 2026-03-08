@@ -96,7 +96,7 @@ public partial class CreateEditListingViewModel(
         {
             var response = await sectionsService.GetSectionsAsync(ct: ct);
             Sections.Clear();
-            foreach (var section in response.Sections)
+            foreach (var section in response.Sports)
             {
                 Sections.Add(section);
             }

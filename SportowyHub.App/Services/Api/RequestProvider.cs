@@ -6,9 +6,11 @@ namespace SportowyHub.Services.Api;
 
 public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestProvider
 {
+    private const string ClientName = "Api";
+
     public async Task<TResult> GetAsync<TResult>(string uri, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
         SetAuthHeader(request, token);
 
@@ -21,7 +23,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", Dictionary<string, string>? headers = null, CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Post, uri);
         SetAuthHeader(request, token);
 
@@ -45,7 +47,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task<TResult> PutAsync<TResult>(string uri, TResult data, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Put, uri);
         SetAuthHeader(request, token);
 
@@ -61,7 +63,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task<TResponse> PutAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Put, uri);
         SetAuthHeader(request, token);
 
@@ -77,7 +79,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task<TResponse> PatchAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Patch, uri);
         SetAuthHeader(request, token);
 
@@ -93,7 +95,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task<TResponse> PostMultipartAsync<TResponse>(string uri, MultipartFormDataContent content, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Post, uri);
         SetAuthHeader(request, token);
         request.Content = content;
@@ -107,7 +109,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task PostAsync(string uri, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Post, uri);
         SetAuthHeader(request, token);
 
@@ -117,7 +119,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
 
     public async Task DeleteAsync(string uri, string token = "", CancellationToken ct = default)
     {
-        var client = httpClientFactory.CreateClient("Api");
+        var client = httpClientFactory.CreateClient(ClientName);
         var request = new HttpRequestMessage(HttpMethod.Delete, uri);
         SetAuthHeader(request, token);
 

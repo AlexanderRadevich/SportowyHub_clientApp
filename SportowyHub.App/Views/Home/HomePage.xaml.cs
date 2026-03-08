@@ -21,5 +21,10 @@ public partial class HomePage : ContentPage
         {
             _viewModel.LoadListingsCommand.Execute(null);
         }
+
+        if (_viewModel.Sections.Count == 0)
+        {
+            _viewModel.LoadSectionsCommand.Execute(null);
+        }
     }
 }

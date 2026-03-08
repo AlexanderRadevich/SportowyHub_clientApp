@@ -14,6 +14,7 @@ public interface IListingsService
         int? voivodeshipId = null,
         float? priceMin = null,
         float? priceMax = null,
+        string? condition = null,
         string? sort = null,
         int limit = 30,
         int offset = 0,
