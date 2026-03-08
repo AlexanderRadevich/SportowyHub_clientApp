@@ -526,4 +526,31 @@
   <data name="OAuthErrorFailed" xml:space="preserve">
     <value>Google sign-in failed</value>
   </data>
+  <data name="HomeHotPicks" xml:space="preserve">
+    <value>HOT PICKS</value>
+  </data>
+  <data name="HomeSeeAll" xml:space="preserve">
+    <value>SEE ALL →</value>
+  </data>
+  <data name="HomeAllProducts" xml:space="preserve">
+    <value>ALL PRODUCTS</value>
+  </data>
+  <data name="HomeSort" xml:space="preserve">
+    <value>SORT</value>
+  </data>
+  <data name="HomeShowingResults" xml:space="preserve">
+    <value>Showing {0} results</value>
+  </data>
+  <data name="HomeChipAll" xml:space="preserve">
+    <value>ALL</value>
+  </data>
+  <data name="HomeChipNew" xml:space="preserve">
+    <value>NEW</value>
+  </data>
+  <data name="HomeChipUsed" xml:space="preserve">
+    <value>USED</value>
+  </data>
+  <data name="HomeCartComingSoon" xml:space="preserve">
+    <value>Cart coming soon</value>
+  </data>
 </root>

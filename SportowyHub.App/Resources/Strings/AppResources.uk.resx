@@ -526,4 +526,31 @@
   <data name="OAuthErrorFailed" xml:space="preserve">
     <value>Вхід через Google не вдався</value>
   </data>
+  <data name="HomeHotPicks" xml:space="preserve">
+    <value>ГАРЯЧІ ПРОПОЗИЦІЇ</value>
+  </data>
+  <data name="HomeSeeAll" xml:space="preserve">
+    <value>ПЕРЕГЛЯНУТИ ВСЕ →</value>
+  </data>
+  <data name="HomeAllProducts" xml:space="preserve">
+    <value>УСІ ОГОЛОШЕННЯ</value>
+  </data>
+  <data name="HomeSort" xml:space="preserve">
+    <value>СОРТУВАТИ</value>
+  </data>
+  <data name="HomeShowingResults" xml:space="preserve">
+    <value>Знайдено {0} результатів</value>
+  </data>
+  <data name="HomeChipAll" xml:space="preserve">
+    <value>ВСІ</value>
+  </data>
+  <data name="HomeChipNew" xml:space="preserve">
+    <value>НОВІ</value>
+  </data>
+  <data name="HomeChipUsed" xml:space="preserve">
+    <value>ВЖИВАНІ</value>
+  </data>
+  <data name="HomeCartComingSoon" xml:space="preserve">
+    <value>Кошик скоро з'явиться</value>
+  </data>
 </root>

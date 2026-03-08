@@ -532,4 +532,31 @@
   <data name="AuthLoginFailed" xml:space="preserve">
     <value>Logowanie nie powiodło się.</value>
   </data>
+  <data name="HomeHotPicks" xml:space="preserve">
+    <value>GORĄCE OKAZJE</value>
+  </data>
+  <data name="HomeSeeAll" xml:space="preserve">
+    <value>ZOBACZ WSZYSTKIE →</value>
+  </data>
+  <data name="HomeAllProducts" xml:space="preserve">
+    <value>WSZYSTKIE OGŁOSZENIA</value>
+  </data>
+  <data name="HomeSort" xml:space="preserve">
+    <value>SORTUJ</value>
+  </data>
+  <data name="HomeShowingResults" xml:space="preserve">
+    <value>Znaleziono {0} wyników</value>
+  </data>
+  <data name="HomeChipAll" xml:space="preserve">
+    <value>WSZYSTKIE</value>
+  </data>
+  <data name="HomeChipNew" xml:space="preserve">
+    <value>NOWE</value>
+  </data>
+  <data name="HomeChipUsed" xml:space="preserve">
+    <value>UŻYWANE</value>
+  </data>
+  <data name="HomeCartComingSoon" xml:space="preserve">
+    <value>Koszyk wkrótce dostępny</value>
+  </data>
 </root>

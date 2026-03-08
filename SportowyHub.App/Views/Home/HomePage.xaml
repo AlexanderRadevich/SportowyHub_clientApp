@@ -3,150 +3,285 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
              xmlns:models="clr-namespace:SportowyHub.Models.Api"
+             xmlns:controls="clr-namespace:SportowyHub.Controls"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Home.HomePage"
              x:DataType="vm:HomeViewModel"
-             Title="{x:Static res:AppResources.HomeTitle}">
+             Title="{x:Static res:AppResources.HomeTitle}"
+             Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
+    <Grid>
+        <ScrollView x:Name="MainScroll">
+            <VerticalStackLayout Padding="16,8,16,0" Spacing="12">
 
-        <Border Grid.Row="0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
-                StrokeThickness="{AppThemeBinding Light=0, Dark=1}"
-                Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource BorderDark}}"
-                Padding="16,12"
-                Margin="0,8,0,16">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="14" />
-            </Border.StrokeShape>
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
-            </Border.GestureRecognizers>
-            <HorizontalStackLayout Spacing="12">
-                <Image Source="icon_search_bar.svg"
-                       HeightRequest="20"
-                       WidthRequest="20"
-                       VerticalOptions="Center">
-                    <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
-                    </Image.Behaviors>
-                </Image>
-                <Label Text="{x:Static res:AppResources.SearchPlaceholder}"
-                       TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}"
-                       VerticalOptions="Center"
-                       FontSize="14" />
-            </HorizontalStackLayout>
-        </Border>
-
-        <VerticalStackLayout Grid.Row="1"
-                             IsVisible="{Binding HasSections}"
-                             Spacing="8"
-                             Margin="0,0,0,12">
-            <Label Text="{x:Static res:AppResources.BrowseByCategory}"
-                   Style="{StaticResource SectionHeader}" />
-            <CollectionView ItemsSource="{Binding Sections}"
-                            HeightRequest="60">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Section">
-                        <Border Padding="16,8"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
+                <!-- Header Bar -->
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,8,0,0">
+                    <Label Text="SportowyHub"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="26"
+                           MaxLines="1"
+                           LineBreakMode="NoWrap"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                           VerticalOptions="Center" />
+                    <HorizontalStackLayout Grid.Column="2" Spacing="8">
+                        <Border WidthRequest="38"
+                                HeightRequest="38"
                                 StrokeThickness="1"
-                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
-                                VerticalOptions="Center">
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource IconButtonStrokeDark}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource IconButtonBgDark}}"
+                                Padding="0">
                             <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="12" />
+                                <RoundRectangle CornerRadius="19" />
                             </Border.StrokeShape>
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToFilteredSearchCommand}"
-                                    CommandParameter="{Binding}" />
+                                <TapGestureRecognizer Command="{Binding ToggleThemeCommand}" />
                             </Border.GestureRecognizers>
-                            <Label Text="{Binding Name}"
-                                   FontSize="14"
-                                   FontFamily="OpenSansSemibold"
-                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                            <Image Source="{AppThemeBinding Light=icon_theme_toggle.svg, Dark=icon_theme_toggle_dark.svg}"
+                                   HeightRequest="20"
+                                   WidthRequest="20"
+                                   HorizontalOptions="Center"
                                    VerticalOptions="Center" />
                         </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
-
-        <Grid Grid.Row="2">
-            <RefreshView IsRefreshing="{Binding IsRefreshing}"
-                         Command="{Binding RefreshCommand}">
-                <Grid>
-                    <CollectionView ItemsSource="{Binding Listings}"
-                                    RemainingItemsThreshold="5"
-                                    RemainingItemsThresholdReachedCommand="{Binding LoadMoreListingsCommand}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:ListingSummary">
-                                <Border Padding="12"
-                                        Margin="0,0,0,8"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                                        StrokeThickness="1"
-                                        Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="12" />
-                                    </Border.StrokeShape>
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToListingDetailCommand}"
-                                            CommandParameter="{Binding}" />
-                                    </Border.GestureRecognizers>
-                                    <VerticalStackLayout Spacing="4">
-                                        <Label Text="{Binding Title}"
-                                               FontSize="16"
-                                               FontFamily="OpenSansSemibold"
-                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
-                                               LineBreakMode="TailTruncation"
-                                               MaxLines="2" />
-                                        <HorizontalStackLayout Spacing="8">
-                                            <Label FontSize="15"
-                                                   FontFamily="OpenSansSemibold"
-                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
-                                                <Label.Text>
-                                                    <MultiBinding StringFormat="{}{0} {1}">
-                                                        <Binding Path="Price" />
-                                                        <Binding Path="Currency" />
-                                                    </MultiBinding>
-                                                </Label.Text>
-                                            </Label>
-                                        </HorizontalStackLayout>
-                                        <Label Text="{Binding City}"
-                                               FontSize="13"
-                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                                    </VerticalStackLayout>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                        <CollectionView.EmptyView>
-                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40">
-                                <Label Text="{x:Static res:AppResources.HomeEmptyListings}"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                                       HorizontalTextAlignment="Center"
-                                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}" />
-                            </VerticalStackLayout>
-                        </CollectionView.EmptyView>
-                    </CollectionView>
-
-                    <ActivityIndicator IsRunning="{Binding IsLoading}"
-                                       IsVisible="{Binding IsLoading}"
-                                       Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                       VerticalOptions="Start"
-                                       HorizontalOptions="Center"
-                                       Margin="0,16,0,0" />
+                        <Border WidthRequest="38"
+                                HeightRequest="38"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource IconButtonStrokeDark}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource IconButtonBgDark}}"
+                                Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="19" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToFavoritesCommand}" />
+                            </Border.GestureRecognizers>
+                            <Image Source="{AppThemeBinding Light=icon_heart_outline.svg, Dark=icon_heart_outline_dark.svg}"
+                                   HeightRequest="20"
+                                   WidthRequest="20"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <Border WidthRequest="38"
+                                HeightRequest="38"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource IconButtonStrokeDark}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource IconButtonBgDark}}"
+                                Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="19" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToCartCommand}" />
+                            </Border.GestureRecognizers>
+                            <Image Source="{AppThemeBinding Light=icon_cart.svg, Dark=icon_cart_dark.svg}"
+                                   HeightRequest="20"
+                                   WidthRequest="20"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                    </HorizontalStackLayout>
                 </Grid>
-            </RefreshView>
 
-            <Button Style="{StaticResource FloatingActionButton}"
-                    Command="{Binding GoToCreateListingCommand}" />
-        </Grid>
+                <!-- Search Bar -->
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
+                        StrokeThickness="{AppThemeBinding Light=0, Dark=1}"
+                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource BorderDark}}"
+                        Padding="16,12">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Image Source="icon_search_bar.svg"
+                               HeightRequest="20"
+                               WidthRequest="20"
+                               VerticalOptions="Center">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Grid.Column="1"
+                               Text="{x:Static res:AppResources.SearchPlaceholder}"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               VerticalOptions="Center"
+                               Margin="12,0,0,0"
+                               FontSize="14" />
+                        <Image Grid.Column="2"
+                               Source="icon_filter.svg"
+                               HeightRequest="18"
+                               WidthRequest="18"
+                               VerticalOptions="Center">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                            </Image.Behaviors>
+                        </Image>
+                    </Grid>
+                </Border>
 
+                <!-- Condition Chips + Sport Category Chips (single line) -->
+                <ScrollView Orientation="Horizontal"
+                            HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout Spacing="8" x:Name="ChipsRow">
+                        <Border Padding="14,6"
+                                x:Name="ChipAll"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectConditionCommand}"
+                                                      CommandParameter="{x:Null}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="{x:Static res:AppResources.HomeChipAll}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <Border Padding="14,6"
+                                x:Name="ChipNew"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectConditionCommand}"
+                                                      CommandParameter="new" />
+                            </Border.GestureRecognizers>
+                            <Label Text="{x:Static res:AppResources.HomeChipNew}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <Border Padding="14,6"
+                                x:Name="ChipUsed"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectConditionCommand}"
+                                                      CommandParameter="used" />
+                            </Border.GestureRecognizers>
+                            <Label Text="{x:Static res:AppResources.HomeChipUsed}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   VerticalOptions="Center" />
+                        </Border>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <!-- Hot Picks Section -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Label Text="{x:Static res:AppResources.HomeHotPicks}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="20"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="{x:Static res:AppResources.HomeSeeAll}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding HotPicks}"
+                                HeightRequest="230">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ListingSummary">
+                            <controls:ListingCardView WidthRequest="180"
+                                                      Listing="{Binding}"
+                                                      TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToListingDetailCommand}"
+                                                      ToggleFavoriteCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=ToggleFavoriteCommand}" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- All Products Section Header -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,4">
+                    <VerticalStackLayout>
+                        <Label Text="{x:Static res:AppResources.HomeAllProducts}"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="20"
+                               MaxLines="1"
+                               LineBreakMode="NoWrap"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
+                        <Label FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               Text="{Binding TotalResultsText}" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1"
+                            Padding="12,6"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                            VerticalOptions="Center">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="6">
+                            <Image Source="{AppThemeBinding Light=icon_sort.svg, Dark=icon_sort_dark.svg}"
+                                   HeightRequest="14"
+                                   WidthRequest="14"
+                                   VerticalOptions="Center" />
+                            <Label Text="{x:Static res:AppResources.HomeSort}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- All Products Grid (BindableLayout) -->
+                <FlexLayout x:Name="ProductsGrid"
+                            Wrap="Wrap"
+                            Direction="Row"
+                            JustifyContent="SpaceBetween"
+                            BindableLayout.ItemsSource="{Binding Listings}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:ListingSummary">
+                            <controls:ListingCardView Margin="0,0,0,12"
+                                                      Listing="{Binding}"
+                                                      TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToListingDetailCommand}"
+                                                      ToggleFavoriteCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=ToggleFavoriteCommand}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <!-- Empty State -->
+                <Label Text="{x:Static res:AppResources.HomeEmptyListings}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       Margin="0,40"
+                       IsVisible="{Binding IsEmpty}" />
+
+                <!-- Bottom spacer for FAB -->
+                <BoxView HeightRequest="80" Color="Transparent" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+
+        <Button Style="{StaticResource FloatingActionButton}"
+                Command="{Binding GoToCreateListingCommand}"
+                IsVisible="{Binding IsLoggedIn}" />
     </Grid>
 
 </ContentPage>

@@ -1,10 +1,15 @@
+using System.Collections.Specialized;
+using Microsoft.Maui.Controls.Shapes;
+using SportowyHub.Models.Api;
 using SportowyHub.ViewModels;
 
 namespace SportowyHub.Views.Home;
 
 public partial class HomePage : ContentPage
 {
+    private const int ConditionChipCount = 3;
     private readonly HomeViewModel _viewModel;
+    private double _cardWidth;
 
     public HomePage(HomeViewModel viewModel)
     {
@@ -17,6 +22,11 @@ public partial class HomePage : ContentPage
     {
         base.OnAppearing();
 
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        _viewModel.Sections.CollectionChanged += OnSectionsChanged;
+        _viewModel.Listings.CollectionChanged += OnListingsChanged;
+        MainScroll.Scrolled += OnScrolled;
+
         if (_viewModel.Listings.Count == 0)
         {
             _viewModel.LoadListingsCommand.Execute(null);
@@ -26,5 +36,168 @@ public partial class HomePage : ContentPage
         {
             _viewModel.LoadSectionsCommand.Execute(null);
         }
+
+        _viewModel.LoadFavoritesCommand.Execute(null);
+        UpdateChipStyles();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _viewModel.Sections.CollectionChanged -= OnSectionsChanged;
+        _viewModel.Listings.CollectionChanged -= OnListingsChanged;
+        MainScroll.Scrolled -= OnScrolled;
+    }
+
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        if (width > 0)
+        {
+            var padding = 32;
+            var spacing = 10;
+            _cardWidth = (width - padding - spacing) / 2;
+            UpdateCardWidths();
+        }
+    }
+
+    private void UpdateCardWidths()
+    {
+        if (_cardWidth <= 0)
+        {
+            return;
+        }
+
+        foreach (var child in ProductsGrid.Children)
+        {
+            if (child is View view)
+            {
+                view.WidthRequest = _cardWidth;
+            }
+        }
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(HomeViewModel.SelectedCondition))
+        {
+            UpdateChipStyles();
+        }
+    }
+
+    private void OnListingsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(UpdateCardWidths);
+    }
+
+    private void OnSectionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(RebuildSectionChips);
+    }
+
+    private void RebuildSectionChips()
+    {
+        while (ChipsRow.Children.Count > ConditionChipCount)
+        {
+            ChipsRow.Children.RemoveAt(ChipsRow.Children.Count - 1);
+        }
+
+        foreach (var section in _viewModel.Sections)
+        {
+            var chip = CreateSectionChip(section);
+            ChipsRow.Children.Add(chip);
+        }
+    }
+
+    private Border CreateSectionChip(Section section)
+    {
+        var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
+
+        var label = new Label
+        {
+            Text = section.Name,
+            FontFamily = "OpenSansSemibold",
+            FontSize = 13,
+            VerticalOptions = LayoutOptions.Center,
+            TextColor = GetColor(isDark ? "TextPrimaryDark" : "TextPrimary")
+        };
+
+        var border = new Border
+        {
+            Padding = new Thickness(14, 6),
+            StrokeThickness = 1,
+            Stroke = new SolidColorBrush(GetColor(isDark ? "BorderDark" : "Border")),
+            BackgroundColor = GetColor(isDark ? "SearchBarBackgroundDark" : "SearchBarBackground"),
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16) },
+            Content = label
+        };
+
+        var tap = new TapGestureRecognizer();
+        tap.SetBinding(TapGestureRecognizer.CommandProperty, new Binding(
+            nameof(HomeViewModel.GoToFilteredSearchCommand),
+            source: _viewModel));
+        tap.CommandParameter = section;
+        border.GestureRecognizers.Add(tap);
+
+        return border;
+    }
+
+    private void OnScrolled(object? sender, ScrolledEventArgs e)
+    {
+        if (MainScroll.ContentSize.Height <= 0)
+        {
+            return;
+        }
+
+        var scrollingSpace = MainScroll.ContentSize.Height - MainScroll.Height;
+        if (scrollingSpace > 0 && e.ScrollY >= scrollingSpace - 200)
+        {
+            if (_viewModel.LoadMoreListingsCommand.CanExecute(null))
+            {
+                _viewModel.LoadMoreListingsCommand.Execute(null);
+            }
+        }
+    }
+
+    private void UpdateChipStyles()
+    {
+        var selected = _viewModel.SelectedCondition;
+        StyleChip(ChipAll, selected is null);
+        StyleChip(ChipNew, selected == "new");
+        StyleChip(ChipUsed, selected == "used");
+    }
+
+    private void StyleChip(Border chip, bool isSelected)
+    {
+        var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
+
+        if (isSelected)
+        {
+            chip.BackgroundColor = GetColor(isDark ? "ChipSelectedBgDark" : "ChipSelectedBg");
+            if (chip.Content is Label label)
+            {
+                label.TextColor = GetColor(isDark ? "ChipSelectedTextDark" : "ChipSelectedText");
+            }
+        }
+        else
+        {
+            chip.BackgroundColor = GetColor(isDark ? "SearchBarBackgroundDark" : "SearchBarBackground");
+            if (chip.Content is Label label)
+            {
+                label.TextColor = GetColor(isDark ? "TextPrimaryDark" : "TextPrimary");
+            }
+        }
+    }
+
+    private static Color GetColor(string key)
+    {
+        if (Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color)
+        {
+            return color;
+        }
+        return Colors.Gray;
     }
 }

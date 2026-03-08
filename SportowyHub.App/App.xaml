@@ -18,6 +18,7 @@
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
             <converters:BoolToHeartConverter x:Key="BoolToHeartConverter" />
             <converters:BoolToChipColorConverter x:Key="BoolToChipColorConverter" />
+            <converters:CategoryToColorConverter x:Key="CategoryToColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

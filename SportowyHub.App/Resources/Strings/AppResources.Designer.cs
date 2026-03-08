@@ -217,4 +217,15 @@ public static class AppResources
     public static string OAuthSignInGoogle => ResourceManager.GetString("OAuthSignInGoogle", Culture)!;
     public static string OAuthErrorCancelled => ResourceManager.GetString("OAuthErrorCancelled", Culture)!;
     public static string OAuthErrorFailed => ResourceManager.GetString("OAuthErrorFailed", Culture)!;
+
+    // Home screen redesign
+    public static string HomeHotPicks => ResourceManager.GetString("HomeHotPicks", Culture)!;
+    public static string HomeSeeAll => ResourceManager.GetString("HomeSeeAll", Culture)!;
+    public static string HomeAllProducts => ResourceManager.GetString("HomeAllProducts", Culture)!;
+    public static string HomeSort => ResourceManager.GetString("HomeSort", Culture)!;
+    public static string HomeShowingResults => ResourceManager.GetString("HomeShowingResults", Culture)!;
+    public static string HomeChipAll => ResourceManager.GetString("HomeChipAll", Culture)!;
+    public static string HomeChipNew => ResourceManager.GetString("HomeChipNew", Culture)!;
+    public static string HomeChipUsed => ResourceManager.GetString("HomeChipUsed", Culture)!;
+    public static string HomeCartComingSoon => ResourceManager.GetString("HomeCartComingSoon", Culture)!;
 }
