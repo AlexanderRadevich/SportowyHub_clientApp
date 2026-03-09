@@ -5,6 +5,8 @@ using SportowyHub.Models.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
+using SportowyHub.Services.Favorites;
+using SportowyHub.Services.Sections;
 using SportowyHub.Services.Toast;
 using SportowyHub.ViewModels;
 
@@ -16,11 +18,13 @@ public class HomeViewModelTests
     private readonly INavigationService _nav = Substitute.For<INavigationService>();
     private readonly IToastService _toastService = Substitute.For<IToastService>();
     private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly ISectionsService _sectionsService = Substitute.For<ISectionsService>();
+    private readonly IFavoritesService _favoritesService = Substitute.For<IFavoritesService>();
     private readonly HomeViewModel _sut;
 
     public HomeViewModelTests()
     {
-        _sut = new HomeViewModel(_listingsService, _nav, _toastService, _authService);
+        _sut = new HomeViewModel(_listingsService, _nav, _toastService, _authService, _sectionsService, _favoritesService);
     }
 
     [Fact]
