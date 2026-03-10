@@ -103,29 +103,48 @@
                                    BindableLayout.ItemsSource="{Binding ActiveFilterChips}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="localModels:ActiveFilterChip">
-                        <Border Padding="8,4"
-                                StrokeThickness="0"
+                        <Border StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}">
                             <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="14" />
+                                <RoundRectangle CornerRadius="16" />
                             </Border.StrokeShape>
-                            <HorizontalStackLayout Spacing="6">
-                                <Label Text="{Binding Label}"
-                                       FontSize="13"
-                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
-                                       VerticalOptions="Center" />
-                                <ImageButton Source="icon_clear.svg"
-                                             HeightRequest="14"
-                                             WidthRequest="14"
-                                             BackgroundColor="Transparent"
-                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=RemoveFilterCommand}"
-                                             CommandParameter="{Binding Key}"
-                                             VerticalOptions="Center">
-                                    <ImageButton.Behaviors>
-                                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
-                                    </ImageButton.Behaviors>
-                                </ImageButton>
-                            </HorizontalStackLayout>
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <HorizontalStackLayout Grid.Column="0"
+                                                       Spacing="6"
+                                                       Padding="14,6">
+                                    <Border HeightRequest="6"
+                                            WidthRequest="6"
+                                            StrokeThickness="0"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                            VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="3" />
+                                        </Border.StrokeShape>
+                                    </Border>
+                                    <Label Text="{Binding Label}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <Border Grid.Column="1"
+                                       WidthRequest="1"
+                                       StrokeThickness="0"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
+                                       VerticalOptions="Fill" />
+                                <Button Grid.Column="2"
+                                        Text="×"
+                                        FontSize="18"
+                                        WidthRequest="32"
+                                        MinimumHeightRequest="0"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=RemoveFilterCommand}"
+                                        CommandParameter="{Binding Key}"
+                                        VerticalOptions="Fill"
+                                        Padding="0" />
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
