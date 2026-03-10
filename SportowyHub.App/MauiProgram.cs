@@ -57,10 +57,11 @@ public static class MauiProgram
 #endif
             });
 
+        builder.Services.AddTransient<UserAgentHandler>();
         builder.Services.AddHttpClient("Api", client =>
         {
             client.BaseAddress = new Uri(ApiConfig.BaseUrl);
-        });
+        }).AddHttpMessageHandler<UserAgentHandler>();
         builder.Services.AddSingleton<IRequestProvider, RequestProvider>();
         builder.Services.AddSingleton<IReturnUrlService, ReturnUrlService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
