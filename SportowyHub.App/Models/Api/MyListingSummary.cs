@@ -12,4 +12,5 @@ public record MyListingSummary(
     string? Currency,
     string? ContentLocale,
     string CreatedAt,
-    string? PublishedAt);
+    string? PublishedAt,
+    int ViewCount = 0);

@@ -18,7 +18,8 @@ public record SearchResultItem(
     string CreatedAt,
     string? PublishedAt,
     GeoLocation? Location = null,
-    List<SearchAttribute>? Attributes = null);
+    List<SearchAttribute>? Attributes = null,
+    int ViewCount = 0);
 
 public record GeoLocation(double Lat, double Lon);
 

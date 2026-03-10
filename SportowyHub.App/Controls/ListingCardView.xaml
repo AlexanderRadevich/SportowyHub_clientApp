@@ -73,6 +73,22 @@
                         </MultiBinding>
                     </Label.Text>
                 </Label>
+                <HorizontalStackLayout Spacing="4"
+                                       IsVisible="{Binding Listing.ViewCount, Source={RelativeSource AncestorType={x:Type controls:ListingCardView}}, Converter={StaticResource IntToBoolConverter}, FallbackValue=False}">
+                    <Image Source="icon_eye.svg"
+                           WidthRequest="12"
+                           HeightRequest="12"
+                           VerticalOptions="Center">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        </Image.Behaviors>
+                    </Image>
+                    <Label Text="{Binding Listing.ViewCount, Source={RelativeSource AncestorType={x:Type controls:ListingCardView}}, Converter={StaticResource ViewCountFormatConverter}, FallbackValue=''}"
+                           FontSize="11"
+                           FontFamily="OpenSansRegular"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
             </VerticalStackLayout>
 
         </Grid>

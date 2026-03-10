@@ -42,6 +42,22 @@
                        TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                        IsVisible="{Binding FormattedLocation.Length, Converter={StaticResource IntToBoolConverter}}" />
 
+                <HorizontalStackLayout Spacing="6"
+                                       IsVisible="{Binding Listing.ViewCount, Converter={StaticResource IntToBoolConverter}, FallbackValue=False}">
+                    <Image Source="icon_eye.svg"
+                           WidthRequest="16"
+                           HeightRequest="16"
+                           VerticalOptions="Center">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+                        </Image.Behaviors>
+                    </Image>
+                    <Label Text="{Binding Listing.ViewCount, Converter={StaticResource ViewCountFormatConverter}, FallbackValue=''}"
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
                 <BoxView HeightRequest="1"
                          Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}"
                          Margin="0,4" />

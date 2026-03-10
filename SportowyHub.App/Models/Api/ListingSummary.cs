@@ -12,4 +12,5 @@ public record ListingSummary(
     string? City,
     int CategoryId,
     string? ContentLocale,
-    string? PublishedAt);
+    string? PublishedAt,
+    int ViewCount = 0);

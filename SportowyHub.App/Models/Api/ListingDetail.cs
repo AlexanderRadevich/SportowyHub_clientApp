@@ -18,4 +18,5 @@ public record ListingDetail(
     string? Condition,
     string CreatedAt,
     string? PublishedAt,
-    string? LastModeratorComment);
+    string? LastModeratorComment,
+    int ViewCount = 0);

@@ -19,6 +19,7 @@
             <converters:BoolToHeartConverter x:Key="BoolToHeartConverter" />
             <converters:BoolToChipColorConverter x:Key="BoolToChipColorConverter" />
             <converters:CategoryToColorConverter x:Key="CategoryToColorConverter" />
+            <converters:ViewCountFormatConverter x:Key="ViewCountFormatConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
