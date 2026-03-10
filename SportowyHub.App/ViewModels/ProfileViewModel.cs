@@ -79,12 +79,14 @@ public partial class ProfileViewModel : ObservableObject
 
         if (Application.Current is not null)
         {
-            Application.Current.UserAppTheme = code switch
+            var theme = code switch
             {
                 "light" => AppTheme.Light,
                 "dark" => AppTheme.Dark,
                 _ => AppTheme.Unspecified
             };
+            Application.Current.UserAppTheme = theme;
+            Helpers.StatusBarHelper.Apply(theme);
 
             if (Application.Current.Windows.Count > 0)
             {

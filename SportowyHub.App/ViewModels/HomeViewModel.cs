@@ -254,6 +254,7 @@ public partial class HomeViewModel(
         var code = newTheme == AppTheme.Dark ? "dark" : "light";
         Preferences.Set("app_theme", code);
         Application.Current.UserAppTheme = newTheme;
+        Helpers.StatusBarHelper.Apply(newTheme);
     }
 
     [RelayCommand]
