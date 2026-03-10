@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:SportowyHub.ViewModels"
              xmlns:models="clr-namespace:SportowyHub.Models.Api"
              xmlns:localModels="clr-namespace:SportowyHub.Models"
+             xmlns:controls="clr-namespace:SportowyHub.Controls"
              xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Views.Search.SearchPage"
@@ -214,12 +215,11 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <CollectionView Grid.Row="3"
-                        ItemsSource="{Binding SearchResults}"
-                        RemainingItemsThreshold="5"
-                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreSearchResultsCommand}">
-            <CollectionView.Triggers>
-                <MultiTrigger TargetType="CollectionView">
+        <ScrollView Grid.Row="3"
+                    x:Name="ResultsScrollView"
+                    Scrolled="OnResultsScrolled">
+            <ScrollView.Triggers>
+                <MultiTrigger TargetType="ScrollView">
                     <MultiTrigger.Conditions>
                         <BindingCondition Binding="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}" Value="False" />
                         <BindingCondition Binding="{Binding HasActiveFilters}" Value="False" />
@@ -227,49 +227,32 @@
                     </MultiTrigger.Conditions>
                     <Setter Property="IsVisible" Value="False" />
                 </MultiTrigger>
-            </CollectionView.Triggers>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:SearchResultItem">
-                    <Border Padding="12"
-                            Margin="0,0,0,8"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                            StrokeThickness="1"
-                            Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12" />
-                        </Border.StrokeShape>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=GoToListingDetailCommand}"
-                                CommandParameter="{Binding}" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding Title}"
-                                   FontSize="16"
-                                   FontFamily="OpenSansSemibold"
-                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
-                                   LineBreakMode="TailTruncation"
-                                   MaxLines="2" />
-                            <Label FontSize="15"
-                                   FontFamily="OpenSansSemibold"
-                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                   Text="{Binding Price, StringFormat='{0:F2}'}" />
-                            <Label Text="{Binding City}"
-                                   FontSize="13"
-                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40">
+            </ScrollView.Triggers>
+            <VerticalStackLayout>
+                <FlexLayout x:Name="ResultsGrid"
+                            Wrap="Wrap"
+                            Direction="Row"
+                            JustifyContent="SpaceBetween"
+                            BindableLayout.ItemsSource="{Binding MappedSearchResults}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="localModels:SearchCardItem">
+                            <controls:ListingCardView Margin="0,0,0,12"
+                                                      Listing="{Binding Listing}"
+                                                      HasCondition="{Binding HasCondition}"
+                                                      ConditionText="{Binding ConditionText}"
+                                                      ConditionBadgeColor="{Binding ConditionBadgeColor}"
+                                                      TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=GoToListingDetailCommand}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40"
+                                     IsVisible="{Binding ShowNoResults}">
                     <Label Text="{x:Static res:AppResources.SearchNoResults}"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                           HorizontalTextAlignment="Center"
-                           IsVisible="{Binding ShowNoResults}" />
+                           HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
-            </CollectionView.EmptyView>
-        </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
 
     </Grid>
 

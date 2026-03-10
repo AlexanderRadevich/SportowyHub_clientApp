@@ -65,7 +65,7 @@ public partial class SearchViewModel(
         "Protein powder"
     ];
 
-    public ObservableCollection<SearchResultItem> SearchResults { get; } = [];
+    public ObservableCollection<SearchCardItem> MappedSearchResults { get; } = [];
 
     public ObservableCollection<ActiveFilterChip> ActiveFilterChips { get; } = [];
 
@@ -83,7 +83,7 @@ public partial class SearchViewModel(
     {
         if (string.IsNullOrWhiteSpace(value) && !HasActiveFilters)
         {
-            SearchResults.Clear();
+            MappedSearchResults.Clear();
             HasSearchResults = false;
             ShowNoResults = false;
             TotalResults = 0;
@@ -135,19 +135,29 @@ public partial class SearchViewModel(
 
             if (offset == 0)
             {
-                SearchResults.Clear();
+                MappedSearchResults.Clear();
             }
 
-            foreach (var item in response.Items)
+            var mapped = response.Items.Select(item =>
             {
-                SearchResults.Add(item);
+                var condition = item.ExtractCondition();
+                return new SearchCardItem(
+                    item.ToListingSummary(),
+                    condition.HasCondition,
+                    condition.Text,
+                    condition.BadgeColor);
+            });
+
+            foreach (var card in mapped)
+            {
+                MappedSearchResults.Add(card);
             }
 
             _searchOffset = offset + response.Items.Count;
             _searchTotal = response.Total;
             TotalResults = response.Total;
-            HasSearchResults = SearchResults.Count > 0;
-            ShowNoResults = SearchResults.Count == 0 && (!string.IsNullOrWhiteSpace(SearchText) || HasActiveFilters);
+            HasSearchResults = MappedSearchResults.Count > 0;
+            ShowNoResults = MappedSearchResults.Count == 0 && (!string.IsNullOrWhiteSpace(SearchText) || HasActiveFilters);
 
             if (offset == 0 && !string.IsNullOrWhiteSpace(query))
             {
@@ -206,14 +216,14 @@ public partial class SearchViewModel(
     }
 
     [RelayCommand]
-    private async Task GoToListingDetail(SearchResultItem item)
+    private async Task GoToListingDetail(ListingSummary listing)
     {
-        var priceStr = item.Price?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
-        var query = $"listing-detail?id={Uri.EscapeDataString(item.Id)}" +
-                    $"&title={Uri.EscapeDataString(item.Title)}" +
+        var priceStr = listing.Price?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
+        var query = $"listing-detail?id={Uri.EscapeDataString(listing.Id)}" +
+                    $"&title={Uri.EscapeDataString(listing.Title)}" +
                     $"&price={Uri.EscapeDataString(priceStr)}" +
-                    $"&currency={Uri.EscapeDataString(item.Currency ?? string.Empty)}" +
-                    $"&city={Uri.EscapeDataString(item.City ?? string.Empty)}";
+                    $"&currency={Uri.EscapeDataString(listing.Currency ?? string.Empty)}" +
+                    $"&city={Uri.EscapeDataString(listing.City ?? string.Empty)}";
         await nav.GoToAsync(query);
     }
 
@@ -322,7 +332,7 @@ public partial class SearchViewModel(
 
     public void ClearSearchResults()
     {
-        SearchResults.Clear();
+        MappedSearchResults.Clear();
         HasSearchResults = false;
         ShowNoResults = false;
         TotalResults = 0;
