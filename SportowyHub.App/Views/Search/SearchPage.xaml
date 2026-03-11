@@ -25,7 +25,7 @@
             </Border.StrokeShape>
             <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                 <ImageButton Grid.Column="0"
-                             Source="icon_back.svg"
+                             Source="icon_back.png"
                              HeightRequest="24"
                              WidthRequest="24"
                              Padding="8"
@@ -46,7 +46,7 @@
                        VerticalOptions="Center"
                        Focused="OnSearchEntryFocused" />
                 <ImageButton Grid.Column="2"
-                             Source="icon_clear.svg"
+                             Source="icon_clear.png"
                              HeightRequest="20"
                              WidthRequest="20"
                              Padding="8"
@@ -60,7 +60,7 @@
                 </ImageButton>
 
                 <Grid Grid.Column="3" VerticalOptions="Center" Margin="4,0,0,0">
-                    <ImageButton Source="icon_filter.svg"
+                    <ImageButton Source="icon_filter.png"
                                  HeightRequest="20"
                                  WidthRequest="20"
                                  Padding="8"

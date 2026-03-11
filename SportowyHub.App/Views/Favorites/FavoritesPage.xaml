@@ -76,7 +76,7 @@
                                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
                                     </VerticalStackLayout>
                                     <ImageButton Grid.Column="1"
-                                                 Source="icon_heart_filled.svg"
+                                                 Source="icon_heart_filled.png"
                                                  HeightRequest="24"
                                                  WidthRequest="24"
                                                  BackgroundColor="Transparent"

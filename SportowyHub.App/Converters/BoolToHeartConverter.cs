@@ -8,9 +8,9 @@ public class BoolToHeartConverter : IValueConverter
     {
         if (value is bool isFavorited && isFavorited)
         {
-            return "icon_heart_filled.svg";
+            return "icon_heart_filled.png";
         }
-        return "icon_heart_outline.svg";
+        return "icon_heart_outline.png";
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

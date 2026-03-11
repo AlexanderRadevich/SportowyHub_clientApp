@@ -12,7 +12,7 @@
         <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
 
             <!-- Mail Icon -->
-            <Image Source="icon_email.svg"
+            <Image Source="icon_email.png"
                    HeightRequest="80"
                    WidthRequest="80"
                    HorizontalOptions="Center"

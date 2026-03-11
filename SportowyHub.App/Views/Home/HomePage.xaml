@@ -37,7 +37,7 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding ToggleThemeCommand}" />
                             </Border.GestureRecognizers>
-                            <Image Source="{AppThemeBinding Light=icon_theme_toggle.svg, Dark=icon_theme_toggle_dark.svg}"
+                            <Image Source="{AppThemeBinding Light=icon_theme_toggle.png, Dark=icon_theme_toggle_dark.png}"
                                    HeightRequest="20"
                                    WidthRequest="20"
                                    HorizontalOptions="Center"
@@ -55,7 +55,7 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToFavoritesCommand}" />
                             </Border.GestureRecognizers>
-                            <Image Source="{AppThemeBinding Light=icon_heart_outline.svg, Dark=icon_heart_outline_dark.svg}"
+                            <Image Source="{AppThemeBinding Light=icon_heart_outline.png, Dark=icon_heart_outline_dark.png}"
                                    HeightRequest="20"
                                    WidthRequest="20"
                                    HorizontalOptions="Center"
@@ -73,7 +73,7 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToCartCommand}" />
                             </Border.GestureRecognizers>
-                            <Image Source="{AppThemeBinding Light=icon_cart.svg, Dark=icon_cart_dark.svg}"
+                            <Image Source="{AppThemeBinding Light=icon_cart.png, Dark=icon_cart_dark.png}"
                                    HeightRequest="20"
                                    WidthRequest="20"
                                    HorizontalOptions="Center"
@@ -94,7 +94,7 @@
                         <TapGestureRecognizer Command="{Binding GoToSearchCommand}" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <Image Source="icon_search_bar.svg"
+                        <Image Source="icon_search_bar.png"
                                HeightRequest="20"
                                WidthRequest="20"
                                VerticalOptions="Center">
@@ -109,7 +109,7 @@
                                Margin="12,0,0,0"
                                FontSize="14" />
                         <Image Grid.Column="2"
-                               Source="icon_filter.svg"
+                               Source="icon_filter.png"
                                HeightRequest="18"
                                WidthRequest="18"
                                VerticalOptions="Center">
@@ -230,7 +230,7 @@
                             <RoundRectangle CornerRadius="16" />
                         </Border.StrokeShape>
                         <HorizontalStackLayout Spacing="6">
-                            <Image Source="{AppThemeBinding Light=icon_sort.svg, Dark=icon_sort_dark.svg}"
+                            <Image Source="{AppThemeBinding Light=icon_sort.png, Dark=icon_sort_dark.png}"
                                    HeightRequest="14"
                                    WidthRequest="14"
                                    VerticalOptions="Center" />

@@ -152,7 +152,6 @@ public partial class LoginViewModel(
     private async Task NavigateAfterLoginAsync()
     {
         var returnUrl = returnUrlService.ConsumeReturnUrl();
-        await nav.GoToAsync("..");
         await nav.GoToAsync(returnUrl ?? "//home");
     }
 

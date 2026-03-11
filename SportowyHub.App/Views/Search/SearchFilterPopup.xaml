@@ -59,7 +59,7 @@
                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                VerticalOptions="Center" />
                         <ImageButton Grid.Column="1"
-                                     Source="icon_clear.svg"
+                                     Source="icon_clear.png"
                                      HeightRequest="16"
                                      WidthRequest="16"
                                      BackgroundColor="Transparent"

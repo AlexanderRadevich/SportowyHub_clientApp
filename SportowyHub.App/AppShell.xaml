@@ -11,17 +11,17 @@
     Title="SportowyHub">
 
     <TabBar>
-        <Tab Title="{x:Static res:AppResources.TabHome}" Icon="icon_home.svg">
+        <Tab Title="{x:Static res:AppResources.TabHome}" Icon="icon_home.png">
             <ShellContent AutomationId="TabHome" Route="home" ContentTemplate="{DataTemplate home:HomePage}" />
         </Tab>
-        <Tab Title="{x:Static res:AppResources.TabSearch}" Icon="icon_search.svg">
-            <ShellContent AutomationId="TabSearch" ContentTemplate="{DataTemplate search:SearchPage}" />
+        <Tab Title="{x:Static res:AppResources.TabSearch}" Icon="icon_search.png">
+            <ShellContent AutomationId="TabSearch" Route="search" ContentTemplate="{DataTemplate search:SearchPage}" />
         </Tab>
-        <Tab Title="{x:Static res:AppResources.TabFavorites}" Icon="icon_favorites.svg">
-            <ShellContent AutomationId="TabFavorites" ContentTemplate="{DataTemplate favorites:FavoritesPage}" />
+        <Tab Title="{x:Static res:AppResources.TabFavorites}" Icon="icon_favorites.png">
+            <ShellContent AutomationId="TabFavorites" Route="favorites" ContentTemplate="{DataTemplate favorites:FavoritesPage}" />
         </Tab>
-        <Tab Title="{x:Static res:AppResources.TabProfile}" Icon="icon_profile.svg">
-            <ShellContent AutomationId="TabProfile" ContentTemplate="{DataTemplate profile:ProfilePage}" />
+        <Tab Title="{x:Static res:AppResources.TabProfile}" Icon="icon_profile.png">
+            <ShellContent AutomationId="TabProfile" Route="profile" ContentTemplate="{DataTemplate profile:ProfilePage}" />
         </Tab>
     </TabBar>
 

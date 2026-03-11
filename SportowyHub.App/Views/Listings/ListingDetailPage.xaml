@@ -44,7 +44,7 @@
 
                 <HorizontalStackLayout Spacing="6"
                                        IsVisible="{Binding Listing.ViewCount, Converter={StaticResource IntToBoolConverter}, FallbackValue=False}">
-                    <Image Source="icon_eye.svg"
+                    <Image Source="icon_eye.png"
                            WidthRequest="16"
                            HeightRequest="16"
                            VerticalOptions="Center">

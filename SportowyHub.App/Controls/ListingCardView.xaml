@@ -75,7 +75,7 @@
                 </Label>
                 <HorizontalStackLayout Spacing="4"
                                        IsVisible="{Binding Listing.ViewCount, Source={RelativeSource AncestorType={x:Type controls:ListingCardView}}, Converter={StaticResource IntToBoolConverter}, FallbackValue=False}">
-                    <Image Source="icon_eye.svg"
+                    <Image Source="icon_eye.png"
                            WidthRequest="12"
                            HeightRequest="12"
                            VerticalOptions="Center">
