@@ -55,6 +55,12 @@ public static class MauiProgram
                     handler.PlatformView.TextCursorDrawable?.SetTint(color);
                 });
 #endif
+#if IOS || MACCATALYST
+                Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoBorder", (handler, view) =>
+                {
+                    handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+                });
+#endif
             });
 
         builder.Services.AddTransient<UserAgentHandler>();
