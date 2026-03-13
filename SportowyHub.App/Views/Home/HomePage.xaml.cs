@@ -9,6 +9,7 @@ public partial class HomePage : ContentPage
 {
     private const int ConditionChipCount = 3;
     private readonly HomeViewModel _viewModel;
+    private double _cardWidth;
 
     public HomePage(HomeViewModel viewModel)
     {
@@ -23,6 +24,8 @@ public partial class HomePage : ContentPage
 
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         _viewModel.Sections.CollectionChanged += OnSectionsChanged;
+        _viewModel.Listings.CollectionChanged += OnListingsChanged;
+        MainScroll.Scrolled += OnScrolled;
 
         if (Application.Current is not null)
         {
@@ -49,10 +52,63 @@ public partial class HomePage : ContentPage
 
         _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         _viewModel.Sections.CollectionChanged -= OnSectionsChanged;
+        _viewModel.Listings.CollectionChanged -= OnListingsChanged;
+        MainScroll.Scrolled -= OnScrolled;
 
         if (Application.Current is not null)
         {
             Application.Current.RequestedThemeChanged -= OnThemeChanged;
+        }
+    }
+
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        if (width > 0)
+        {
+            var padding = 32;
+            var spacing = 10;
+            _cardWidth = (width - padding - spacing) / 2;
+            UpdateCardWidths();
+        }
+    }
+
+    private void UpdateCardWidths()
+    {
+        if (_cardWidth <= 0)
+        {
+            return;
+        }
+
+        foreach (var child in ProductsGrid.Children)
+        {
+            if (child is View view)
+            {
+                view.WidthRequest = _cardWidth;
+            }
+        }
+    }
+
+    private void OnListingsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(UpdateCardWidths);
+    }
+
+    private void OnScrolled(object? sender, ScrolledEventArgs e)
+    {
+        if (MainScroll.ContentSize.Height <= 0)
+        {
+            return;
+        }
+
+        var scrollingSpace = MainScroll.ContentSize.Height - MainScroll.Height;
+        if (scrollingSpace > 0 && e.ScrollY >= scrollingSpace - 200)
+        {
+            if (_viewModel.LoadMoreListingsCommand.CanExecute(null))
+            {
+                _viewModel.LoadMoreListingsCommand.Execute(null);
+            }
         }
     }
 
