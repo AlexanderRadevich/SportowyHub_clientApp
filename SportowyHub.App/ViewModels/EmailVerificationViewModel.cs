@@ -10,9 +10,10 @@ namespace SportowyHub.ViewModels;
 public partial class EmailVerificationViewModel(
     IAuthService authService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject, IQueryAttributable
+    IToastService toastService) : ObservableObject, IQueryAttributable, IDisposable
 {
     private IDispatcherTimer? _cooldownTimer;
+    private bool _disposed;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Description))]
@@ -107,5 +108,16 @@ public partial class EmailVerificationViewModel(
     {
         _cooldownTimer?.Stop();
         _cooldownTimer = null;
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+        StopCooldownTimer();
     }
 }

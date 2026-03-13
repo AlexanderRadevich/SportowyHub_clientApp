@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using SportowyHub.Models;
 using SportowyHub.Models.Api;
@@ -6,6 +7,7 @@ using SportowyHub.Services.Auth;
 using SportowyHub.Services.Listings;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Favorites;
+using SportowyHub.Services.Locale;
 using SportowyHub.Services.Sections;
 using SportowyHub.Services.Toast;
 using SportowyHub.ViewModels;
@@ -17,14 +19,16 @@ public class HomeViewModelTests
     private readonly IListingsService _listingsService = Substitute.For<IListingsService>();
     private readonly INavigationService _nav = Substitute.For<INavigationService>();
     private readonly IToastService _toastService = Substitute.For<IToastService>();
-    private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly ITokenProvider _authService = Substitute.For<ITokenProvider>();
     private readonly ISectionsService _sectionsService = Substitute.For<ISectionsService>();
     private readonly IFavoritesService _favoritesService = Substitute.For<IFavoritesService>();
+    private readonly ILocaleService _localeService = Substitute.For<ILocaleService>();
+    private readonly ILogger<HomeViewModel> _logger = Substitute.For<ILogger<HomeViewModel>>();
     private readonly HomeViewModel _sut;
 
     public HomeViewModelTests()
     {
-        _sut = new HomeViewModel(_listingsService, _nav, _toastService, _authService, _sectionsService, _favoritesService);
+        _sut = new HomeViewModel(_listingsService, _nav, _toastService, _authService, _sectionsService, _favoritesService, _localeService, _logger);
     }
 
     [Fact]

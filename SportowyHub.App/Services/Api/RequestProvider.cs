@@ -18,7 +18,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         await HandleResponse(response, ct);
 
         var content = await response.Content.ReadAsStringAsync(ct);
-        return (TResult)JsonSerializer.Deserialize(content, typeof(TResult), SportowyHubJsonContext.Default)!;
+        return EnsureNotNull((TResult?)JsonSerializer.Deserialize(content, typeof(TResult), SportowyHubJsonContext.Default));
     }
 
     public async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", Dictionary<string, string>? headers = null, CancellationToken ct = default)
@@ -42,7 +42,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         await HandleResponse(response, ct);
 
         var content = await response.Content.ReadAsStringAsync(ct);
-        return (TResponse)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default)!;
+        return EnsureNotNull((TResponse?)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default));
     }
 
     public async Task<TResult> PutAsync<TResult>(string uri, TResult data, string token = "", CancellationToken ct = default)
@@ -58,7 +58,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         await HandleResponse(response, ct);
 
         var content = await response.Content.ReadAsStringAsync(ct);
-        return (TResult)JsonSerializer.Deserialize(content, typeof(TResult), SportowyHubJsonContext.Default)!;
+        return EnsureNotNull((TResult?)JsonSerializer.Deserialize(content, typeof(TResult), SportowyHubJsonContext.Default));
     }
 
     public async Task<TResponse> PutAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", CancellationToken ct = default)
@@ -74,7 +74,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         await HandleResponse(response, ct);
 
         var content = await response.Content.ReadAsStringAsync(ct);
-        return (TResponse)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default)!;
+        return EnsureNotNull((TResponse?)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default));
     }
 
     public async Task<TResponse> PatchAsync<TRequest, TResponse>(string uri, TRequest data, string token = "", CancellationToken ct = default)
@@ -90,7 +90,7 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         await HandleResponse(response, ct);
 
         var content = await response.Content.ReadAsStringAsync(ct);
-        return (TResponse)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default)!;
+        return EnsureNotNull((TResponse?)JsonSerializer.Deserialize(content, typeof(TResponse), SportowyHubJsonContext.Default));
     }
 
     public async Task<TResponse> PostMultipartAsync<TResponse>(string uri, MultipartFormDataContent content, string token = "", CancellationToken ct = default)
@@ -104,7 +104,8 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
         await HandleResponse(response, ct);
 
         var responseContent = await response.Content.ReadAsStringAsync(ct);
-        return (TResponse)JsonSerializer.Deserialize(responseContent, typeof(TResponse), SportowyHubJsonContext.Default)!;
+        return (TResponse?)JsonSerializer.Deserialize(responseContent, typeof(TResponse), SportowyHubJsonContext.Default)
+            ?? throw new InvalidOperationException($"Expected non-null response of type {typeof(TResponse).Name}");
     }
 
     public async Task PostAsync(string uri, string token = "", CancellationToken ct = default)
@@ -135,6 +136,9 @@ public class RequestProvider(IHttpClientFactory httpClientFactory) : IRequestPro
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
     }
+
+    private static T EnsureNotNull<T>(T? value) =>
+        value ?? throw new InvalidOperationException($"Expected non-null response of type {typeof(T).Name}");
 
     private static async Task HandleResponse(HttpResponseMessage response, CancellationToken ct)
     {

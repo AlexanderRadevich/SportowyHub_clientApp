@@ -89,6 +89,9 @@
   <data name="AuthForgotPassword" xml:space="preserve">
     <value>Nie pamiętasz hasła?</value>
   </data>
+  <data name="AuthForgotPasswordComingSoon" xml:space="preserve">
+    <value>Resetowanie hasła będzie wkrótce dostępne</value>
+  </data>
   <data name="AuthLogin" xml:space="preserve">
     <value>Zaloguj</value>
   </data>
@@ -514,6 +517,9 @@
   <data name="ListingCategoryRequired" xml:space="preserve">
     <value>Kategoria jest wymagana</value>
   </data>
+  <data name="ListingPhotoSaveFirst" xml:space="preserve">
+    <value>Najpierw zapisz ogłoszenie, aby dodać zdjęcia</value>
+  </data>
   <data name="OAuthOrSeparator" xml:space="preserve">
     <value>lub</value>
   </data>
@@ -558,5 +564,60 @@
   </data>
   <data name="HomeCartComingSoon" xml:space="preserve">
     <value>Koszyk wkrótce dostępny</value>
+  </data>
+  <data name="PopularSearch1" xml:space="preserve">
+    <value>Piłka nożna</value>
+  </data>
+  <data name="PopularSearch2" xml:space="preserve">
+    <value>Sprzęt siłowy</value>
+  </data>
+  <data name="PopularSearch3" xml:space="preserve">
+    <value>Okulary pływackie</value>
+  </data>
+  <data name="PopularSearch4" xml:space="preserve">
+    <value>Kask rowerowy</value>
+  </data>
+  <data name="PopularSearch5" xml:space="preserve">
+    <value>Odżywka białkowa</value>
+  </data>
+  <!-- Accessibility -->
+  <data name="A11yFavoriteButton" xml:space="preserve">
+    <value>Dodaj do ulubionych</value>
+  </data>
+  <data name="A11yRemoveFavoriteButton" xml:space="preserve">
+    <value>Usuń z ulubionych</value>
+  </data>
+  <data name="A11yToggleThemeButton" xml:space="preserve">
+    <value>Przełącz motyw</value>
+  </data>
+  <data name="A11yFavoritesButton" xml:space="preserve">
+    <value>Ulubione</value>
+  </data>
+  <data name="A11yCartButton" xml:space="preserve">
+    <value>Koszyk</value>
+  </data>
+  <data name="A11ySearchBar" xml:space="preserve">
+    <value>Szukaj produktów</value>
+  </data>
+  <data name="A11yCreateListingButton" xml:space="preserve">
+    <value>Dodaj ogłoszenie</value>
+  </data>
+  <data name="A11yGoBackButton" xml:space="preserve">
+    <value>Wróć</value>
+  </data>
+  <data name="A11yClearSearchButton" xml:space="preserve">
+    <value>Wyczyść wyszukiwanie</value>
+  </data>
+  <data name="A11yFilterButton" xml:space="preserve">
+    <value>Filtry</value>
+  </data>
+  <data name="A11yRemoveFilterButton" xml:space="preserve">
+    <value>Usuń filtr</value>
+  </data>
+  <data name="A11yTogglePasswordButton" xml:space="preserve">
+    <value>Pokaż lub ukryj hasło</value>
+  </data>
+  <data name="A11yNotificationsSwitch" xml:space="preserve">
+    <value>Włącz lub wyłącz powiadomienia</value>
   </data>
 </root>

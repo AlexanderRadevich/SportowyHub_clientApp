@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Api;
@@ -10,7 +11,7 @@ namespace SportowyHub.Tests.Services;
 public class MediaServiceTests
 {
     private readonly IRequestProvider _requestProvider = Substitute.For<IRequestProvider>();
-    private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly ITokenProvider _authService = Substitute.For<ITokenProvider>();
     private readonly MediaService _sut;
 
     private static readonly MediaItem _defaultMedia = new(
@@ -28,7 +29,31 @@ public class MediaServiceTests
     public MediaServiceTests()
     {
         _authService.GetTokenAsync().Returns("test-token");
-        _sut = new MediaService(_requestProvider, _authService);
+        _sut = new MediaService(_requestProvider, _authService, NullLogger<MediaService>.Instance);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task UploadAsync_NullOrEmptyListingId_ThrowsArgumentException(string? listingId)
+    {
+        using var stream = new MemoryStream([1, 2, 3]);
+        var act = () => _sut.UploadAsync(listingId!, stream, "photo.jpg");
+
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task UploadAsync_NullOrEmptyFileName_ThrowsArgumentException(string? fileName)
+    {
+        using var stream = new MemoryStream([1, 2, 3]);
+        var act = () => _sut.UploadAsync("listing-1", stream, fileName!);
+
+        await act.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -45,8 +70,9 @@ public class MediaServiceTests
             .Returns(_defaultMedia);
 
         using var stream = new MemoryStream([1, 2, 3]);
-        await _sut.UploadAsync("listing-1", stream, "photo.jpg");
+        var result = await _sut.UploadAsync("listing-1", stream, "photo.jpg");
 
+        result.IsSuccess.Should().BeTrue();
         capturedUri.Should().Be("/api/private/media");
     }
 }

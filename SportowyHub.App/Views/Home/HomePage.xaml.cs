@@ -9,7 +9,6 @@ public partial class HomePage : ContentPage
 {
     private const int ConditionChipCount = 3;
     private readonly HomeViewModel _viewModel;
-    private double _cardWidth;
 
     public HomePage(HomeViewModel viewModel)
     {
@@ -24,8 +23,11 @@ public partial class HomePage : ContentPage
 
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         _viewModel.Sections.CollectionChanged += OnSectionsChanged;
-        _viewModel.Listings.CollectionChanged += OnListingsChanged;
-        MainScroll.Scrolled += OnScrolled;
+
+        if (Application.Current is not null)
+        {
+            Application.Current.RequestedThemeChanged += OnThemeChanged;
+        }
 
         if (_viewModel.Listings.Count == 0)
         {
@@ -47,37 +49,20 @@ public partial class HomePage : ContentPage
 
         _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         _viewModel.Sections.CollectionChanged -= OnSectionsChanged;
-        _viewModel.Listings.CollectionChanged -= OnListingsChanged;
-        MainScroll.Scrolled -= OnScrolled;
-    }
 
-    protected override void OnSizeAllocated(double width, double height)
-    {
-        base.OnSizeAllocated(width, height);
-
-        if (width > 0)
+        if (Application.Current is not null)
         {
-            var padding = 32;
-            var spacing = 10;
-            _cardWidth = (width - padding - spacing) / 2;
-            UpdateCardWidths();
+            Application.Current.RequestedThemeChanged -= OnThemeChanged;
         }
     }
 
-    private void UpdateCardWidths()
+    private void OnThemeChanged(object? sender, AppThemeChangedEventArgs e)
     {
-        if (_cardWidth <= 0)
+        MainThread.BeginInvokeOnMainThread(() =>
         {
-            return;
-        }
-
-        foreach (var child in ProductsGrid.Children)
-        {
-            if (child is View view)
-            {
-                view.WidthRequest = _cardWidth;
-            }
-        }
+            UpdateChipStyles();
+            RebuildSectionChips();
+        });
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -86,11 +71,6 @@ public partial class HomePage : ContentPage
         {
             UpdateChipStyles();
         }
-    }
-
-    private void OnListingsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        MainThread.BeginInvokeOnMainThread(UpdateCardWidths);
     }
 
     private void OnSectionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -114,26 +94,26 @@ public partial class HomePage : ContentPage
 
     private Border CreateSectionChip(Section section)
     {
-        var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
-
         var label = new Label
         {
             Text = section.Name,
             FontFamily = "OpenSansSemibold",
             FontSize = 13,
-            VerticalOptions = LayoutOptions.Center,
-            TextColor = GetColor(isDark ? "TextPrimaryDark" : "TextPrimary")
+            VerticalOptions = LayoutOptions.Center
         };
+        label.SetAppThemeColor(Label.TextColorProperty, GetColor("TextPrimary"), GetColor("TextPrimaryDark"));
 
         var border = new Border
         {
             Padding = new Thickness(14, 6),
             StrokeThickness = 1,
-            Stroke = new SolidColorBrush(GetColor(isDark ? "BorderDark" : "Border")),
-            BackgroundColor = GetColor(isDark ? "SearchBarBackgroundDark" : "SearchBarBackground"),
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16) },
             Content = label
         };
+        border.SetAppThemeColor(Border.BackgroundColorProperty, GetColor("SearchBarBackground"), GetColor("SearchBarBackgroundDark"));
+        border.SetAppTheme(Border.StrokeProperty,
+            new SolidColorBrush(GetColor("Border")),
+            new SolidColorBrush(GetColor("BorderDark")));
 
         var tap = new TapGestureRecognizer();
         tap.SetBinding(TapGestureRecognizer.CommandProperty, new Binding(
@@ -143,23 +123,6 @@ public partial class HomePage : ContentPage
         border.GestureRecognizers.Add(tap);
 
         return border;
-    }
-
-    private void OnScrolled(object? sender, ScrolledEventArgs e)
-    {
-        if (MainScroll.ContentSize.Height <= 0)
-        {
-            return;
-        }
-
-        var scrollingSpace = MainScroll.ContentSize.Height - MainScroll.Height;
-        if (scrollingSpace > 0 && e.ScrollY >= scrollingSpace - 200)
-        {
-            if (_viewModel.LoadMoreListingsCommand.CanExecute(null))
-            {
-                _viewModel.LoadMoreListingsCommand.Execute(null);
-            }
-        }
     }
 
     private void UpdateChipStyles()
@@ -172,22 +135,20 @@ public partial class HomePage : ContentPage
 
     private void StyleChip(Border chip, bool isSelected)
     {
-        var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
-
         if (isSelected)
         {
-            chip.BackgroundColor = GetColor(isDark ? "ChipSelectedBgDark" : "ChipSelectedBg");
+            chip.SetAppThemeColor(Border.BackgroundColorProperty, GetColor("ChipSelectedBg"), GetColor("ChipSelectedBgDark"));
             if (chip.Content is Label label)
             {
-                label.TextColor = GetColor(isDark ? "ChipSelectedTextDark" : "ChipSelectedText");
+                label.SetAppThemeColor(Label.TextColorProperty, GetColor("ChipSelectedText"), GetColor("ChipSelectedTextDark"));
             }
         }
         else
         {
-            chip.BackgroundColor = GetColor(isDark ? "SearchBarBackgroundDark" : "SearchBarBackground");
+            chip.SetAppThemeColor(Border.BackgroundColorProperty, GetColor("SearchBarBackground"), GetColor("SearchBarBackgroundDark"));
             if (chip.Content is Label label)
             {
-                label.TextColor = GetColor(isDark ? "TextPrimaryDark" : "TextPrimary");
+                label.SetAppThemeColor(Label.TextColorProperty, GetColor("TextPrimary"), GetColor("TextPrimaryDark"));
             }
         }
     }

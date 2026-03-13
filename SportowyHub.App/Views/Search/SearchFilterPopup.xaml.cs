@@ -19,7 +19,11 @@ public partial class SearchFilterPopup : Popup
             _ = CloseAsync();
         };
 
-        Closed += (_, _) => _tcs.TrySetResult(null);
+        Closed += (_, _) =>
+        {
+            _tcs.TrySetResult(null);
+            viewModel.Dispose();
+        };
     }
 
     public Task<SearchFilterState?> GetResultAsync() => _tcs.Task;

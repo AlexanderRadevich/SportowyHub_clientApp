@@ -11,7 +11,7 @@ namespace SportowyHub.ViewModels;
 
 public partial class FavoritesViewModel(
     IFavoritesService favoritesService,
-    IAuthService authService,
+    ITokenProvider authService,
     INavigationService nav,
     IToastService toastService) : ObservableObject
 {
@@ -56,57 +56,53 @@ public partial class FavoritesViewModel(
         IsLoading = true;
         IsEmpty = false;
 
-        try
-        {
-            await favoritesService.LoadFavoriteIdsAsync(ct);
-            var response = await favoritesService.GetFavoritesAsync(1, PageSize, ct);
+        await favoritesService.LoadFavoriteIdsAsync(ct);
+        var result = await favoritesService.GetFavoritesAsync(1, PageSize, ct);
 
+        if (result.IsSuccess)
+        {
             Favorites.Clear();
-            foreach (var item in response.Items)
+            foreach (var item in result.Data!.Items)
             {
                 Favorites.Add(item);
             }
 
             _currentPage = 1;
-            _totalPages = response.Pages;
+            _totalPages = result.Data.Pages;
             IsEmpty = Favorites.Count == 0;
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            IsLoading = false;
-        }
+
+        IsLoading = false;
     }
 
     [RelayCommand]
     private async Task RefreshFavorites(CancellationToken ct)
     {
-        try
-        {
-            await favoritesService.LoadFavoriteIdsAsync(ct);
-            var response = await favoritesService.GetFavoritesAsync(1, PageSize, ct);
+        await favoritesService.LoadFavoriteIdsAsync(ct);
+        var result = await favoritesService.GetFavoritesAsync(1, PageSize, ct);
 
+        if (result.IsSuccess)
+        {
             Favorites.Clear();
-            foreach (var item in response.Items)
+            foreach (var item in result.Data!.Items)
             {
                 Favorites.Add(item);
             }
 
             _currentPage = 1;
-            _totalPages = response.Pages;
+            _totalPages = result.Data.Pages;
             IsEmpty = Favorites.Count == 0;
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            IsRefreshing = false;
-        }
+
+        IsRefreshing = false;
     }
 
     [RelayCommand]
@@ -117,20 +113,20 @@ public partial class FavoritesViewModel(
             return;
         }
 
-        try
+        var result = await favoritesService.GetFavoritesAsync(_currentPage + 1, PageSize, ct);
+        if (result.IsSuccess)
         {
-            var response = await favoritesService.GetFavoritesAsync(_currentPage + 1, PageSize, ct);
-            foreach (var item in response.Items)
+            foreach (var item in result.Data!.Items)
             {
                 Favorites.Add(item);
             }
 
-            _currentPage = response.Page;
-            _totalPages = response.Pages;
+            _currentPage = result.Data.Page;
+            _totalPages = result.Data.Pages;
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
@@ -140,27 +136,19 @@ public partial class FavoritesViewModel(
         Favorites.Remove(item);
         IsEmpty = Favorites.Count == 0;
 
-        try
-        {
-            await favoritesService.RemoveAsync(item.Id, ct);
-        }
-        catch (Exception ex)
+        var result = await favoritesService.RemoveAsync(item.Id, ct);
+        if (!result.IsSuccess)
         {
             Favorites.Add(item);
             IsEmpty = false;
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
     [RelayCommand]
     private async Task GoToListingDetail(FavoriteItem item)
     {
-        var query = $"listing-detail?id={Uri.EscapeDataString(item.Id)}" +
-                    $"&title={Uri.EscapeDataString(item.Title)}" +
-                    $"&price={Uri.EscapeDataString(item.Price?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty)}" +
-                    $"&currency={Uri.EscapeDataString(item.Currency ?? string.Empty)}" +
-                    $"&city={Uri.EscapeDataString(item.City ?? string.Empty)}";
-        await nav.GoToAsync(query);
+        await nav.GoToListingDetailAsync(item.Id, item.Title, item.Price, item.Currency, item.City);
     }
 
     [RelayCommand]

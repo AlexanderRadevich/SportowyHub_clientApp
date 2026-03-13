@@ -14,10 +14,11 @@ using SportowyHub.Services.Toast;
 namespace SportowyHub.ViewModels;
 
 public partial class EditProfileViewModel(
-    IAuthService authService,
+    IProfileService authService,
     INavigationService nav,
     IToastService toastService,
-    IGeographyService geographyService) : ObservableObject, IQueryAttributable
+    IGeographyService geographyService,
+    ApiErrorParser apiErrorParser) : ObservableObject, IQueryAttributable
 {
     [ObservableProperty]
     public partial string FirstName { get; set; } = string.Empty;
@@ -116,17 +117,17 @@ public partial class EditProfileViewModel(
     [RelayCommand]
     private async Task LoadVoivodeships(CancellationToken ct)
     {
-        try
+        var result = await geographyService.GetVoivodeshipsAsync(ct: ct);
+        if (result.IsSuccess)
         {
-            var items = await geographyService.GetVoivodeshipsAsync(ct: ct);
-            Voivodeships = new ObservableCollection<VoivodeshipItem>(items);
+            Voivodeships = new ObservableCollection<VoivodeshipItem>(result.Data!);
 
             if (_initialVoivodeshipId.HasValue)
             {
                 SelectedVoivodeship = Voivodeships.FirstOrDefault(v => v.Id == _initialVoivodeshipId.Value);
             }
         }
-        catch
+        else
         {
             Voivodeships = [];
         }
@@ -135,10 +136,10 @@ public partial class EditProfileViewModel(
     [RelayCommand]
     private async Task LoadCities(int voivodeshipId, CancellationToken ct)
     {
-        try
+        var result = await geographyService.GetCitiesAsync(voivodeshipId, ct: ct);
+        if (result.IsSuccess)
         {
-            var items = await geographyService.GetCitiesAsync(voivodeshipId, ct: ct);
-            Cities = new ObservableCollection<CityItem>(items);
+            Cities = new ObservableCollection<CityItem>(result.Data!);
 
             if (_initialCityId.HasValue)
             {
@@ -146,7 +147,7 @@ public partial class EditProfileViewModel(
                 _initialCityId = null;
             }
         }
-        catch
+        else
         {
             Cities = [];
         }
@@ -181,13 +182,25 @@ public partial class EditProfileViewModel(
                     VoivodeshipId: SelectedVoivodeship?.Id,
                     CityId: SelectedCity?.Id));
 
-            await authService.UpdateProfileAsync(request, ct);
-            await toastService.ShowSuccess(AppResources.EditProfileSuccess);
-            await nav.GoBackAsync();
+            var result = await authService.UpdateProfileAsync(request, ct);
+            if (result.IsSuccess)
+            {
+                await toastService.ShowSuccess(AppResources.EditProfileSuccess);
+                await nav.GoBackAsync();
+            }
+            else
+            {
+                if (result.FieldErrors?.TryGetValue("phone", out var phoneErr) == true)
+                {
+                    PhoneError = phoneErr;
+                }
+
+                GeneralError = result.ErrorMessage ?? AppResources.EditProfileError;
+            }
         }
         catch (HttpRequestException ex)
         {
-            var (message, fieldErrors, _) = ApiErrorParser.Parse(ex.Message, AppResources.EditProfileError);
+            var (message, fieldErrors, _) = apiErrorParser.Parse(ex.Message, AppResources.EditProfileError);
 
             if (fieldErrors?.TryGetValue("phone", out var phoneErr) == true)
             {

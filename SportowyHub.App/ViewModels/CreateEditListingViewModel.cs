@@ -92,18 +92,18 @@ public partial class CreateEditListingViewModel(
     [RelayCommand]
     private async Task LoadSections(CancellationToken ct)
     {
-        try
+        var result = await sectionsService.GetSectionsAsync(ct: ct);
+        if (result.IsSuccess)
         {
-            var response = await sectionsService.GetSectionsAsync(ct: ct);
             Sections.Clear();
-            foreach (var section in response.Sports)
+            foreach (var section in result.Data!.Sports)
             {
                 Sections.Add(section);
             }
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
@@ -115,18 +115,18 @@ public partial class CreateEditListingViewModel(
             return;
         }
 
-        try
+        var result = await sectionsService.GetCategoriesAsync(SelectedSection.Id, ct: ct);
+        if (result.IsSuccess)
         {
-            var response = await sectionsService.GetCategoriesAsync(SelectedSection.Id, ct: ct);
             Categories.Clear();
-            foreach (var category in response.Categories)
+            foreach (var category in result.Data!.Categories)
             {
                 Categories.Add(category);
             }
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
@@ -144,25 +144,19 @@ public partial class CreateEditListingViewModel(
     {
         IsLoading = true;
 
-        try
+        var result = await listingManagementService.GetMyListingAsync(_listingId!, ct);
+        if (result.IsSuccess)
         {
-            var listing = await listingManagementService.GetMyListingsAsync(ct: ct);
-            var match = listing.Listings.FirstOrDefault(l => l.Id == _listingId);
-            if (match is not null)
-            {
-                Title = match.Title;
-                PriceText = match.Price?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
-                Currency = match.Currency ?? "PLN";
-            }
+            Title = result.Data!.Title;
+            PriceText = result.Data.Price?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
+            Currency = result.Data.Currency ?? "PLN";
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            IsLoading = false;
-        }
+
+        IsLoading = false;
     }
 
     [RelayCommand]
@@ -209,7 +203,13 @@ public partial class CreateEditListingViewModel(
                     null,
                     contentLocale);
 
-                await listingManagementService.UpdateListingAsync(_listingId, request, ct);
+                var result = await listingManagementService.UpdateListingAsync(_listingId, request, ct);
+                if (!result.IsSuccess)
+                {
+                    await toastService.ShowError(result.ErrorMessage!);
+                    return;
+                }
+
                 await toastService.ShowSuccess(AppResources.ListingEditSuccess);
             }
             else
@@ -227,15 +227,17 @@ public partial class CreateEditListingViewModel(
                     null,
                     contentLocale);
 
-                await listingManagementService.CreateListingAsync(request, ct);
+                var result = await listingManagementService.CreateListingAsync(request, ct);
+                if (!result.IsSuccess)
+                {
+                    await toastService.ShowError(result.ErrorMessage!);
+                    return;
+                }
+
                 await toastService.ShowSuccess(AppResources.ListingCreateSuccess);
             }
 
             await nav.GoBackAsync();
-        }
-        catch (Exception ex)
-        {
-            await toastService.ShowError(ex.Message);
         }
         finally
         {
@@ -248,7 +250,7 @@ public partial class CreateEditListingViewModel(
     {
         if (!IsEditMode || string.IsNullOrEmpty(_listingId))
         {
-            await toastService.ShowError(AppResources.ListingCreateSuccess);
+            await toastService.ShowError(AppResources.ListingPhotoSaveFirst);
             return;
         }
 
@@ -257,9 +259,16 @@ public partial class CreateEditListingViewModel(
             var results = await MediaPicker.Default.PickPhotosAsync();
             foreach (var file in results)
             {
-                var stream = await file.OpenReadAsync();
-                var media = await mediaService.UploadAsync(_listingId, stream, file.FileName, ct: ct);
-                Photos.Add(media);
+                await using var stream = await file.OpenReadAsync();
+                var result = await mediaService.UploadAsync(_listingId, stream, file.FileName, ct: ct);
+                if (result.IsSuccess)
+                {
+                    Photos.Add(result.Data!);
+                }
+                else
+                {
+                    await toastService.ShowError(result.ErrorMessage!);
+                }
             }
         }
         catch (Exception ex)
@@ -271,14 +280,14 @@ public partial class CreateEditListingViewModel(
     [RelayCommand]
     private async Task DeletePhoto(MediaItem item, CancellationToken ct)
     {
-        try
+        var result = await mediaService.DeleteAsync(item.Id, ct);
+        if (result.IsSuccess)
         {
-            await mediaService.DeleteAsync(item.Id, ct);
             Photos.Remove(item);
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 }

@@ -38,6 +38,7 @@ public static class AppResources
     public static string AuthEnterEmail => ResourceManager.GetString("AuthEnterEmail", Culture)!;
     public static string AuthEnterPassword => ResourceManager.GetString("AuthEnterPassword", Culture)!;
     public static string AuthForgotPassword => ResourceManager.GetString("AuthForgotPassword", Culture)!;
+    public static string AuthForgotPasswordComingSoon => ResourceManager.GetString("AuthForgotPasswordComingSoon", Culture)!;
     public static string AuthLogin => ResourceManager.GetString("AuthLogin", Culture)!;
     public static string AuthNoAccount => ResourceManager.GetString("AuthNoAccount", Culture)!;
     public static string AuthCreateAccount => ResourceManager.GetString("AuthCreateAccount", Culture)!;
@@ -192,6 +193,7 @@ public static class AppResources
     public static string ListingEditSuccess => ResourceManager.GetString("ListingEditSuccess", Culture)!;
     public static string ListingTitleRequired => ResourceManager.GetString("ListingTitleRequired", Culture)!;
     public static string ListingCategoryRequired => ResourceManager.GetString("ListingCategoryRequired", Culture)!;
+    public static string ListingPhotoSaveFirst => ResourceManager.GetString("ListingPhotoSaveFirst", Culture)!;
 
     // Filters
     public static string FilterTitle => ResourceManager.GetString("FilterTitle", Culture)!;
@@ -218,6 +220,13 @@ public static class AppResources
     public static string OAuthErrorCancelled => ResourceManager.GetString("OAuthErrorCancelled", Culture)!;
     public static string OAuthErrorFailed => ResourceManager.GetString("OAuthErrorFailed", Culture)!;
 
+    // Popular Searches
+    public static string PopularSearch1 => ResourceManager.GetString("PopularSearch1", Culture)!;
+    public static string PopularSearch2 => ResourceManager.GetString("PopularSearch2", Culture)!;
+    public static string PopularSearch3 => ResourceManager.GetString("PopularSearch3", Culture)!;
+    public static string PopularSearch4 => ResourceManager.GetString("PopularSearch4", Culture)!;
+    public static string PopularSearch5 => ResourceManager.GetString("PopularSearch5", Culture)!;
+
     // Home screen redesign
     public static string HomeHotPicks => ResourceManager.GetString("HomeHotPicks", Culture)!;
     public static string HomeSeeAll => ResourceManager.GetString("HomeSeeAll", Culture)!;
@@ -228,4 +237,19 @@ public static class AppResources
     public static string HomeChipNew => ResourceManager.GetString("HomeChipNew", Culture)!;
     public static string HomeChipUsed => ResourceManager.GetString("HomeChipUsed", Culture)!;
     public static string HomeCartComingSoon => ResourceManager.GetString("HomeCartComingSoon", Culture)!;
+
+    // Accessibility
+    public static string A11yFavoriteButton => ResourceManager.GetString("A11yFavoriteButton", Culture)!;
+    public static string A11yRemoveFavoriteButton => ResourceManager.GetString("A11yRemoveFavoriteButton", Culture)!;
+    public static string A11yToggleThemeButton => ResourceManager.GetString("A11yToggleThemeButton", Culture)!;
+    public static string A11yFavoritesButton => ResourceManager.GetString("A11yFavoritesButton", Culture)!;
+    public static string A11yCartButton => ResourceManager.GetString("A11yCartButton", Culture)!;
+    public static string A11ySearchBar => ResourceManager.GetString("A11ySearchBar", Culture)!;
+    public static string A11yCreateListingButton => ResourceManager.GetString("A11yCreateListingButton", Culture)!;
+    public static string A11yGoBackButton => ResourceManager.GetString("A11yGoBackButton", Culture)!;
+    public static string A11yClearSearchButton => ResourceManager.GetString("A11yClearSearchButton", Culture)!;
+    public static string A11yFilterButton => ResourceManager.GetString("A11yFilterButton", Culture)!;
+    public static string A11yRemoveFilterButton => ResourceManager.GetString("A11yRemoveFilterButton", Culture)!;
+    public static string A11yTogglePasswordButton => ResourceManager.GetString("A11yTogglePasswordButton", Culture)!;
+    public static string A11yNotificationsSwitch => ResourceManager.GetString("A11yNotificationsSwitch", Culture)!;
 }

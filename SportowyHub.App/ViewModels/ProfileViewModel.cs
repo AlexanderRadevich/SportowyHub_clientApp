@@ -12,6 +12,7 @@ namespace SportowyHub.ViewModels;
 public partial class ProfileViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
+    private readonly ITokenProvider _tokenProvider;
     private readonly INavigationService _nav;
     private readonly IToastService _toastService;
     private readonly IFavoritesService _favoritesService;
@@ -46,9 +47,10 @@ public partial class ProfileViewModel : ObservableObject
 
     private bool _initialized;
 
-    public ProfileViewModel(IAuthService authService, INavigationService nav, IToastService toastService, IFavoritesService favoritesService)
+    public ProfileViewModel(IAuthService authService, ITokenProvider tokenProvider, INavigationService nav, IToastService toastService, IFavoritesService favoritesService)
     {
         _authService = authService;
+        _tokenProvider = tokenProvider;
         _nav = nav;
         _toastService = toastService;
         _favoritesService = favoritesService;
@@ -65,9 +67,9 @@ public partial class ProfileViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task RefreshAuthState()
+    private async Task RefreshAuthState(CancellationToken ct)
     {
-        IsLoggedIn = await _authService.IsLoggedInAsync();
+        IsLoggedIn = await _tokenProvider.IsLoggedInAsync();
     }
 
     partial void OnSelectedThemeIndexChanged(int value)
@@ -143,12 +145,12 @@ public partial class ProfileViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await _authService.ClearAuthAsync();
+            await _tokenProvider.ClearAuthAsync();
             await _toastService.ShowError(ex.Message);
         }
 
         _favoritesService.ClearCache();
-        await RefreshAuthState();
+        await RefreshAuthState(CancellationToken.None);
     }
 
     [RelayCommand]

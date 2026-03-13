@@ -13,6 +13,8 @@ namespace SportowyHub.ViewModels;
 
 public partial class AccountProfileViewModel(
     IAuthService authService,
+    ITokenProvider tokenProvider,
+    IProfileService profileService,
     INavigationService nav,
     IToastService toastService,
     IFavoritesService favoritesService) : ObservableObject
@@ -24,6 +26,12 @@ public partial class AccountProfileViewModel(
     public partial bool HasError { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayName))]
+    [NotifyPropertyChangedFor(nameof(DisplayEmail))]
+    [NotifyPropertyChangedFor(nameof(FormattedBalance))]
+    [NotifyPropertyChangedFor(nameof(TrustInfo))]
+    [NotifyPropertyChangedFor(nameof(IsGoogleLinked))]
+    [NotifyPropertyChangedFor(nameof(HasName))]
     public partial UserProfile? Profile { get; set; }
 
     public string DisplayName
@@ -76,30 +84,18 @@ public partial class AccountProfileViewModel(
         IsLoading = true;
         HasError = false;
 
-        try
+        var result = await profileService.GetProfileAsync(ct);
+        if (result.IsSuccess)
         {
-            Profile = await authService.GetProfileAsync(ct);
-
-            if (Profile is null)
-            {
-                HasError = true;
-            }
+            Profile = result.Data;
         }
-        catch (Exception ex)
+        else
         {
             HasError = true;
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            OnPropertyChanged(nameof(DisplayName));
-            OnPropertyChanged(nameof(DisplayEmail));
-            OnPropertyChanged(nameof(FormattedBalance));
-            OnPropertyChanged(nameof(TrustInfo));
-            OnPropertyChanged(nameof(IsGoogleLinked));
-            OnPropertyChanged(nameof(HasName));
-            IsLoading = false;
-        }
+
+        IsLoading = false;
     }
 
     [RelayCommand]
@@ -112,7 +108,7 @@ public partial class AccountProfileViewModel(
     }
 
     [RelayCommand]
-    private async Task SignOut()
+    private async Task SignOut(CancellationToken ct)
     {
         var confirmed = await nav.DisplayAlertAsync(
             AppResources.SignOutConfirmTitle,
@@ -131,7 +127,7 @@ public partial class AccountProfileViewModel(
         }
         catch (Exception ex)
         {
-            await authService.ClearAuthAsync();
+            await tokenProvider.ClearAuthAsync();
             await toastService.ShowError(ex.Message);
         }
 

@@ -1,12 +1,13 @@
+using SportowyHub.Models;
 using SportowyHub.Models.Api;
 
 namespace SportowyHub.Services.Listings;
 
 public interface IListingsService
 {
-    Task<ListingsResponse> GetListingsAsync(int limit = 20, int offset = 0, CancellationToken ct = default);
-    Task<ListingDetail> GetListingAsync(string id, CancellationToken ct = default);
-    Task<SearchResponse> SearchAsync(
+    Task<Result<ListingsResponse>> GetListingsAsync(int limit = 20, int offset = 0, CancellationToken ct = default);
+    Task<Result<ListingDetail>> GetListingAsync(string id, CancellationToken ct = default);
+    Task<Result<SearchResponse>> SearchAsync(
         string? query = null,
         int? categoryId = null,
         string? sport = null,

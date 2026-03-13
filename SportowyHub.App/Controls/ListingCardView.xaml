@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:SportowyHub.Controls"
+             xmlns:res="clr-namespace:SportowyHub.Resources.Strings"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.Controls.ListingCardView"
              x:DataType="controls:ListingCardView">
@@ -44,6 +45,7 @@
                          Source="{Binding IsFavorited, Source={RelativeSource AncestorType={x:Type controls:ListingCardView}}, Converter={StaticResource BoolToHeartConverter}}"
                          Command="{Binding ToggleFavoriteCommand, Source={RelativeSource AncestorType={x:Type controls:ListingCardView}}}"
                          CommandParameter="{Binding Listing, Source={RelativeSource AncestorType={x:Type controls:ListingCardView}}}"
+                         SemanticProperties.Description="{x:Static res:AppResources.A11yFavoriteButton}"
                          HorizontalOptions="End"
                          VerticalOptions="Start"
                          Margin="0,8,8,0"

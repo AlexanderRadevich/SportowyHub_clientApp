@@ -14,7 +14,7 @@ public partial class MyListingsViewModel(
     IListingManagementService listingManagementService,
     INavigationService nav,
     IToastService toastService,
-    IAuthService authService) : ObservableObject
+    ITokenProvider authService) : ObservableObject
 {
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -45,49 +45,45 @@ public partial class MyListingsViewModel(
         IsLoading = true;
         IsEmpty = false;
 
-        try
+        var result = await listingManagementService.GetMyListingsAsync(SelectedFilter, ct);
+        if (result.IsSuccess)
         {
-            var response = await listingManagementService.GetMyListingsAsync(SelectedFilter, ct);
             Listings.Clear();
-            foreach (var item in response.Listings)
+            foreach (var item in result.Data!.Listings)
             {
                 Listings.Add(item);
             }
 
             IsEmpty = Listings.Count == 0;
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            IsLoading = false;
-        }
+
+        IsLoading = false;
     }
 
     [RelayCommand]
     private async Task RefreshListings(CancellationToken ct)
     {
-        try
+        var result = await listingManagementService.GetMyListingsAsync(SelectedFilter, ct);
+        if (result.IsSuccess)
         {
-            var response = await listingManagementService.GetMyListingsAsync(SelectedFilter, ct);
             Listings.Clear();
-            foreach (var item in response.Listings)
+            foreach (var item in result.Data!.Listings)
             {
                 Listings.Add(item);
             }
 
             IsEmpty = Listings.Count == 0;
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            IsRefreshing = false;
-        }
+
+        IsRefreshing = false;
     }
 
     [RelayCommand]
@@ -100,42 +96,42 @@ public partial class MyListingsViewModel(
     [RelayCommand]
     private async Task PublishListing(MyListingSummary item, CancellationToken ct)
     {
-        try
+        var result = await listingManagementService.UpdateStatusAsync(item.Id, "published", ct);
+        if (result.IsSuccess)
         {
-            await listingManagementService.UpdateStatusAsync(item.Id, "published", ct);
             await LoadListings(ct);
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
     [RelayCommand]
     private async Task HideListing(MyListingSummary item, CancellationToken ct)
     {
-        try
+        var result = await listingManagementService.UpdateStatusAsync(item.Id, "hidden", ct);
+        if (result.IsSuccess)
         {
-            await listingManagementService.UpdateStatusAsync(item.Id, "hidden", ct);
             await LoadListings(ct);
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
     [RelayCommand]
     private async Task ResubmitListing(MyListingSummary item, CancellationToken ct)
     {
-        try
+        var result = await listingManagementService.ResubmitForReviewAsync(item.Id, ct);
+        if (result.IsSuccess)
         {
-            await listingManagementService.ResubmitForReviewAsync(item.Id, ct);
             await LoadListings(ct);
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 
@@ -153,15 +149,15 @@ public partial class MyListingsViewModel(
             return;
         }
 
-        try
+        var result = await listingManagementService.DeleteListingAsync(item.Id, ct);
+        if (result.IsSuccess)
         {
-            await listingManagementService.DeleteListingAsync(item.Id, ct);
             Listings.Remove(item);
             IsEmpty = Listings.Count == 0;
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
     }
 

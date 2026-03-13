@@ -9,7 +9,8 @@
              x:Class="SportowyHub.Views.Home.HomePage"
              x:DataType="vm:HomeViewModel"
              Title="{x:Static res:AppResources.HomeTitle}"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgroundDark}}">
 
     <Grid>
         <ScrollView x:Name="MainScroll">
@@ -30,6 +31,7 @@
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource IconButtonStrokeDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource IconButtonBgDark}}"
+                                SemanticProperties.Description="{x:Static res:AppResources.A11yToggleThemeButton}"
                                 Padding="0">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="19" />
@@ -48,6 +50,7 @@
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource IconButtonStrokeDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource IconButtonBgDark}}"
+                                SemanticProperties.Description="{x:Static res:AppResources.A11yFavoritesButton}"
                                 Padding="0">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="19" />
@@ -66,6 +69,7 @@
                                 StrokeThickness="1"
                                 Stroke="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource IconButtonStrokeDark}}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource IconButtonBgDark}}"
+                                SemanticProperties.Description="{x:Static res:AppResources.A11yCartButton}"
                                 Padding="0">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="19" />
@@ -86,6 +90,8 @@
                 <Border BackgroundColor="{AppThemeBinding Light={StaticResource SearchBarBackground}, Dark={StaticResource SearchBarBackgroundDark}}"
                         StrokeThickness="{AppThemeBinding Light=0, Dark=1}"
                         Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource BorderDark}}"
+                        SemanticProperties.Description="{x:Static res:AppResources.A11ySearchBar}"
+                        SemanticProperties.Hint="{x:Static res:AppResources.SearchPlaceholder}"
                         Padding="16,12">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="14" />
@@ -178,37 +184,39 @@
                 </ScrollView>
 
                 <!-- Hot Picks Section -->
-                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
-                    <Label Text="{x:Static res:AppResources.HomeHotPicks}"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="20"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
-                           VerticalOptions="Center" />
-                    <Label Grid.Column="1"
-                           Text="{x:Static res:AppResources.HomeSeeAll}"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="13"
-                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                           VerticalOptions="Center" />
-                </Grid>
+                <VerticalStackLayout IsVisible="{Binding HasHotPicks}" Spacing="0">
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                        <Label Text="{x:Static res:AppResources.HomeHotPicks}"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="20"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               VerticalOptions="Center" />
+                        <Button Grid.Column="1"
+                                Text="{x:Static res:AppResources.HomeSeeAll}"
+                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                Style="{StaticResource LinkButton}"
+                                VerticalOptions="Center" />
+                    </Grid>
 
-                <CollectionView ItemsSource="{Binding HotPicks}"
-                                HeightRequest="230">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:ListingSummary">
-                            <controls:ListingCardView WidthRequest="180"
-                                                      Listing="{Binding}"
-                                                      TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToListingDetailCommand}"
-                                                      ToggleFavoriteCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=ToggleFavoriteCommand}" />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    <CollectionView ItemsSource="{Binding HotPicks}"
+                                    HeightRequest="230">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:ListingSummary">
+                                <controls:ListingCardView WidthRequest="180"
+                                                          Listing="{Binding}"
+                                                          TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToListingDetailCommand}"
+                                                          ToggleFavoriteCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=ToggleFavoriteCommand}" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
 
                 <!-- All Products Section Header -->
-                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,4">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,4"
+                      IsVisible="{Binding HasHotPicks}">
                     <VerticalStackLayout>
                         <Label Text="{x:Static res:AppResources.HomeAllProducts}"
                                FontFamily="OpenSansSemibold"
@@ -243,7 +251,7 @@
                     </Border>
                 </Grid>
 
-                <!-- All Products Grid (BindableLayout) -->
+                <!-- All Products Grid -->
                 <FlexLayout x:Name="ProductsGrid"
                             Wrap="Wrap"
                             Direction="Row"
@@ -280,6 +288,7 @@
                            HorizontalOptions="Center" />
 
         <Button Style="{StaticResource FloatingActionButton}"
+                SemanticProperties.Description="{x:Static res:AppResources.A11yCreateListingButton}"
                 Command="{Binding GoToCreateListingCommand}"
                 IsVisible="{Binding IsLoggedIn}" />
     </Grid>

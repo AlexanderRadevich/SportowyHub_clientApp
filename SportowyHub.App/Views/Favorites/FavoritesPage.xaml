@@ -82,7 +82,8 @@
                                                  BackgroundColor="Transparent"
                                                  VerticalOptions="Center"
                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FavoritesViewModel}}, Path=RemoveFavoriteCommand}"
-                                                 CommandParameter="{Binding}">
+                                                 CommandParameter="{Binding}"
+                                                 SemanticProperties.Description="{x:Static res:AppResources.A11yRemoveFavoriteButton}">
                                         <ImageButton.Behaviors>
                                             <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                         </ImageButton.Behaviors>

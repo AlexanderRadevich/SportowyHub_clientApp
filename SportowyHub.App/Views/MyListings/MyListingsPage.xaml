@@ -120,34 +120,6 @@
                                            FontSize="12"
                                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
 
-                                    <!-- Action Buttons -->
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Button Text="{x:Static res:AppResources.MyListingsPublish}"
-                                                FontSize="12"
-                                                Padding="12,4"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=PublishListingCommand}"
-                                                CommandParameter="{Binding .}"
-                                                IsVisible="False" />
-                                        <Button Text="{x:Static res:AppResources.MyListingsHide}"
-                                                FontSize="12"
-                                                Padding="12,4"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=HideListingCommand}"
-                                                CommandParameter="{Binding .}"
-                                                IsVisible="False" />
-                                        <Button Text="{x:Static res:AppResources.MyListingsResubmit}"
-                                                FontSize="12"
-                                                Padding="12,4"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=ResubmitListingCommand}"
-                                                CommandParameter="{Binding .}"
-                                                IsVisible="False" />
-                                        <Button Text="{x:Static res:AppResources.MyListingsDelete}"
-                                                FontSize="12"
-                                                Padding="12,4"
-                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyListingsViewModel}}, Path=DeleteListingCommand}"
-                                                CommandParameter="{Binding .}"
-                                                IsVisible="False" />
-                                    </HorizontalStackLayout>
 
                                 </VerticalStackLayout>
 
@@ -166,6 +138,7 @@
 
         <Button Grid.Row="1"
                 Style="{StaticResource FloatingActionButton}"
+                SemanticProperties.Description="{x:Static res:AppResources.A11yCreateListingButton}"
                 Command="{Binding GoToCreateListingCommand}" />
 
     </Grid>

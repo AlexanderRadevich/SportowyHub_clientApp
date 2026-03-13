@@ -96,7 +96,8 @@
                        VerticalOptions="Center" />
                 <Switch Grid.Column="1"
                         IsToggled="{Binding NotificationsEnabled}"
-                        OnColor="{StaticResource Primary}" />
+                        SemanticProperties.Description="{x:Static res:AppResources.A11yNotificationsSwitch}"
+                        OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
             </Grid>
 
             <!-- Quiet Hours Start -->

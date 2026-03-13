@@ -8,9 +8,16 @@ internal class RecentSearchesService : IRecentSearchesService
     private const string PreferencesKey = "recent_searches";
     private const int MaxItems = 10;
 
-    private List<string> _cache = Load();
+    private readonly object _lock = new();
+    private readonly List<string> _cache = Load();
 
-    public IReadOnlyList<string> GetAll() => _cache;
+    public IReadOnlyList<string> GetAll()
+    {
+        lock (_lock)
+        {
+            return _cache.ToList();
+        }
+    }
 
     public void Add(string query)
     {
@@ -20,21 +27,27 @@ internal class RecentSearchesService : IRecentSearchesService
         }
 
         var trimmed = query.Trim();
-        _cache.RemoveAll(x => x.Equals(trimmed, StringComparison.OrdinalIgnoreCase));
-        _cache.Insert(0, trimmed);
-
-        if (_cache.Count > MaxItems)
+        lock (_lock)
         {
-            _cache.RemoveRange(MaxItems, _cache.Count - MaxItems);
-        }
+            _cache.RemoveAll(x => x.Equals(trimmed, StringComparison.OrdinalIgnoreCase));
+            _cache.Insert(0, trimmed);
 
-        Save(_cache);
+            if (_cache.Count > MaxItems)
+            {
+                _cache.RemoveRange(MaxItems, _cache.Count - MaxItems);
+            }
+
+            Save(_cache);
+        }
     }
 
     public void Clear()
     {
-        _cache.Clear();
-        Preferences.Remove(PreferencesKey);
+        lock (_lock)
+        {
+            _cache.Clear();
+            Preferences.Remove(PreferencesKey);
+        }
     }
 
     private static List<string> Load()

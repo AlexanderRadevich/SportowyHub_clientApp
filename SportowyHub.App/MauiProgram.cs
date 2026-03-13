@@ -64,14 +64,21 @@ public static class MauiProgram
             });
 
         builder.Services.AddTransient<UserAgentHandler>();
+        builder.Services.AddTransient<AuthenticatingDelegatingHandler>();
         builder.Services.AddHttpClient("Api", client =>
         {
             client.BaseAddress = new Uri(ApiConfig.BaseUrl);
-        }).AddHttpMessageHandler<UserAgentHandler>();
+        })
+        .AddHttpMessageHandler<UserAgentHandler>()
+        .AddHttpMessageHandler<AuthenticatingDelegatingHandler>();
+        builder.Services.AddSingleton<ApiErrorParser>();
         builder.Services.AddSingleton<IRequestProvider, RequestProvider>();
         builder.Services.AddSingleton<IReturnUrlService, ReturnUrlService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
-        builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<IAuthService>(sp => sp.GetRequiredService<AuthService>());
+        builder.Services.AddSingleton<ITokenProvider>(sp => sp.GetRequiredService<AuthService>());
+        builder.Services.AddSingleton<IProfileService>(sp => sp.GetRequiredService<AuthService>());
         builder.Services.AddSingleton<IListingsService, ListingsService>();
         builder.Services.AddSingleton<IToastService, ToastService>();
         builder.Services.AddSingleton<IRecentSearchesService, RecentSearchesService>();

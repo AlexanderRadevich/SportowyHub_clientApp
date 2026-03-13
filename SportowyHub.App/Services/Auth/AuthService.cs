@@ -1,13 +1,15 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using SportowyHub.Models;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Exceptions;
 
 namespace SportowyHub.Services.Auth;
 
-public class AuthService(IRequestProvider requestProvider, IHttpClientFactory httpClientFactory) : IAuthService
+public class AuthService(IRequestProvider requestProvider, IHttpClientFactory httpClientFactory, ApiErrorParser apiErrorParser, ILogger<AuthService> logger) : IAuthService, ITokenProvider, IProfileService
 {
     private const string TokenKey = "auth_token";
     private const string UserKey = "auth_user";
@@ -19,7 +21,7 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
         ["X-Include-Refresh-Token"] = "true"
     };
 
-    public async Task<AuthResult<LoginResponse>> LoginAsync(string email, string password, CancellationToken ct = default)
+    public async Task<Result<LoginResponse>> LoginAsync(string email, string password, CancellationToken ct = default)
     {
         try
         {
@@ -31,21 +33,21 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
 
             await StoreTokens(response);
 
-            return AuthResult<LoginResponse>.Success(response);
+            return Result<LoginResponse>.Success(response);
         }
         catch (ServiceAuthenticationException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Content, "An unexpected error occurred. Please try again.");
-            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
+            var (errorMessage, fieldErrors, errorCode) = apiErrorParser.Parse(ex.Content, "An unexpected error occurred. Please try again.");
+            return Result<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
-            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
+            var (errorMessage, fieldErrors, errorCode) = apiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
+            return Result<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
         {
-            return AuthResult<LoginResponse>.Failure("Connection error. Please check your internet connection and try again.");
+            return Result<LoginResponse>.Failure("Connection error. Please check your internet connection and try again.");
         }
     }
 
@@ -69,7 +71,7 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
         await SecureStorage.SetAsync(TokenExpiryKey, expiry);
     }
 
-    public async Task<AuthResult<RegisterResponse>> RegisterAsync(string email, string password, string passwordConfirm, string? phone = null, CancellationToken ct = default)
+    public async Task<Result<RegisterResponse>> RegisterAsync(string email, string password, string passwordConfirm, string? phone = null, CancellationToken ct = default)
     {
         try
         {
@@ -78,20 +80,20 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
                 new RegisterRequest(email, password, passwordConfirm, phone),
                 ct: ct);
 
-            return AuthResult<RegisterResponse>.Success(response);
+            return Result<RegisterResponse>.Success(response);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
-            return AuthResult<RegisterResponse>.Failure(errorMessage, fieldErrors, errorCode);
+            var (errorMessage, fieldErrors, errorCode) = apiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
+            return Result<RegisterResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
         {
-            return AuthResult<RegisterResponse>.Failure("Connection error. Please check your internet connection and try again.");
+            return Result<RegisterResponse>.Failure("Connection error. Please check your internet connection and try again.");
         }
     }
 
-    public async Task<AuthResult<ResendVerificationResponse>> ResendVerificationAsync(string email, CancellationToken ct = default)
+    public async Task<Result<ResendVerificationResponse>> ResendVerificationAsync(string email, CancellationToken ct = default)
     {
         try
         {
@@ -100,25 +102,25 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
                 new ResendVerificationRequest(email),
                 ct: ct);
 
-            return AuthResult<ResendVerificationResponse>.Success(response);
+            return Result<ResendVerificationResponse>.Success(response);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, _, errorCode) = ApiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
-            return AuthResult<ResendVerificationResponse>.Failure(errorMessage, errorCode: errorCode);
+            var (errorMessage, _, errorCode) = apiErrorParser.Parse(ex.Message, "An unexpected error occurred. Please try again.");
+            return Result<ResendVerificationResponse>.Failure(errorMessage, errorCode: errorCode);
         }
         catch (Exception)
         {
-            return AuthResult<ResendVerificationResponse>.Failure("Connection error. Please check your internet connection and try again.");
+            return Result<ResendVerificationResponse>.Failure("Connection error. Please check your internet connection and try again.");
         }
     }
 
-    public async Task<AuthResult<LoginResponse>> RefreshTokenAsync(CancellationToken ct = default)
+    public async Task<Result<LoginResponse>> RefreshTokenAsync(CancellationToken ct = default)
     {
         var refreshToken = await SecureStorage.GetAsync(RefreshTokenKey);
         if (string.IsNullOrEmpty(refreshToken))
         {
-            return AuthResult<LoginResponse>.Failure("No refresh token available.");
+            return Result<LoginResponse>.Failure("No refresh token available.");
         }
 
         try
@@ -132,18 +134,29 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
 
             await StoreTokens(response);
 
-            return AuthResult<LoginResponse>.Success(response);
+            return Result<LoginResponse>.Success(response);
         }
         catch (Exception)
         {
             await ClearAuthAsync();
-            return AuthResult<LoginResponse>.Failure("Session expired. Please log in again.");
+            return Result<LoginResponse>.Failure("Session expired. Please log in again.");
         }
     }
 
     public async Task<string?> GetTokenAsync()
     {
         return await SecureStorage.GetAsync(TokenKey);
+    }
+
+    public async Task<DateTimeOffset?> GetTokenExpiryAsync()
+    {
+        var expiry = await SecureStorage.GetAsync(TokenExpiryKey);
+        if (string.IsNullOrEmpty(expiry))
+        {
+            return null;
+        }
+
+        return DateTimeOffset.TryParse(expiry, out var result) ? result : null;
     }
 
     public async Task<UserInfo?> GetCurrentUserAsync()
@@ -173,8 +186,9 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
                 await requestProvider.PostAsync("/api/v1/logout", token);
             }
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogWarning(ex, "Logout API call failed");
         }
         finally
         {
@@ -182,29 +196,39 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
         }
     }
 
-    public async Task<UserProfile?> GetProfileAsync(CancellationToken ct = default)
+    public async Task<Result<UserProfile>> GetProfileAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var token = await SecureStorage.GetAsync(TokenKey);
+            if (string.IsNullOrEmpty(token))
+            {
+                return Result<UserProfile>.Failure("Not authenticated.");
+            }
+
+            var profile = await requestProvider.GetAsync<UserProfile>("/api/private/profile", token, ct);
+            return Result<UserProfile>.Success(profile);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to get profile");
+            return Result<UserProfile>.Failure(ex.Message);
+        }
+    }
+
+    public async Task<Result<UpdateProfileResponse>> UpdateProfileAsync(UpdateProfileRequest request, CancellationToken ct = default)
     {
         var token = await SecureStorage.GetAsync(TokenKey);
         if (string.IsNullOrEmpty(token))
         {
-            return null;
+            return Result<UpdateProfileResponse>.Failure("Not authenticated.");
         }
 
-        return await requestProvider.GetAsync<UserProfile>("/api/private/profile", token, ct);
+        var response = await requestProvider.PatchAsync<UpdateProfileRequest, UpdateProfileResponse>("/api/private/profile", request, token, ct);
+        return Result<UpdateProfileResponse>.Success(response);
     }
 
-    public async Task<UpdateProfileResponse?> UpdateProfileAsync(UpdateProfileRequest request, CancellationToken ct = default)
-    {
-        var token = await SecureStorage.GetAsync(TokenKey);
-        if (string.IsNullOrEmpty(token))
-        {
-            return null;
-        }
-
-        return await requestProvider.PatchAsync<UpdateProfileRequest, UpdateProfileResponse>("/api/private/profile", request, token, ct);
-    }
-
-    public async Task<AuthResult<LoginResponse>> OAuthLoginAsync(string provider, string? idToken, string? accessToken, CancellationToken ct = default)
+    public async Task<Result<LoginResponse>> OAuthLoginAsync(string provider, string? idToken, string? accessToken, CancellationToken ct = default)
     {
         try
         {
@@ -216,48 +240,66 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
 
             await StoreTokens(response);
 
-            return AuthResult<LoginResponse>.Success(response);
+            return Result<LoginResponse>.Success(response);
         }
         catch (ServiceAuthenticationException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Content, "OAuth login failed. Please try again.");
-            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
+            var (errorMessage, fieldErrors, errorCode) = apiErrorParser.Parse(ex.Content, "OAuth login failed. Please try again.");
+            return Result<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (HttpRequestException ex)
         {
-            var (errorMessage, fieldErrors, errorCode) = ApiErrorParser.Parse(ex.Message, "OAuth login failed. Please try again.");
-            return AuthResult<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
+            var (errorMessage, fieldErrors, errorCode) = apiErrorParser.Parse(ex.Message, "OAuth login failed. Please try again.");
+            return Result<LoginResponse>.Failure(errorMessage, fieldErrors, errorCode);
         }
         catch (Exception)
         {
-            return AuthResult<LoginResponse>.Failure("Connection error. Please check your internet connection and try again.");
+            return Result<LoginResponse>.Failure("Connection error. Please check your internet connection and try again.");
         }
     }
 
-    public async Task<AvatarResponse?> UploadAvatarAsync(Stream imageStream, string fileName, CancellationToken ct = default)
+    public async Task<Result<AvatarResponse>> UploadAvatarAsync(Stream imageStream, string fileName, CancellationToken ct = default)
     {
-        var token = await SecureStorage.GetAsync(TokenKey);
-        if (string.IsNullOrEmpty(token))
+        try
         {
-            return null;
+            var token = await SecureStorage.GetAsync(TokenKey);
+            if (string.IsNullOrEmpty(token))
+            {
+                return Result<AvatarResponse>.Failure("Not authenticated.");
+            }
+
+            using var content = new MultipartFormDataContent();
+            using var streamContent = new StreamContent(imageStream);
+            content.Add(streamContent, "file", fileName);
+
+            var response = await requestProvider.PostMultipartAsync<AvatarResponse>("/api/private/profile/avatar", content, token, ct);
+            return Result<AvatarResponse>.Success(response);
         }
-
-        using var content = new MultipartFormDataContent();
-        using var streamContent = new StreamContent(imageStream);
-        content.Add(streamContent, "file", fileName);
-
-        return await requestProvider.PostMultipartAsync<AvatarResponse>("/api/private/profile/avatar", content, token, ct);
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to upload avatar");
+            return Result<AvatarResponse>.Failure(ex.Message);
+        }
     }
 
-    public async Task DeleteAvatarAsync(CancellationToken ct = default)
+    public async Task<Result<bool>> DeleteAvatarAsync(CancellationToken ct = default)
     {
-        var token = await SecureStorage.GetAsync(TokenKey);
-        if (string.IsNullOrEmpty(token))
+        try
         {
-            return;
-        }
+            var token = await SecureStorage.GetAsync(TokenKey);
+            if (string.IsNullOrEmpty(token))
+            {
+                return Result<bool>.Failure("Not authenticated.");
+            }
 
-        await requestProvider.DeleteAsync("/api/private/profile/avatar", token, ct);
+            await requestProvider.DeleteAsync("/api/private/profile/avatar", token, ct);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to delete avatar");
+            return Result<bool>.Failure(ex.Message);
+        }
     }
 
     public Task ClearAuthAsync()
@@ -269,12 +311,12 @@ public class AuthService(IRequestProvider requestProvider, IHttpClientFactory ht
         return Task.CompletedTask;
     }
 
-    public async Task<AuthResult<LoginResponse>> GoogleSignInAsync(CancellationToken ct = default)
+    public async Task<Result<LoginResponse>> GoogleSignInAsync(CancellationToken ct = default)
     {
         var idToken = await AcquireGoogleIdTokenAsync(ct);
         if (string.IsNullOrEmpty(idToken))
         {
-            return AuthResult<LoginResponse>.Failure("Google sign-in failed.");
+            return Result<LoginResponse>.Failure("Google sign-in failed.");
         }
 
         return await OAuthLoginAsync("google", idToken, null, ct);

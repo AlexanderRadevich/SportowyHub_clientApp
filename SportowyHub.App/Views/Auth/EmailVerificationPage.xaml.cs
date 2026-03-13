@@ -16,6 +16,6 @@ public partial class EmailVerificationPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        _viewModel.StopCooldownTimer();
+        _viewModel.Dispose();
     }
 }

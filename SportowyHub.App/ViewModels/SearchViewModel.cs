@@ -4,10 +4,14 @@ using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
+using SportowyHub.Messages;
 using SportowyHub.Models;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Geography;
 using SportowyHub.Services.Listings;
+using SportowyHub.Services.Locale;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.RecentSearches;
 using SportowyHub.Services.Sections;
@@ -16,20 +20,55 @@ using SportowyHub.Views.Search;
 
 namespace SportowyHub.ViewModels;
 
-public partial class SearchViewModel(
-    IListingsService listingsService,
-    INavigationService nav,
-    IToastService toastService,
-    IRecentSearchesService recentSearchesService,
-    ISectionsService sectionsService,
-    IGeographyService geographyService) : ObservableObject, IQueryAttributable
+public partial class SearchViewModel : ObservableObject, IQueryAttributable, IDisposable
 {
     private const int PageSize = 30;
+    private readonly IListingsService _listingsService;
+    private readonly INavigationService _nav;
+    private readonly IToastService _toastService;
+    private readonly IRecentSearchesService _recentSearchesService;
+    private readonly ISectionsService _sectionsService;
+    private readonly IGeographyService _geographyService;
+    private readonly ILocaleService _localeService;
+    private readonly ILogger<SearchViewModel> _logger;
+    private readonly ILoggerFactory _loggerFactory;
     private int _searchOffset;
     private int _searchTotal;
     private CancellationTokenSource? _debounceCts;
+    private Section? _pendingSportSection;
 
-    internal static Section? PendingSportSection { get; set; }
+    internal static Section? PendingNavigationSection { get; set; }
+
+    public SearchViewModel(
+        IListingsService listingsService,
+        INavigationService nav,
+        IToastService toastService,
+        IRecentSearchesService recentSearchesService,
+        ISectionsService sectionsService,
+        IGeographyService geographyService,
+        ILocaleService localeService,
+        ILogger<SearchViewModel> logger,
+        ILoggerFactory loggerFactory)
+    {
+        _listingsService = listingsService;
+        _nav = nav;
+        _toastService = toastService;
+        _recentSearchesService = recentSearchesService;
+        _sectionsService = sectionsService;
+        _geographyService = geographyService;
+        _localeService = localeService;
+        _logger = logger;
+        _loggerFactory = loggerFactory;
+
+        WeakReferenceMessenger.Default.Register<NavigateToSearchMessage>(this, (r, m) =>
+        {
+            var self = (SearchViewModel)r;
+            var section = m.Value;
+            self.FilterState.SelectedSection = section;
+            self.UpdateFilterCount();
+            _ = self.ExecuteSearch(self.SearchText, 0, CancellationToken.None);
+        });
+    }
 
     [ObservableProperty]
     public partial string SearchText { get; set; } = string.Empty;
@@ -58,11 +97,11 @@ public partial class SearchViewModel(
 
     public ObservableCollection<string> PopularSearches { get; } =
     [
-        "Football",
-        "Gym equipment",
-        "Swimming goggles",
-        "Cycling helmet",
-        "Protein powder"
+        Resources.Strings.AppResources.PopularSearch1,
+        Resources.Strings.AppResources.PopularSearch2,
+        Resources.Strings.AppResources.PopularSearch3,
+        Resources.Strings.AppResources.PopularSearch4,
+        Resources.Strings.AppResources.PopularSearch5
     ];
 
     public ObservableCollection<SearchCardItem> MappedSearchResults { get; } = [];
@@ -75,7 +114,7 @@ public partial class SearchViewModel(
     {
         if (query.TryGetValue("sport", out var sportObj) && sportObj is string sportSlug && !string.IsNullOrWhiteSpace(sportSlug))
         {
-            PendingSportSection = new Section(0, sportSlug, sportSlug);
+            _pendingSportSection = new Section(0, sportSlug, sportSlug);
         }
     }
 
@@ -105,8 +144,9 @@ public partial class SearchViewModel(
         {
             await Task.Delay(400, ct);
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            _logger.LogDebug(ex, "Search debounce cancelled for query {Query}", query);
             return;
         }
 
@@ -119,7 +159,7 @@ public partial class SearchViewModel(
 
         try
         {
-            var response = await listingsService.SearchAsync(
+            var result = await _listingsService.SearchAsync(
                 query: string.IsNullOrWhiteSpace(query) ? null : query,
                 categoryId: FilterState.SelectedCategoryId,
                 sport: FilterState.SelectedSection?.Slug,
@@ -132,6 +172,14 @@ public partial class SearchViewModel(
                 limit: PageSize,
                 offset: offset,
                 ct: ct);
+
+            if (!result.IsSuccess)
+            {
+                await _toastService.ShowError(result.ErrorMessage!);
+                return;
+            }
+
+            var response = result.Data!;
 
             if (offset == 0)
             {
@@ -161,16 +209,17 @@ public partial class SearchViewModel(
 
             if (offset == 0 && !string.IsNullOrWhiteSpace(query))
             {
-                recentSearchesService.Add(query);
+                _recentSearchesService.Add(query);
                 LoadRecentSearches();
             }
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            _logger.LogDebug(ex, "Search request cancelled");
         }
         catch (Exception ex)
         {
-            await toastService.ShowError(ex.Message);
+            await _toastService.ShowError(ex.Message);
         }
         finally
         {
@@ -218,47 +267,44 @@ public partial class SearchViewModel(
     [RelayCommand]
     private async Task GoToListingDetail(ListingSummary listing)
     {
-        var priceStr = listing.Price?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
-        var query = $"listing-detail?id={Uri.EscapeDataString(listing.Id)}" +
-                    $"&title={Uri.EscapeDataString(listing.Title)}" +
-                    $"&price={Uri.EscapeDataString(priceStr)}" +
-                    $"&currency={Uri.EscapeDataString(listing.Currency ?? string.Empty)}" +
-                    $"&city={Uri.EscapeDataString(listing.City ?? string.Empty)}";
-        await nav.GoToAsync(query);
+        await _nav.GoToListingDetailAsync(listing.Id, listing.Title, listing.Price, listing.Currency, listing.City);
     }
 
     [RelayCommand]
-    private async Task Appearing()
+    private async Task Appearing(CancellationToken ct)
     {
         LoadRecentSearches();
 
-        if (PendingSportSection is not null)
+        var pending = PendingNavigationSection ?? _pendingSportSection;
+        PendingNavigationSection = null;
+        _pendingSportSection = null;
+
+        if (pending is not null)
         {
-            var pending = PendingSportSection;
-            PendingSportSection = null;
 
             if (pending.Id > 0)
             {
                 FilterState.SelectedSection = pending;
                 UpdateFilterCount();
-                await ExecuteSearch(SearchText, 0, CancellationToken.None);
+                await ExecuteSearch(SearchText, 0, ct);
             }
             else
             {
-                try
+                var locale = _localeService.TwoLetterLanguageCode;
+                var sectionsResult = await _sectionsService.GetSectionsAsync(locale, ct);
+                if (sectionsResult.IsSuccess)
                 {
-                    var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
-                    var response = await sectionsService.GetSectionsAsync(locale);
-                    var section = response.Sports.FirstOrDefault(s => s.Slug == pending.Slug);
+                    var section = sectionsResult.Data!.Sports.FirstOrDefault(s => s.Slug == pending.Slug);
                     if (section is not null)
                     {
                         FilterState.SelectedSection = section;
                         UpdateFilterCount();
-                        await ExecuteSearch(SearchText, 0, CancellationToken.None);
+                        await ExecuteSearch(SearchText, 0, ct);
                     }
                 }
-                catch
+                else
                 {
+                    _logger.LogWarning("Failed to resolve sport section {Slug}: {Error}", pending.Slug, sectionsResult.ErrorMessage);
                 }
             }
         }
@@ -268,8 +314,10 @@ public partial class SearchViewModel(
     private async Task OpenFilter()
     {
         var popupVm = new SearchFilterPopupViewModel(
-            sectionsService,
-            geographyService,
+            _sectionsService,
+            _geographyService,
+            _localeService,
+            _loggerFactory.CreateLogger<SearchFilterPopupViewModel>(),
             FilterState);
 
         var popup = new SearchFilterPopup(popupVm);
@@ -391,16 +439,42 @@ public partial class SearchViewModel(
     [RelayCommand]
     private void ClearRecentSearches()
     {
-        recentSearchesService.Clear();
+        _recentSearchesService.Clear();
         RecentSearches.Clear();
     }
 
     private void LoadRecentSearches()
     {
         RecentSearches.Clear();
-        foreach (var item in recentSearchesService.GetAll())
+        foreach (var item in _recentSearchesService.GetAll())
         {
             RecentSearches.Add(item);
         }
+    }
+
+    private bool _disposed;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            _debounceCts?.Cancel();
+            _debounceCts?.Dispose();
+            _debounceCts = null;
+            WeakReferenceMessenger.Default.Unregister<NavigateToSearchMessage>(this);
+        }
+
+        _disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

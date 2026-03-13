@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Navigation;
@@ -12,7 +13,8 @@ public partial class LoginViewModel(
     IAuthService authService,
     INavigationService nav,
     IToastService toastService,
-    IReturnUrlService returnUrlService) : ObservableObject
+    IReturnUrlService returnUrlService,
+    ILogger<LoginViewModel> logger) : ObservableObject
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -130,8 +132,9 @@ public partial class LoginViewModel(
             LoginError = result.ErrorMessage ?? AppResources.OAuthErrorFailed;
             await toastService.ShowError(LoginError);
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            logger.LogDebug(ex, "Google OAuth login was cancelled");
         }
         catch (Exception ex)
         {
@@ -141,6 +144,12 @@ public partial class LoginViewModel(
         {
             IsGoogleLoading = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task ForgotPassword()
+    {
+        await toastService.ShowSuccess(AppResources.AuthForgotPasswordComingSoon);
     }
 
     [RelayCommand]

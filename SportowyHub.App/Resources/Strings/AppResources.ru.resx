@@ -89,6 +89,9 @@
   <data name="AuthForgotPassword" xml:space="preserve">
     <value>Забыли пароль?</value>
   </data>
+  <data name="AuthForgotPasswordComingSoon" xml:space="preserve">
+    <value>Сброс пароля скоро будет доступен</value>
+  </data>
   <data name="AuthLogin" xml:space="preserve">
     <value>Войти</value>
   </data>
@@ -514,6 +517,9 @@
   <data name="ListingCategoryRequired" xml:space="preserve">
     <value>Категория обязательна</value>
   </data>
+  <data name="ListingPhotoSaveFirst" xml:space="preserve">
+    <value>Сначала сохраните объявление, чтобы добавить фото</value>
+  </data>
   <data name="OAuthOrSeparator" xml:space="preserve">
     <value>или</value>
   </data>
@@ -552,5 +558,60 @@
   </data>
   <data name="HomeCartComingSoon" xml:space="preserve">
     <value>Корзина скоро появится</value>
+  </data>
+  <data name="PopularSearch1" xml:space="preserve">
+    <value>Футбол</value>
+  </data>
+  <data name="PopularSearch2" xml:space="preserve">
+    <value>Тренажёры</value>
+  </data>
+  <data name="PopularSearch3" xml:space="preserve">
+    <value>Очки для плавания</value>
+  </data>
+  <data name="PopularSearch4" xml:space="preserve">
+    <value>Велосипедный шлем</value>
+  </data>
+  <data name="PopularSearch5" xml:space="preserve">
+    <value>Протеин</value>
+  </data>
+  <!-- Accessibility -->
+  <data name="A11yFavoriteButton" xml:space="preserve">
+    <value>Добавить в избранное</value>
+  </data>
+  <data name="A11yRemoveFavoriteButton" xml:space="preserve">
+    <value>Удалить из избранного</value>
+  </data>
+  <data name="A11yToggleThemeButton" xml:space="preserve">
+    <value>Переключить тему</value>
+  </data>
+  <data name="A11yFavoritesButton" xml:space="preserve">
+    <value>Избранное</value>
+  </data>
+  <data name="A11yCartButton" xml:space="preserve">
+    <value>Корзина</value>
+  </data>
+  <data name="A11ySearchBar" xml:space="preserve">
+    <value>Искать товары</value>
+  </data>
+  <data name="A11yCreateListingButton" xml:space="preserve">
+    <value>Создать объявление</value>
+  </data>
+  <data name="A11yGoBackButton" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="A11yClearSearchButton" xml:space="preserve">
+    <value>Очистить поиск</value>
+  </data>
+  <data name="A11yFilterButton" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="A11yRemoveFilterButton" xml:space="preserve">
+    <value>Удалить фильтр</value>
+  </data>
+  <data name="A11yTogglePasswordButton" xml:space="preserve">
+    <value>Показать или скрыть пароль</value>
+  </data>
+  <data name="A11yNotificationsSwitch" xml:space="preserve">
+    <value>Включить или отключить уведомления</value>
   </data>
 </root>

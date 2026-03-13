@@ -4,7 +4,7 @@ using SportowyHub.Services.Auth;
 
 namespace SportowyHub.Services.ThemeSync;
 
-internal class ThemeSyncService(IRequestProvider requestProvider, IAuthService authService) : IThemeSyncService
+internal class ThemeSyncService(IRequestProvider requestProvider, ITokenProvider authService) : IThemeSyncService
 {
     public async Task<ThemePreferences> GetPreferencesAsync(CancellationToken ct = default)
     {

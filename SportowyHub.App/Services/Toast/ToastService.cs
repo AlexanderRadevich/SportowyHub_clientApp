@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 
@@ -6,6 +7,7 @@ namespace SportowyHub.Services.Toast;
 public class ToastService : IToastService
 {
     private static readonly TimeSpan SuccessDuration = TimeSpan.FromSeconds(6);
+    private static readonly ConcurrentDictionary<View, View?> _originalContentMap = new();
 
     public Task ShowError(string message)
     {
@@ -141,6 +143,7 @@ public class ToastService : IToastService
         else
         {
             var existingContent = contentPage.Content;
+            _originalContentMap[overlay] = existingContent;
             var wrapper = new Grid { Children = { existingContent, overlay } };
             contentPage.Content = wrapper;
         }
@@ -150,6 +153,17 @@ public class ToastService : IToastService
     {
         if (page is not ContentPage contentPage)
         {
+            return;
+        }
+
+        if (_originalContentMap.TryRemove(overlay, out var originalContent))
+        {
+            if (contentPage.Content is Grid wrapper && wrapper.Children.Contains(overlay))
+            {
+                wrapper.Children.Remove(overlay);
+                contentPage.Content = originalContent;
+            }
+
             return;
         }
 

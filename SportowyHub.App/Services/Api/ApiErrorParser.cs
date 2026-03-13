@@ -1,10 +1,11 @@
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace SportowyHub.Services.Api;
 
-public static class ApiErrorParser
+public class ApiErrorParser(ILogger<ApiErrorParser> logger)
 {
-    public static (string Message, Dictionary<string, string>? FieldErrors, string? ErrorCode) Parse(string content, string fallbackMessage)
+    public (string Message, Dictionary<string, string>? FieldErrors, string? ErrorCode) Parse(string content, string fallbackMessage)
     {
         try
         {
@@ -14,8 +15,9 @@ public static class ApiErrorParser
                 return (apiError.Error.Message, apiError.Error.Violations, apiError.Error.Code);
             }
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
+            logger.LogWarning(ex, "Failed to parse API error response");
         }
 
         return (fallbackMessage, null, null);

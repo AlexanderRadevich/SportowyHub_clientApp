@@ -1,11 +1,14 @@
 using System.Collections.ObjectModel;
-using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
+using SportowyHub.Messages;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Favorites;
 using SportowyHub.Services.Listings;
+using SportowyHub.Services.Locale;
 using SportowyHub.Services.Navigation;
 using SportowyHub.Services.Sections;
 using SportowyHub.Services.Toast;
@@ -16,9 +19,11 @@ public partial class HomeViewModel(
     IListingsService listingsService,
     INavigationService nav,
     IToastService toastService,
-    IAuthService authService,
+    ITokenProvider authService,
     ISectionsService sectionsService,
-    IFavoritesService favoritesService) : ObservableObject
+    IFavoritesService favoritesService,
+    ILocaleService localeService,
+    ILogger<HomeViewModel> logger) : ObservableObject
 {
     private const int PageSize = 20;
     private const int HotPicksCount = 6;
@@ -42,6 +47,9 @@ public partial class HomeViewModel(
     public partial bool HasSections { get; set; }
 
     [ObservableProperty]
+    public partial bool HasHotPicks { get; set; }
+
+    [ObservableProperty]
     public partial string? SelectedCondition { get; set; }
 
     [ObservableProperty]
@@ -49,7 +57,9 @@ public partial class HomeViewModel(
     public partial int TotalResults { get; set; }
 
     public string TotalResultsText =>
-        string.Format(Resources.Strings.AppResources.HomeShowingResults, TotalResults);
+        TotalResults > 0
+            ? string.Format(Resources.Strings.AppResources.HomeShowingResults, TotalResults)
+            : string.Empty;
 
     [ObservableProperty]
     public partial bool IsLoggedIn { get; set; }
@@ -66,9 +76,9 @@ public partial class HomeViewModel(
                 await favoritesService.LoadFavoriteIdsAsync(ct);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Silently fail — favorites cache is non-critical
+            logger.LogWarning(ex, "Failed to load favorite IDs");
         }
     }
 
@@ -123,21 +133,22 @@ public partial class HomeViewModel(
     }
 
     [RelayCommand]
-    private async Task LoadSections()
+    private async Task LoadSections(CancellationToken ct)
     {
-        try
+        var locale = localeService.TwoLetterLanguageCode;
+        var result = await sectionsService.GetSectionsAsync(locale, ct);
+        if (result.IsSuccess)
         {
-            var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
-            var response = await sectionsService.GetSectionsAsync(locale);
             Sections.Clear();
-            foreach (var section in response.Sports)
+            foreach (var section in result.Data!.Sports)
             {
                 Sections.Add(section);
             }
             HasSections = Sections.Count > 0;
         }
-        catch
+        else
         {
+            logger.LogWarning("Failed to load sections: {Error}", result.ErrorMessage);
             HasSections = false;
         }
     }
@@ -194,16 +205,11 @@ public partial class HomeViewModel(
     [RelayCommand]
     private async Task GoToListingDetail(ListingSummary listing)
     {
-        var query = $"listing-detail?id={Uri.EscapeDataString(listing.Id)}" +
-                    $"&title={Uri.EscapeDataString(listing.Title)}" +
-                    $"&price={Uri.EscapeDataString(listing.Price?.ToString(CultureInfo.InvariantCulture) ?? string.Empty)}" +
-                    $"&currency={Uri.EscapeDataString(listing.Currency ?? string.Empty)}" +
-                    $"&city={Uri.EscapeDataString(listing.City ?? string.Empty)}";
-        await nav.GoToAsync(query);
+        await nav.GoToListingDetailAsync(listing.Id, listing.Title, listing.Price, listing.Currency, listing.City);
     }
 
     [RelayCommand]
-    private async Task ToggleFavorite(ListingSummary listing)
+    private async Task ToggleFavorite(ListingSummary listing, CancellationToken ct)
     {
         var user = await authService.GetCurrentUserAsync();
         if (user is null)
@@ -214,23 +220,27 @@ public partial class HomeViewModel(
 
         var wasFavorited = favoritesService.IsFavorite(listing.Id);
 
-        try
+        if (wasFavorited)
         {
-            if (wasFavorited)
+            var result = await favoritesService.RemoveAsync(listing.Id, ct);
+            if (!result.IsSuccess)
             {
-                await favoritesService.RemoveAsync(listing.Id);
+                await toastService.ShowError(result.ErrorMessage!);
+                return;
             }
-            else
-            {
-                await favoritesService.AddAsync(listing.Id);
-            }
-            OnPropertyChanged(nameof(Listings));
-            OnPropertyChanged(nameof(HotPicks));
         }
-        catch (Exception ex)
+        else
         {
-            await toastService.ShowError(ex.Message);
+            var result = await favoritesService.AddAsync(listing.Id, ct);
+            if (!result.IsSuccess)
+            {
+                await toastService.ShowError(result.ErrorMessage!);
+                return;
+            }
         }
+
+        OnPropertyChanged(nameof(Listings));
+        OnPropertyChanged(nameof(HotPicks));
     }
 
     [RelayCommand]
@@ -286,7 +296,7 @@ public partial class HomeViewModel(
     {
         if (Shell.Current is Shell shell)
         {
-            SearchViewModel.PendingSportSection = section;
+            SearchViewModel.PendingNavigationSection = section;
             shell.CurrentItem = shell.Items[0].Items[1];
         }
     }
@@ -318,22 +328,33 @@ public partial class HomeViewModel(
         _hasMoreItems = items.Count >= PageSize;
         TotalResults = total;
         IsEmpty = Listings.Count == 0;
+        HasHotPicks = HotPicks.Count > 0;
     }
 
     private async Task<(List<ListingSummary> Items, int Total)> FetchPageAsync(int offset, CancellationToken ct)
     {
         if (SelectedCondition is not null)
         {
-            var response = await listingsService.SearchAsync(
+            var result = await listingsService.SearchAsync(
                 condition: SelectedCondition,
                 limit: PageSize,
                 offset: offset,
                 ct: ct);
-            return (response.Items.Select(ToListingSummary).ToList(), response.Total);
+            if (!result.IsSuccess)
+            {
+                throw new InvalidOperationException(result.ErrorMessage);
+            }
+
+            return (result.Data!.Items.Select(ToListingSummary).ToList(), result.Data.Total);
         }
 
-        var listings = await listingsService.GetListingsAsync(PageSize, offset, ct);
-        return (listings.Listings, listings.Total);
+        var listingsResult = await listingsService.GetListingsAsync(PageSize, offset, ct);
+        if (!listingsResult.IsSuccess)
+        {
+            throw new InvalidOperationException(listingsResult.ErrorMessage);
+        }
+
+        return (listingsResult.Data!.Listings, listingsResult.Data.Total);
     }
 
     private static ListingSummary ToListingSummary(SearchResultItem item) =>

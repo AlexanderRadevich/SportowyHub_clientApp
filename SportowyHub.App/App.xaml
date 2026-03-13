@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:SportowyHub"
              xmlns:converters="clr-namespace:SportowyHub.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SportowyHub.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -11,11 +12,10 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:IntToBoolConverter x:Key="IntToBoolConverter" />
-            <converters:InvertIntToBoolConverter x:Key="InvertIntToBoolConverter" />
-            <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+            <toolkit:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <toolkit:InvertedBoolConverter x:Key="InvertBoolConverter" />
             <converters:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter" />
-            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
             <converters:BoolToHeartConverter x:Key="BoolToHeartConverter" />
             <converters:BoolToChipColorConverter x:Key="BoolToChipColorConverter" />
             <converters:CategoryToColorConverter x:Key="CategoryToColorConverter" />

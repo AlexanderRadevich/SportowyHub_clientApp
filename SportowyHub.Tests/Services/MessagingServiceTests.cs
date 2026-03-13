@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Api;
@@ -10,7 +11,7 @@ namespace SportowyHub.Tests.Services;
 public class MessagingServiceTests
 {
     private readonly IRequestProvider _requestProvider = Substitute.For<IRequestProvider>();
-    private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly ITokenProvider _authService = Substitute.For<ITokenProvider>();
     private readonly MessagingService _sut;
 
     private static readonly Conversation _defaultConversation = new(
@@ -25,7 +26,18 @@ public class MessagingServiceTests
     public MessagingServiceTests()
     {
         _authService.GetTokenAsync().Returns("test-token");
-        _sut = new MessagingService(_requestProvider, _authService);
+        _sut = new MessagingService(_requestProvider, _authService, NullLogger<MessagingService>.Instance);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task SendMessageAsync_NullOrEmptyBody_ThrowsArgumentException(string? body)
+    {
+        var act = () => _sut.SendMessageAsync(1, body!);
+
+        await act.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -42,8 +54,9 @@ public class MessagingServiceTests
                 Arg.Any<CancellationToken>())
             .Returns(_defaultConversation);
 
-        await _sut.CreateConversationAsync("listing-1");
+        var result = await _sut.CreateConversationAsync("listing-1");
 
+        result.IsSuccess.Should().BeTrue();
         capturedUri.Should().Be("/api/private/conversations");
     }
 }

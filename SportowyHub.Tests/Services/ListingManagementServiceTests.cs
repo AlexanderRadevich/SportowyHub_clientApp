@@ -1,5 +1,8 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
+using SportowyHub.Models;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Api;
 using SportowyHub.Services.Auth;
@@ -10,7 +13,7 @@ namespace SportowyHub.Tests.Services;
 public class ListingManagementServiceTests
 {
     private readonly IRequestProvider _requestProvider = Substitute.For<IRequestProvider>();
-    private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly ITokenProvider _authService = Substitute.For<ITokenProvider>();
     private readonly ListingManagementService _sut;
 
     private static readonly CreateListingRequest _defaultRequest = new(
@@ -46,7 +49,18 @@ public class ListingManagementServiceTests
     public ListingManagementServiceTests()
     {
         _authService.GetTokenAsync().Returns("test-token");
-        _sut = new ListingManagementService(_requestProvider, _authService);
+        _sut = new ListingManagementService(_requestProvider, _authService, NullLogger<ListingManagementService>.Instance);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task UpdateListingAsync_NullOrEmptyId_ThrowsArgumentException(string? id)
+    {
+        var act = () => _sut.UpdateListingAsync(id!, new UpdateListingRequest(null, null, null, null, null, null, null, null, null, null, null));
+
+        await act.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -63,8 +77,9 @@ public class ListingManagementServiceTests
                 Arg.Any<CancellationToken>())
             .Returns(_defaultDetail);
 
-        await _sut.CreateListingAsync(_defaultRequest);
+        var result = await _sut.CreateListingAsync(_defaultRequest);
 
+        result.IsSuccess.Should().BeTrue();
         capturedUri.Should().Be("/api/private/listings");
     }
 }

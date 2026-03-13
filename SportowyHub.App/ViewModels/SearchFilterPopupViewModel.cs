@@ -2,26 +2,34 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SportowyHub.Models;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Geography;
+using SportowyHub.Services.Locale;
 using SportowyHub.Services.Sections;
 
 namespace SportowyHub.ViewModels;
 
-public partial class SearchFilterPopupViewModel : ObservableObject
+public partial class SearchFilterPopupViewModel : ObservableObject, IDisposable
 {
     private readonly ISectionsService _sectionsService;
     private readonly IGeographyService _geographyService;
+    private readonly ILocaleService _localeService;
+    private readonly ILogger<SearchFilterPopupViewModel> _logger;
     private CancellationTokenSource? _locationDebounceCts;
 
     public SearchFilterPopupViewModel(
         ISectionsService sectionsService,
         IGeographyService geographyService,
+        ILocaleService localeService,
+        ILogger<SearchFilterPopupViewModel> logger,
         SearchFilterState currentState)
     {
         _sectionsService = sectionsService;
         _geographyService = geographyService;
+        _localeService = localeService;
+        _logger = logger;
 
         SelectedSection = currentState.SelectedSection;
         _selectedCategoryId = currentState.SelectedCategoryId;
@@ -102,13 +110,13 @@ public partial class SearchFilterPopupViewModel : ObservableObject
 
     public async Task LoadDataAsync(CancellationToken ct = default)
     {
-        var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+        var locale = _localeService.TwoLetterLanguageCode;
 
-        try
+        var result = await _sectionsService.GetSectionsAsync(locale, ct);
+        if (result.IsSuccess)
         {
-            var response = await _sectionsService.GetSectionsAsync(locale, ct);
             Sections.Clear();
-            foreach (var section in response.Sports)
+            foreach (var section in result.Data!.Sports)
             {
                 Sections.Add(section);
             }
@@ -122,8 +130,9 @@ public partial class SearchFilterPopupViewModel : ObservableObject
                 }
             }
         }
-        catch
+        else
         {
+            _logger.LogWarning("Failed to load filter sections: {Error}", result.ErrorMessage);
         }
 
         HasSelectedLocation = SelectedLocationLabel is not null;
@@ -131,11 +140,11 @@ public partial class SearchFilterPopupViewModel : ObservableObject
 
     private async Task LoadCategoriesAsync(int sectionId, string locale, CancellationToken ct)
     {
-        try
+        var result = await _sectionsService.GetCategoriesAsync(sectionId, locale, ct);
+        if (result.IsSuccess)
         {
-            var response = await _sectionsService.GetCategoriesAsync(sectionId, locale, ct);
             Categories.Clear();
-            foreach (var category in response.Categories)
+            foreach (var category in result.Data!.Categories)
             {
                 Categories.Add(category);
             }
@@ -149,8 +158,9 @@ public partial class SearchFilterPopupViewModel : ObservableObject
                 _selectedCategoryId = null;
             }
         }
-        catch
+        else
         {
+            _logger.LogWarning("Failed to load categories for section {SectionId}: {Error}", sectionId, result.ErrorMessage);
             IsCategoryEnabled = false;
         }
     }
@@ -167,7 +177,7 @@ public partial class SearchFilterPopupViewModel : ObservableObject
             return;
         }
 
-        var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+        var locale = _localeService.TwoLetterLanguageCode;
         _ = LoadCategoriesAsync(value.Id, locale, CancellationToken.None);
     }
 
@@ -193,23 +203,21 @@ public partial class SearchFilterPopupViewModel : ObservableObject
         {
             await Task.Delay(300, ct);
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            _logger.LogDebug(ex, "Location search debounce cancelled for query {Query}", query);
             return;
         }
 
-        try
+        var locale = _localeService.TwoLetterLanguageCode;
+        var result = await _geographyService.AutocompleteAsync(query, locale, 10, ct);
+        if (result.IsSuccess)
         {
-            var locale = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
-            var results = await _geographyService.AutocompleteAsync(query, locale, 10, ct);
             LocationResults.Clear();
-            foreach (var item in results)
+            foreach (var item in result.Data!)
             {
                 LocationResults.Add(item);
             }
-        }
-        catch (TaskCanceledException)
-        {
         }
     }
 
@@ -296,6 +304,31 @@ public partial class SearchFilterPopupViewModel : ObservableObject
         };
 
         Applied?.Invoke(state);
+    }
+
+    private bool _disposed;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            _locationDebounceCts?.Cancel();
+            _locationDebounceCts?.Dispose();
+            _locationDebounceCts = null;
+        }
+
+        _disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }
 

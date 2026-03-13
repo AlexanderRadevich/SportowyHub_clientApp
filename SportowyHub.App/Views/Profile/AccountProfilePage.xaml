@@ -14,7 +14,7 @@
                            IsVisible="{Binding IsLoading}"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           Color="{StaticResource Primary}" />
+                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
 
         <!-- Error State -->
         <VerticalStackLayout IsVisible="{Binding HasError}"

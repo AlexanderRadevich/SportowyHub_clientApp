@@ -55,6 +55,7 @@
                     <ImageButton Grid.Column="1"
                                  Source="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"
                                  Command="{Binding TogglePasswordVisibilityCommand}"
+                                 SemanticProperties.Description="{x:Static res:AppResources.A11yTogglePasswordButton}"
                                  HeightRequest="24"
                                  WidthRequest="24"
                                  BackgroundColor="Transparent"
@@ -64,11 +65,12 @@
             </Border>
 
             <!-- Forgot Password -->
-            <Label Text="{x:Static res:AppResources.AuthForgotPassword}"
-                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                   FontSize="13"
-                   HorizontalOptions="End"
-                   Margin="0,8,0,0" />
+            <Button Text="{x:Static res:AppResources.AuthForgotPassword}"
+                    Style="{StaticResource LinkButton}"
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    Command="{Binding ForgotPasswordCommand}"
+                    HorizontalOptions="End"
+                    Margin="0,8,0,0" />
 
             <!-- Login Error -->
             <Label Text="{Binding LoginError}"

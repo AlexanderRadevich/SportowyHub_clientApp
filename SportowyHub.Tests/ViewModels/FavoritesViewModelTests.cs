@@ -11,7 +11,7 @@ namespace SportowyHub.Tests.ViewModels;
 public class FavoritesViewModelTests
 {
     private readonly IFavoritesService _favoritesService = Substitute.For<IFavoritesService>();
-    private readonly IAuthService _authService = Substitute.For<IAuthService>();
+    private readonly ITokenProvider _authService = Substitute.For<ITokenProvider>();
     private readonly INavigationService _nav = Substitute.For<INavigationService>();
     private readonly IToastService _toastService = Substitute.For<IToastService>();
     private readonly FavoritesViewModel _sut;

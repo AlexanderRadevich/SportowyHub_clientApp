@@ -14,7 +14,7 @@ public partial class ListingDetailViewModel(
     INavigationService nav,
     IToastService toastService,
     IFavoritesService favoritesService,
-    IAuthService authService) : ObservableObject, IQueryAttributable
+    ITokenProvider authService) : ObservableObject, IQueryAttributable
 {
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
@@ -23,6 +23,9 @@ public partial class ListingDetailViewModel(
     public partial bool HasError { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayTitle))]
+    [NotifyPropertyChangedFor(nameof(FormattedPrice))]
+    [NotifyPropertyChangedFor(nameof(FormattedLocation))]
     public partial ListingDetail? Listing { get; set; }
 
     [ObservableProperty]
@@ -32,15 +35,19 @@ public partial class ListingDetailViewModel(
     public partial bool IsTogglingFavorite { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayTitle))]
     public partial string PreviewTitle { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedPrice))]
     public partial string PreviewPrice { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedPrice))]
     public partial string PreviewCurrency { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedLocation))]
     public partial string PreviewCity { get; set; } = string.Empty;
 
     public string DisplayTitle => Listing?.Title ?? PreviewTitle;
@@ -107,10 +114,6 @@ public partial class ListingDetailViewModel(
             PreviewCity = cityStr;
         }
 
-        OnPropertyChanged(nameof(DisplayTitle));
-        OnPropertyChanged(nameof(FormattedPrice));
-        OnPropertyChanged(nameof(FormattedLocation));
-
         if (!string.IsNullOrEmpty(_listingId))
         {
             LoadListingCommand.Execute(null);
@@ -129,22 +132,18 @@ public partial class ListingDetailViewModel(
         IsLoading = true;
         HasError = false;
 
-        try
+        var result = await listingsService.GetListingAsync(_listingId, ct);
+        if (result.IsSuccess)
         {
-            Listing = await listingsService.GetListingAsync(_listingId, ct);
+            Listing = result.Data;
         }
-        catch (Exception ex)
+        else
         {
             HasError = true;
-            await toastService.ShowError(ex.Message);
+            await toastService.ShowError(result.ErrorMessage!);
         }
-        finally
-        {
-            OnPropertyChanged(nameof(DisplayTitle));
-            OnPropertyChanged(nameof(FormattedPrice));
-            OnPropertyChanged(nameof(FormattedLocation));
-            IsLoading = false;
-        }
+
+        IsLoading = false;
 
         if (Listing is not null)
         {
@@ -166,25 +165,25 @@ public partial class ListingDetailViewModel(
         var wasFavorited = IsFavorited;
         IsFavorited = !wasFavorited;
 
-        try
+        if (wasFavorited)
         {
-            if (wasFavorited)
+            var result = await favoritesService.RemoveAsync(_listingId, ct);
+            if (!result.IsSuccess)
             {
-                await favoritesService.RemoveAsync(_listingId, ct);
-            }
-            else
-            {
-                await favoritesService.AddAsync(_listingId, ct);
+                IsFavorited = wasFavorited;
+                await toastService.ShowError(result.ErrorMessage!);
             }
         }
-        catch (Exception ex)
+        else
         {
-            IsFavorited = wasFavorited;
-            await toastService.ShowError(ex.Message);
+            var result = await favoritesService.AddAsync(_listingId, ct);
+            if (!result.IsSuccess)
+            {
+                IsFavorited = wasFavorited;
+                await toastService.ShowError(result.ErrorMessage!);
+            }
         }
-        finally
-        {
-            IsTogglingFavorite = false;
-        }
+
+        IsTogglingFavorite = false;
     }
 }

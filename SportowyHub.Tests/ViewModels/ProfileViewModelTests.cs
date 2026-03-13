@@ -14,10 +14,11 @@ public class ProfileViewModelTests
     public async Task SignIn_NavigatesToLoginWithProfileReturnUrl()
     {
         var authService = Substitute.For<IAuthService>();
+        var tokenProvider = Substitute.For<ITokenProvider>();
         var nav = Substitute.For<INavigationService>();
         var toastService = Substitute.For<IToastService>();
         var favoritesService = Substitute.For<IFavoritesService>();
-        var sut = new ProfileViewModel(authService, nav, toastService, favoritesService);
+        var sut = new ProfileViewModel(authService, tokenProvider, nav, toastService, favoritesService);
 
         await sut.SignInCommand.ExecuteAsync(null);
 

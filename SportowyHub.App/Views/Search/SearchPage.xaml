@@ -31,6 +31,7 @@
                              Padding="8"
                              BackgroundColor="Transparent"
                              Command="{Binding GoBackCommand}"
+                             SemanticProperties.Description="{x:Static res:AppResources.A11yGoBackButton}"
                              VerticalOptions="Center">
                     <ImageButton.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
@@ -52,6 +53,7 @@
                              Padding="8"
                              BackgroundColor="Transparent"
                              Command="{Binding ClearSearchCommand}"
+                             SemanticProperties.Description="{x:Static res:AppResources.A11yClearSearchButton}"
                              IsVisible="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}"
                              VerticalOptions="Center">
                     <ImageButton.Behaviors>
@@ -66,6 +68,7 @@
                                  Padding="8"
                                  BackgroundColor="Transparent"
                                  Command="{Binding OpenFilterCommand}"
+                                 SemanticProperties.Description="{x:Static res:AppResources.A11yFilterButton}"
                                  VerticalOptions="Center">
                         <ImageButton.Behaviors>
                             <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}" />
@@ -142,6 +145,7 @@
                                         TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource White}}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=RemoveFilterCommand}"
                                         CommandParameter="{Binding Key}"
+                                        SemanticProperties.Description="{x:Static res:AppResources.A11yRemoveFilterButton}"
                                         VerticalOptions="Fill"
                                         Padding="0" />
                             </Grid>
@@ -183,15 +187,12 @@
                                      IsVisible="{Binding RecentSearches.Count, Converter={StaticResource IntToBoolConverter}}">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{x:Static res:AppResources.SearchRecentSearches}" Style="{StaticResource SectionHeader}" />
-                        <Label Grid.Column="1"
-                               Text="{x:Static res:AppResources.SearchClearRecent}"
-                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                               FontSize="13"
-                               VerticalOptions="Center">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding ClearRecentSearchesCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
+                        <Button Grid.Column="1"
+                                Text="{x:Static res:AppResources.SearchClearRecent}"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                Style="{StaticResource LinkButton}"
+                                Command="{Binding ClearRecentSearchesCommand}"
+                                VerticalOptions="Center" />
                     </Grid>
                     <CollectionView ItemsSource="{Binding RecentSearches}">
                         <CollectionView.ItemTemplate>
@@ -234,11 +235,12 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <ScrollView Grid.Row="3"
-                    x:Name="ResultsScrollView"
-                    Scrolled="OnResultsScrolled">
-            <ScrollView.Triggers>
-                <MultiTrigger TargetType="ScrollView">
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding MappedSearchResults}"
+                        RemainingItemsThreshold="5"
+                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreSearchResultsCommand}">
+            <CollectionView.Triggers>
+                <MultiTrigger TargetType="CollectionView">
                     <MultiTrigger.Conditions>
                         <BindingCondition Binding="{Binding SearchText.Length, Converter={StaticResource IntToBoolConverter}}" Value="False" />
                         <BindingCondition Binding="{Binding HasActiveFilters}" Value="False" />
@@ -246,32 +248,31 @@
                     </MultiTrigger.Conditions>
                     <Setter Property="IsVisible" Value="False" />
                 </MultiTrigger>
-            </ScrollView.Triggers>
-            <VerticalStackLayout>
-                <FlexLayout x:Name="ResultsGrid"
-                            Wrap="Wrap"
-                            Direction="Row"
-                            JustifyContent="SpaceBetween"
-                            BindableLayout.ItemsSource="{Binding MappedSearchResults}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="localModels:SearchCardItem">
-                            <controls:ListingCardView Margin="0,0,0,12"
-                                                      Listing="{Binding Listing}"
-                                                      HasCondition="{Binding HasCondition}"
-                                                      ConditionText="{Binding ConditionText}"
-                                                      ConditionBadgeColor="{Binding ConditionBadgeColor}"
-                                                      TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=GoToListingDetailCommand}" />
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </FlexLayout>
+            </CollectionView.Triggers>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="2"
+                                 HorizontalItemSpacing="10"
+                                 VerticalItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="localModels:SearchCardItem">
+                    <controls:ListingCardView Listing="{Binding Listing}"
+                                              HasCondition="{Binding HasCondition}"
+                                              ConditionText="{Binding ConditionText}"
+                                              ConditionBadgeColor="{Binding ConditionBadgeColor}"
+                                              TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=GoToListingDetailCommand}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0,40"
                                      IsVisible="{Binding ShowNoResults}">
                     <Label Text="{x:Static res:AppResources.SearchNoResults}"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
-            </VerticalStackLayout>
-        </ScrollView>
+            </CollectionView.EmptyView>
+        </CollectionView>
 
     </Grid>
 

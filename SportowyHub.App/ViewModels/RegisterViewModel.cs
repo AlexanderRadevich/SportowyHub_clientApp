@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SportowyHub.Resources.Strings;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Navigation;
@@ -11,7 +12,8 @@ namespace SportowyHub.ViewModels;
 public partial class RegisterViewModel(
     IAuthService authService,
     INavigationService nav,
-    IToastService toastService) : ObservableObject
+    IToastService toastService,
+    ILogger<RegisterViewModel> logger) : ObservableObject
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
@@ -105,17 +107,17 @@ public partial class RegisterViewModel(
         if (Password.Length >= 10 && hasLetters && hasDigits && hasSpecial)
         {
             PasswordStrength = AppResources.PasswordStrengthStrong;
-            PasswordStrengthColor = Color.FromArgb("#16A34A");
+            PasswordStrengthColor = GetResourceColor("PasswordStrengthStrong");
         }
         else if (Password.Length >= 8 && hasLetters && hasDigits)
         {
             PasswordStrength = AppResources.PasswordStrengthMedium;
-            PasswordStrengthColor = Color.FromArgb("#F59E0B");
+            PasswordStrengthColor = GetResourceColor("PasswordStrengthMedium");
         }
         else
         {
             PasswordStrength = AppResources.PasswordStrengthWeak;
-            PasswordStrengthColor = Color.FromArgb("#DC2626");
+            PasswordStrengthColor = GetResourceColor("PasswordStrengthWeak");
         }
     }
 
@@ -191,7 +193,13 @@ public partial class RegisterViewModel(
                 return;
             }
 
-            if (registerResult.Data!.TrustLevel == Models.TrustLevels.Unverified)
+            if (registerResult.Data is null)
+            {
+                await toastService.ShowError(AppResources.ErrorGeneric);
+                return;
+            }
+
+            if (registerResult.Data.TrustLevel == Models.TrustLevels.Unverified)
             {
                 await nav.DisplayAlertAsync(
                     AppResources.AuthRegistrationSuccess,
@@ -235,8 +243,9 @@ public partial class RegisterViewModel(
             RegisterError = result.ErrorMessage ?? AppResources.OAuthErrorFailed;
             await toastService.ShowError(RegisterError);
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
+            logger.LogDebug(ex, "Google OAuth registration was cancelled");
         }
         catch (Exception ex)
         {
@@ -271,4 +280,13 @@ public partial class RegisterViewModel(
 
     [GeneratedRegex(@"[^a-zA-Z\d]")]
     private static partial Regex HasSpecialRegex();
+
+    private static Color GetResourceColor(string key)
+    {
+        if (Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Color color)
+        {
+            return color;
+        }
+        return Colors.Gray;
+    }
 }
