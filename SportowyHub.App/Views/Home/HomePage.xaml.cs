@@ -64,29 +64,45 @@ public partial class HomePage : ContentPage
 
     private void OnListingsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(RebuildProductsGrid);
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
+            {
+                AppendCards(e.NewStartingIndex, e.NewItems.Cast<ListingCardItem>());
+            }
+            else
+            {
+                RebuildProductsGrid();
+            }
+        });
+    }
+
+    private void AppendCards(int startIndex, IEnumerable<ListingCardItem> items)
+    {
+        foreach (var item in items)
+        {
+            var row = startIndex / 2;
+            var col = startIndex % 2;
+
+            if (col == 0)
+            {
+                ProductsGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            }
+
+            var card = CreateListingCard(item);
+            Grid.SetRow(card, row);
+            Grid.SetColumn(card, col);
+            ProductsGrid.Children.Add(card);
+
+            startIndex++;
+        }
     }
 
     private void RebuildProductsGrid()
     {
         ProductsGrid.Children.Clear();
         ProductsGrid.RowDefinitions.Clear();
-
-        var listings = _viewModel.Listings;
-        var rowCount = (listings.Count + 1) / 2;
-
-        for (var r = 0; r < rowCount; r++)
-        {
-            ProductsGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
-        }
-
-        for (var i = 0; i < listings.Count; i++)
-        {
-            var card = CreateListingCard(listings[i]);
-            Grid.SetRow(card, i / 2);
-            Grid.SetColumn(card, i % 2);
-            ProductsGrid.Children.Add(card);
-        }
+        AppendCards(0, _viewModel.Listings);
     }
 
     private ListingCardView CreateListingCard(ListingCardItem item)

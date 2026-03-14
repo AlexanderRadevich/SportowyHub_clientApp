@@ -75,9 +75,8 @@ public partial class HomeViewModel(
             if (user is not null)
             {
                 await favoritesService.LoadFavoriteIdsAsync(ct);
+                SyncFavoriteStates();
             }
-
-            SyncFavoriteStates();
         }
         catch (Exception ex)
         {
@@ -189,7 +188,7 @@ public partial class HomeViewModel(
 
             foreach (var listing in items)
             {
-                Listings.Add(new ListingCardItem(listing, favoritesService.IsFavorite(listing.Id)));
+                Listings.Add(ToCardItem(listing));
             }
 
             _offset += PageSize;
@@ -243,13 +242,12 @@ public partial class HomeViewModel(
         }
 
         var newState = !wasFavorited;
-        foreach (var item in Listings.Where(x => x.Listing.Id == listing.Id))
+        foreach (var item in Listings.Concat(HotPicks))
         {
-            item.IsFavorited = newState;
-        }
-        foreach (var item in HotPicks.Where(x => x.Listing.Id == listing.Id))
-        {
-            item.IsFavorited = newState;
+            if (item.Listing.Id == listing.Id)
+            {
+                item.IsFavorited = newState;
+            }
         }
     }
 
@@ -311,19 +309,20 @@ public partial class HomeViewModel(
         }
     }
 
-    public bool IsListingFavorited(string listingId) => favoritesService.IsFavorite(listingId);
-
     private void SyncFavoriteStates()
     {
-        foreach (var item in Listings)
+        foreach (var item in Listings.Concat(HotPicks))
         {
-            item.IsFavorited = favoritesService.IsFavorite(item.Listing.Id);
-        }
-        foreach (var item in HotPicks)
-        {
-            item.IsFavorited = favoritesService.IsFavorite(item.Listing.Id);
+            var isFav = favoritesService.IsFavorite(item.Listing.Id);
+            if (item.IsFavorited != isFav)
+            {
+                item.IsFavorited = isFav;
+            }
         }
     }
+
+    private ListingCardItem ToCardItem(ListingSummary listing) =>
+        new(listing, favoritesService.IsFavorite(listing.Id));
 
     private async Task FetchAndPopulateListingsAsync(CancellationToken ct)
     {
@@ -337,13 +336,13 @@ public partial class HomeViewModel(
 
         foreach (var listing in items)
         {
-            Listings.Add(new ListingCardItem(listing, favoritesService.IsFavorite(listing.Id)));
+            Listings.Add(ToCardItem(listing));
         }
 
         var hotPickCount = Math.Min(HotPicksCount, items.Count);
         for (var i = 0; i < hotPickCount; i++)
         {
-            HotPicks.Add(new ListingCardItem(items[i], favoritesService.IsFavorite(items[i].Id)));
+            HotPicks.Add(ToCardItem(items[i]));
         }
 
         _offset = PageSize;
