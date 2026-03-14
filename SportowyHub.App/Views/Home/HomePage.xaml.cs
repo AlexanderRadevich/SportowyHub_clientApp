@@ -1,5 +1,7 @@
 using System.Collections.Specialized;
 using Microsoft.Maui.Controls.Shapes;
+using SportowyHub.Controls;
+using SportowyHub.Models;
 using SportowyHub.Models.Api;
 using SportowyHub.ViewModels;
 
@@ -9,7 +11,6 @@ public partial class HomePage : ContentPage
 {
     private const int ConditionChipCount = 3;
     private readonly HomeViewModel _viewModel;
-    private double _cardWidth;
 
     public HomePage(HomeViewModel viewModel)
     {
@@ -61,38 +62,47 @@ public partial class HomePage : ContentPage
         }
     }
 
-    protected override void OnSizeAllocated(double width, double height)
-    {
-        base.OnSizeAllocated(width, height);
-
-        if (width > 0)
-        {
-            var padding = 32;
-            var spacing = 10;
-            _cardWidth = (width - padding - spacing) / 2;
-            UpdateCardWidths();
-        }
-    }
-
-    private void UpdateCardWidths()
-    {
-        if (_cardWidth <= 0)
-        {
-            return;
-        }
-
-        foreach (var child in ProductsGrid.Children)
-        {
-            if (child is View view)
-            {
-                view.WidthRequest = _cardWidth;
-            }
-        }
-    }
-
     private void OnListingsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(UpdateCardWidths);
+        MainThread.BeginInvokeOnMainThread(RebuildProductsGrid);
+    }
+
+    private void RebuildProductsGrid()
+    {
+        ProductsGrid.Children.Clear();
+        ProductsGrid.RowDefinitions.Clear();
+
+        var listings = _viewModel.Listings;
+        var rowCount = (listings.Count + 1) / 2;
+
+        for (var r = 0; r < rowCount; r++)
+        {
+            ProductsGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        }
+
+        for (var i = 0; i < listings.Count; i++)
+        {
+            var card = CreateListingCard(listings[i]);
+            Grid.SetRow(card, i / 2);
+            Grid.SetColumn(card, i % 2);
+            ProductsGrid.Children.Add(card);
+        }
+    }
+
+    private ListingCardView CreateListingCard(ListingCardItem item)
+    {
+        var card = new ListingCardView
+        {
+            BindingContext = item,
+            Margin = new Thickness(0, 0, 0, 12)
+        };
+
+        card.SetBinding(ListingCardView.ListingProperty, nameof(ListingCardItem.Listing));
+        card.SetBinding(ListingCardView.IsFavoritedProperty, nameof(ListingCardItem.IsFavorited));
+        card.TapCommand = _viewModel.GoToListingDetailCommand;
+        card.ToggleFavoriteCommand = _viewModel.ToggleFavoriteCommand;
+
+        return card;
     }
 
     private void OnScrolled(object? sender, ScrolledEventArgs e)

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using SportowyHub.Messages;
+using SportowyHub.Models;
 using SportowyHub.Models.Api;
 using SportowyHub.Services.Auth;
 using SportowyHub.Services.Favorites;
@@ -30,8 +31,8 @@ public partial class HomeViewModel(
     private int _offset;
     private bool _hasMoreItems = true;
 
-    public ObservableCollection<ListingSummary> Listings { get; } = [];
-    public ObservableCollection<ListingSummary> HotPicks { get; } = [];
+    public ObservableCollection<ListingCardItem> Listings { get; } = [];
+    public ObservableCollection<ListingCardItem> HotPicks { get; } = [];
     public ObservableCollection<Section> Sections { get; } = [];
 
     [ObservableProperty]
@@ -75,6 +76,8 @@ public partial class HomeViewModel(
             {
                 await favoritesService.LoadFavoriteIdsAsync(ct);
             }
+
+            SyncFavoriteStates();
         }
         catch (Exception ex)
         {
@@ -186,7 +189,7 @@ public partial class HomeViewModel(
 
             foreach (var listing in items)
             {
-                Listings.Add(listing);
+                Listings.Add(new ListingCardItem(listing, favoritesService.IsFavorite(listing.Id)));
             }
 
             _offset += PageSize;
@@ -208,7 +211,7 @@ public partial class HomeViewModel(
         await nav.GoToListingDetailAsync(listing.Id, listing.Title, listing.Price, listing.Currency, listing.City);
     }
 
-    [RelayCommand]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task ToggleFavorite(ListingSummary listing, CancellationToken ct)
     {
         var user = await authService.GetCurrentUserAsync();
@@ -239,8 +242,15 @@ public partial class HomeViewModel(
             }
         }
 
-        OnPropertyChanged(nameof(Listings));
-        OnPropertyChanged(nameof(HotPicks));
+        var newState = !wasFavorited;
+        foreach (var item in Listings.Where(x => x.Listing.Id == listing.Id))
+        {
+            item.IsFavorited = newState;
+        }
+        foreach (var item in HotPicks.Where(x => x.Listing.Id == listing.Id))
+        {
+            item.IsFavorited = newState;
+        }
     }
 
     [RelayCommand]
@@ -303,6 +313,18 @@ public partial class HomeViewModel(
 
     public bool IsListingFavorited(string listingId) => favoritesService.IsFavorite(listingId);
 
+    private void SyncFavoriteStates()
+    {
+        foreach (var item in Listings)
+        {
+            item.IsFavorited = favoritesService.IsFavorite(item.Listing.Id);
+        }
+        foreach (var item in HotPicks)
+        {
+            item.IsFavorited = favoritesService.IsFavorite(item.Listing.Id);
+        }
+    }
+
     private async Task FetchAndPopulateListingsAsync(CancellationToken ct)
     {
         _offset = 0;
@@ -315,13 +337,13 @@ public partial class HomeViewModel(
 
         foreach (var listing in items)
         {
-            Listings.Add(listing);
+            Listings.Add(new ListingCardItem(listing, favoritesService.IsFavorite(listing.Id)));
         }
 
         var hotPickCount = Math.Min(HotPicksCount, items.Count);
         for (var i = 0; i < hotPickCount; i++)
         {
-            HotPicks.Add(items[i]);
+            HotPicks.Add(new ListingCardItem(items[i], favoritesService.IsFavorite(items[i].Id)));
         }
 
         _offset = PageSize;
